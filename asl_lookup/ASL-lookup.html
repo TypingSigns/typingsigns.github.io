@@ -1,0 +1,305 @@
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="English (Gloss) to ASL Dictionary Lookup. Consolidating over 12,000 Signs - from LifePrint, HandSpeak, and SignWriting's SignBank." />
+	<meta name="keywords" content="translation, dictionary, ASL, American Sign Language, English, gloss, lookup, search">
+
+	<title>English (Gloss) to 👋 ASL Lookup</title>
+	<script src="jquery.min.js"></script>
+	<script src="sifter.js"></script>
+	<script src="SW_LP_HS_Glosses.js"></script>
+	
+	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+
+</head>
+
+<style>
+	body {
+		max-width: 800px;
+		margin: auto;
+	}
+	header {
+		/*text-align: center;*/
+		color: gray;
+		letter-spacing: 0.05em;
+		position: absolute;
+		left: 0;
+		width: 100%;
+		background: #f3f3f3;
+		padding: 10px;
+		font-size: 0.75em;
+		border-bottom: 1px solid lightgray;
+	}
+	#inputArea {
+		margin-top: 80px;
+		margin-bottom: 20px;
+		width: 100%;
+		padding: 20px;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+	#results-header, #results {
+		margin-left: 20px;
+	}
+	#results-header {
+		text-align: right;
+	}
+	.subtext {
+		font-size: 0.8em;
+	}
+	#results .item {
+		padding: 10px 0;
+		border-bottom: 1px solid lightgray;
+		position: relative;
+	}
+	#results .item .title {
+		letter-spacing: 0.1em;
+	}
+	#results .item .links {
+		display: inline-block;
+		margin-left: 30px;
+	}
+	#results .item .links a {
+		/*padding: 10px;*/
+		margin: 0 10px;
+	}
+	footer {
+		margin-top: 20px;
+		margin-bottom: 10px;
+	}
+
+	/* Buttons: http://www.bestcssbuttongenerator.com/ */
+
+		.links .HandSpeak {
+			-moz-box-shadow:inset 0px 1px 0px 0px #bee2f9;
+			-webkit-box-shadow:inset 0px 1px 0px 0px #bee2f9;
+			box-shadow:inset 0px 1px 0px 0px #bee2f9;
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf));
+			background:-moz-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+			background:-webkit-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+			background:-o-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+			background:-ms-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+			background:linear-gradient(to bottom, #63b8ee 5%, #468ccf 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf',GradientType=0);
+			background-color:#63b8ee;
+			-moz-border-radius:6px;
+			-webkit-border-radius:6px;
+			border-radius:6px;
+			border:1px solid #3866a3;
+			display:inline-block;
+			cursor:pointer;
+			color:#14396a;
+			font-family:Arial;
+			font-size:15px;
+			font-weight:bold;
+			padding:6px 24px;
+			text-decoration:none;
+			text-shadow:0px 1px 0px #7cacde;
+		}
+		.links .HandSpeak:hover {
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #468ccf), color-stop(1, #63b8ee));
+			background:-moz-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+			background:-webkit-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+			background:-o-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+			background:-ms-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+			background:linear-gradient(to bottom, #468ccf 5%, #63b8ee 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee',GradientType=0);
+			background-color:#468ccf;
+		}
+		.links .HandSpeak:active {
+			position:relative;
+			top:1px;
+		}
+		.links .HandSpeak:visited {
+			color: lightblue;
+		}
+
+		.links .SignBank:link {
+			-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+			-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+			box-shadow:inset 0px 1px 0px 0px #ffffff;
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf));
+			background:-moz-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+			background:-webkit-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+			background:-o-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+			background:-ms-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+			background:linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf',GradientType=0);
+			background-color:#ededed;
+			-moz-border-radius:6px;
+			-webkit-border-radius:6px;
+			border-radius:6px;
+			border:1px solid #dcdcdc;
+			display:inline-block;
+			cursor:pointer;
+			color:#777777;
+			font-family:Arial;
+			font-size:15px;
+			font-weight:bold;
+			padding:6px 24px;
+			text-decoration:none;
+			text-shadow:0px 1px 0px #ffffff;
+		}
+		.links .SignBank:hover {
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed));
+			background:-moz-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+			background:-webkit-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+			background:-o-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+			background:-ms-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+			background:linear-gradient(to bottom, #dfdfdf 5%, #ededed 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed',GradientType=0);
+			background-color:#dfdfdf;
+		}
+		.links .SignBank:active {
+			position:relative;
+			top:1px;
+		}
+		.links a.SignBank:visited {
+			/*font-weight: normal !important;*/
+			/*font-style: oblique !important;*/
+			/*text-dectoration - doesn't work either */
+			/*apparently 'visited' attributes are restricted: http://stackoverflow.com/questions/8331688/why-doesnt-this-avisited-css-style-work */
+			color: lightgray;
+		}
+
+		.links .LifePrint {
+			-moz-box-shadow:inset 0px 1px 0px 0px #caefab;
+			-webkit-box-shadow:inset 0px 1px 0px 0px #caefab;
+			box-shadow:inset 0px 1px 0px 0px #caefab;
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #77d42a), color-stop(1, #5cb811));
+			background:-moz-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+			background:-webkit-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+			background:-o-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+			background:-ms-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+			background:linear-gradient(to bottom, #77d42a 5%, #5cb811 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77d42a', endColorstr='#5cb811',GradientType=0);
+			background-color:#77d42a;
+			-moz-border-radius:6px;
+			-webkit-border-radius:6px;
+			border-radius:6px;
+			border:1px solid #268a16;
+			display:inline-block;
+			cursor:pointer;
+			color:#306108;
+			font-family:Arial;
+			font-size:15px;
+			font-weight:bold;
+			padding:6px 24px;
+			text-decoration:none;
+			text-shadow:0px 1px 0px #aade7c;
+		}
+		.links .LifePrint:hover {
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #5cb811), color-stop(1, #77d42a));
+			background:-moz-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+			background:-webkit-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+			background:-o-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+			background:-ms-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+			background:linear-gradient(to bottom, #5cb811 5%, #77d42a 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5cb811', endColorstr='#77d42a',GradientType=0);
+			background-color:#5cb811;
+		}
+		.links .LifePrint:active {
+			position:relative;
+			top:1px;
+		}
+		.links .LifePrint:visited {
+			color: lightgreen;
+		}
+</style>
+
+<body>
+	<header>English to ASL</header>
+	<input id="inputArea" type="text" name="gloss-entry" placeholder="Type here ... 👋">
+	<div id="results-header" class="subtext"></div>
+	<div id="results"></div>
+	<footer id="donation-links" class="subtext">If these resources have helped you, consider donating to <a href="http://www.lifeprint.com/">LifePrint</a>, <a href="http://www.handspeak.com/">HandSpeak</a>, or <a href="http://signwriting.org/">SignWriting.</a></footer>
+</body>
+
+<script>
+
+	var sifter = new Sifter(SW_LP_HS_Glosses); // Specific Format: https://github.com/brianreavis/sifter.js/
+
+	// On Load
+	refreshResultsFromInput();
+
+	///////////////////
+	$('#inputArea').focus();
+	$('#inputArea').on('input', function(e) {
+		refreshResultsFromInput();
+	})
+
+	// via: http://stackoverflow.com/questions/1990512/add-comma-to-numbers-every-three-digits
+	$.fn.thousandCommad = function(){ 
+		return this.each(function(){ 
+			$(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+		})
+	}
+
+	function refreshResultsFromInput() {
+		// Get Value
+		var value = $('#inputArea').val();
+		if (value == "") {
+			$('#results').hide();
+			$('#donation-links').hide();
+
+			var count = SW_LP_HS_Glosses.length + '';
+			count = count.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+			var headerHtml = 'Look up the ASL signs for '+ count +' English glosses.'
+			$('#results-header').html(headerHtml)
+			
+			return
+		} else {
+			$('#results').show();
+			$('#donation-links').show();
+		}
+
+		// Iniiate a sift search
+		var results = sifter.search(value, {
+			fields: ['title']
+		})
+
+		// Display Results
+		var resultsHtml = '';
+		var numResults = results.items.length;
+
+		$('#results-header').html(numResults + ((numResults>1)?' glosses':' gloss'))
+		var maxResultsToDisplay = 500
+		for (var i=0; i<results.items.length; i++) {
+			var id = results.items[i].id;
+			var item = sifter.items[id];
+			var title = item.title;
+			var titleHtml = '<span class="title">'+title+'</span>'
+
+			var entries = item.entries;
+			var linksHtml = '';
+			for (var j=0; j<entries.length; j++) {
+				var e = entries[j];
+				var link = e.link;
+				var linkText = link;
+				if (linkText.indexOf('signpuddle') >= 0) { linkText = 'SignBank' } else {
+					if (linkText.indexOf('lifeprint') >= 0) { linkText = 'LifePrint'} else {
+						if (linkText.indexOf('handspeak') >= 0) { linkText = 'HandSpeak'}
+					}
+				}
+				var linkHtml = '<a href="'+link+'" class="'+linkText+'">'+linkText+'</a>';
+				linksHtml += linkHtml;
+			}
+			linksHtml = '<div class="links">' + linksHtml + '</div>'
+			resultsHtml += '<div class="item">' + titleHtml + linksHtml + '</div>';
+			if (i>maxResultsToDisplay) {
+				resultsHtml += '... and ' + (results.items.length-maxResultsToDisplay) + ' more.'
+				break
+			}
+		}
+		$('#results').html(resultsHtml);
+	}
+	
+
+</script>
+
+<script>
+	
+</script>
+
+</html>
