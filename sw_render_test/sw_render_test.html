@@ -190,7 +190,7 @@ span.symbols {
 	// $('body').append(areaHtml);
 
 	function loadSvgToEntry(id, fsw) {
-		var url = "http://swserver.wmflabs.org/svg/";
+		var url = "https://swserver.wmflabs.org/svg/";
 		url += fsw;
 		$.get(url, function(data) {
 			$('#e'+id+' .svg-wrapper').append(data.firstChild);
