@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	<meta charset="UTF-8">
 	<script src="jquery.min.js"></script>
 	<script src="sifter.js"></script>
 
@@ -11,19 +11,19 @@
 
 <style>
 @font-face {
-  font-family: "SuttonSignWriting";
+  font-family: "SignWriting 2010";
   src: 
-    local('SuttonSignWriting'),
+    local('SignWriting 2010'),
     url('SignWriting 2010.ttf') format('truetype');
 }
 @font-face {
-  font-family: "SuttonSignWritingFill";
+  font-family: "SignWriting 2010 Fill";
   src: 
-    local('SuttonSignWritingFill'),
+    local('SignWriting 2010 Fill'),
     url('SignWriting 2010 Filling.ttf') format('truetype');
 }
 body {
-	font-family: Helvetica, "SuttonSignWriting", "SuttonSignWritingFilling", Serif;
+	font-family: Helvetica, "SignWriting 2010", "SignWriting 2010 Fill", Serif;
 }
 
 .entry {
@@ -47,6 +47,7 @@ span.main-label {
 span.symbols {
 	letter-spacing: 0.8em;
 	border-top: 2px dashed black;
+	font-family: 'SignWriting 2010';
 }
 
 </style>
@@ -142,6 +143,11 @@ span.symbols {
 			var mainLabel = "_?_";
 			if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
 			var symbols = findUnicode8SuttonSymbols(fsw);
+			// for (var j=0; j<symbols.length; j++) {
+			// 	var sym = symbols[j];
+			// 	console.log(sym.codePointAt(0))
+			// }
+			// console.log(symbols);
 
 			var divHtml = '<div id="e'+id+'" class="entry">';
 			divHtml += '<div class="svg-wrapper"></div>'
