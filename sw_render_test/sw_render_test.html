@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="jquery.min.js"></script>
+	<script src="sifter.js"></script>
+
+	<script src="2_sgn4.js"></script>
+
+	<!-- Future TODO: Use own Server for rendering icons. -->
+
+<style>
+@font-face {
+  font-family: "SuttonSignWriting";
+  src: 
+    local('SuttonSignWriting'),
+    url('https://cdn.rawgit.com/Slevinski/signwriting_2010_fonts/master/fonts/SuttonSignWriting.ttf') format('truetype');
+}
+@font-face {
+  font-family: "SuttonSignWritingFill";
+  src: 
+    local('SuttonSignWritingFill'),
+    url('https://cdn.rawgit.com/Slevinski/signwriting_2010_fonts/master/fonts/SuttonSignWritingFill.ttf') format('truetype');
+}
+body {
+	font-family: "SuttonSignWriting", "SuttonSignWritingFill", Helvetica, Serif;
+}
+
+.entry {
+	background-color: lightcyan;
+	margin: 10px;
+	width: 150px;
+	display: inline-block;
+}
+.svg-wrapper {
+	background: beige;
+	text-align: center;
+}
+	svg {
+		height: 100px;
+		max-width: 100px;
+	}
+span.main-label {
+	display: block;
+	margin: 10px 0;
+}
+span.symbols {
+	letter-spacing: 0.8em;
+	border-top: 2px dashed black;
+}
+
+</style>
+</head>
+
+<body>
+
+	<input id="inputArea" type="text" name="gloss-entry" placeholder="Type here ... 👋">
+	<div id="results-text"></div>
+	<div id="results"></div>
+
+</body>
+
+<script>
+	function findUnicode8SuttonSymbols(fsw) {
+		var symbols = fsw.match(/S.{5}/g);
+
+		var u8symbols = [];
+		for (var i=0; i<symbols.length; i++) {
+			// Convert SignWriting Symbol Key - to Unicode
+			var symbol = symbols[i];
+			var hexkey = symbol.substring(1);
+			hexkey = hexkey.substring(0, hexkey.length - 2); // Strip down to first 3 numbers (as that's all that's currently supported in unicode8)
+			var hexvalue_dec = parseInt(hexkey, 16);
+
+			var base_zeroValue_str = "1D700"; // because unicode8 starts at 1D800, and sw starts at 100.
+			var unicodeHexValue_dec = hexvalue_dec + parseInt(base_zeroValue_str, 16);
+
+			var u8 = String.fromCodePoint(unicodeHexValue_dec); // <- Ah I see, I wanted String.fromCodePoint, NOT fromCharCode!! - http://xahlee.info/js/js_unicode_code_point.html
+
+			u8symbols.push(u8);
+		}
+		return u8symbols;
+	}
+
+	// Add SearchTerm (Updateable) (To be solidified as a separate file in Production)
+	for (var i=0; i<signPuddleEntries.length; i++) {
+		var entry = signPuddleEntries[i];
+		if (entry.term != undefined) {
+			var fsw = entry.term[0];
+			if (typeof fsw !== 'object') { // weirdly enough, some entry.term don't contain an FSW, but do contain a 'mainLabel'
+				// entry['fsw'] = fsw;
+				// entry['unicode8searchTerms'] = fsw;
+				var symbols = findUnicode8SuttonSymbols(fsw);
+				entry['unicode8searchTerms'] = symbols.join(" ");
+			}
+			
+		}
+	}
+</script>
+
+<script>
+
+	// Create Sifter
+	var sifter = new Sifter(signPuddleEntries);
+
+	///////////////////
+	$('#inputArea').focus();
+	$('#inputArea').on('input', function(e) {
+		refreshResultsFromInput();
+	})
+
+	refreshResultsFromInput(); // On Load // ~temp
+
+	function refreshResultsFromInput() {
+		// Get Value
+		var value = $('#inputArea').val();
+		// ~temp
+		if (value == "") {value = " 𝧫"; }
+
+		// Iniiate a sift search
+		var results = sifter.search(value, {
+			fields: ['unicode8searchTerms'],
+			conjunction: "and"
+		});
+
+		var displayLimit = 10;
+		var displayText = "Displaying "+displayLimit+" of "+results.items.length+" signs.";
+		$('#results-text').text(displayText);
+
+		// Display Results
+		var resultsHtml = '';
+		for (var i=0; i<results.items.length; i++) {
+			var _id = results.items[i].id;
+			var entry = sifter.items[_id];
+
+			var id = entry._id;
+			if (entry.term.length == undefined) {continue;}
+
+			console.log(entry);
+
+			var fsw = entry.term[0];
+			var mainLabel = "_?_";
+			if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
+			var symbols = findUnicode8SuttonSymbols(fsw);
+
+			var divHtml = '<div id="e'+id+'" class="entry">';
+			divHtml += '<div class="svg-wrapper"></div>'
+			divHtml += '<span class="main-label">' + mainLabel + '</span>';
+			divHtml += '<span class="symbols">' + symbols.join('') + '</span>';
+			divHtml += '</div>';
+			resultsHtml += divHtml;
+
+			// Load SVG
+			loadSvgToEntry(id, fsw);
+
+			if (i>displayLimit) { break; }
+		}
+		$('#results').html(resultsHtml);
+	}
+	
+
+
+	// var displayedEntries = [];
+	// for (var i=0; i<10; i++) {
+	// 	var randi = Math.floor(Math.random()*signPuddleEntries.length);
+	// 	var entry = signPuddleEntries[randi];
+	// 	displayedEntries.push(entry);
+	// }
+	// // Display DisplayedEntries
+	// var areaHtml = '';
+	// for (var i=0; i<displayedEntries.length; i++) {
+	// 	var entry = displayedEntries[i];
+	// 	var id = entry._id;
+	// 	if (entry.term.length == undefined) {continue;}
+
+	// 	var fsw = entry.term[0];
+	// 	var mainLabel = "_?_";
+	// 	if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
+
+	// 	var divHtml = '<div id="e'+id+'">';
+	// 	divHtml += '<div class="svg-wrapper"></div>'
+	// 	divHtml += " " + mainLabel;
+	// 	divHtml += '</div>';
+
+	// 	areaHtml += divHtml;
+
+	// 	// Load SVG
+	// 	loadSvgToEntry(id, fsw);
+	// }
+	// $('body').append(areaHtml);
+
+	function loadSvgToEntry(id, fsw) {
+		var url = "http://swserver.wmflabs.org/svg/";
+		url += fsw;
+		$.get(url, function(data) {
+			$('#e'+id+' .svg-wrapper').append(data.firstChild);
+		});
+	}
+
+</script>
+
+</html>
