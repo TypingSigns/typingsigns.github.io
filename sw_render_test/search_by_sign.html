@@ -6,24 +6,24 @@
 	<script src="sifter.js"></script>
 
 	<script src="2_sgn4.js"></script>
+	<script src="swRootSymbolCategories.js"></script>
+	
 
 	<!-- Future TODO: Use own Server for rendering icons. -->
+
+	<!-- NOTE: Currently only runs on Chrome. (SAFARI has font-handling issues with SignWriting 2010) Future ToDo: Add disclaimer if opened in safari. (Also test on chrome mobile. -->
 
 <style>
 @font-face {
   font-family: "SignWriting 2010";
   src: 
-    local('SignWriting 2010'),
-    url('SignWriting 2010.ttf') format('truetype');
+  	local('SignWriting 2010'),
+  	url('SignWriting 2010.ttf') format('truetype');
+  /* If positioning issue reoccurs, stop using local font. (msg expires 2016-10-10) */
 }
-@font-face {
-  font-family: "SignWriting 2010 Fill";
-  src: 
-    local('SignWriting 2010 Fill'),
-    url('SignWriting 2010 Filling.ttf') format('truetype');
-}
+
 body {
-	font-family: Helvetica, "SignWriting 2010", "SignWriting 2010 Fill", Serif;
+	font-family: Helvetica, "SignWriting 2010", Serif;
 }
 
 .entry {
@@ -44,17 +44,42 @@ span.main-label {
 	display: block;
 	margin: 10px 0;
 }
-span.symbols {
+.usymbols, .usymbols span {
 	letter-spacing: 0.8em;
-	border-top: 2px dashed black;
+	border-top: 2px dashed #ccc;
 	font-family: 'SignWriting 2010';
+	font-weight: normal;
 }
+table#handlist {
+	background-color: yellow;
+}
+
+table#handlist tr#swroot td {
+	font-size: 2.0em;
+	vertical-align: middle;
+	padding-top: 8px;
+	padding-bottom: 2px;
+}
+table#handlist tr td {
+	background-color: orange;
+	vertical-align: top;
+	text-align: center;
+}
+	table#handlist div.unicode-symbols {
+		background-color: beige;
+		font-family: 'SignWriting 2010';
+	}
+	table#handlist div.unicode-symbols span {
+		margin-right: 5px;
+		background-color: cyan;
+		padding: 0 5px;
+		margin-bottom: 5px;
+	}
 
 </style>
 </head>
 
 <body>
-
 	<input id="inputArea" type="text" name="gloss-entry" placeholder="Type here ... 👋">
 	<div id="results-text"></div>
 	<div id="results"></div>
@@ -62,6 +87,17 @@ span.symbols {
 </body>
 
 <script>
+	function numberToEmoji_html(number) {
+		number = Math.round(number);
+		if (number <0 || number > 10) { number = "#"; }
+		if (number == 10) { return "&#128287;"; }
+		return number+"&#8419;"
+	}
+
+	// Values
+	var swHandshapeRoots = ["S10000", "S10e00", "S11e00", "S14400", "S14c00", "S18600", "S1a400", "S1ba00", "S1cd00", "S1f500"];
+
+	// Global Function
 	function findUnicode8SuttonSymbols(fsw) {
 		var symbols = fsw.match(/S.{5}/g);
 
@@ -94,12 +130,47 @@ span.symbols {
 				var symbols = findUnicode8SuttonSymbols(fsw);
 				entry['unicode8searchTerms'] = symbols.join(" ");
 			}
-			
 		}
 	}
 </script>
 
 <script>
+
+	// LOAD BUTTONS
+
+	
+	var table = '<table id="handlist">';
+	// Populate First Row
+	var tr = '<tr id="swroot">';
+	for (var i=0; i<swHandshapeRoots.length; i++) {
+		var swroot = swHandshapeRoots[i];
+		var numberSymbol_html = numberToEmoji_html(i+1);
+		var td = "<td>"+numberSymbol_html+"</td>";
+		tr += td;
+	}
+	tr += "</tr>";
+	table += tr;
+	// Populate Sub-Symbols Row
+	tr = "<tr>";
+	for (var i=0; i<swHandshapeRoots.length; i++) {
+		var swroot = swHandshapeRoots[i];
+		
+		var childSymbols = swRootSymbolCategories[swroot];
+		var html = '<div class="unicode-symbols">'
+		for (var j=0; j<childSymbols.length; j++) {
+			var childSymbol = childSymbols[j];
+			var usymbol = findUnicode8SuttonSymbols(childSymbol)[0];
+			html += '<span>'+usymbol+'</span> ';
+		}
+		html += '</div>'
+
+		tr += "<td>"+html+"</td>";
+	}
+	tr += "</tr>";
+	table += tr;
+	table += "</table>"
+	$('body').append(table);
+
 
 	// Create Sifter
 	var sifter = new Sifter(signPuddleEntries);
@@ -143,16 +214,17 @@ span.symbols {
 			var mainLabel = "_?_";
 			if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
 			var symbols = findUnicode8SuttonSymbols(fsw);
-			// for (var j=0; j<symbols.length; j++) {
-			// 	var sym = symbols[j];
-			// 	console.log(sym.codePointAt(0))
-			// }
-			// console.log(symbols);
+			var usymbolsHtml = '<div class="usymbols">'
+			// usymbolsHtml += symbols.join(' ');
+			// usymbolsHtml += '<span>' + symbols.join(' </span> <span>') + '</span>';
+			usymbolsHtml += '</div>';
+
 
 			var divHtml = '<div id="e'+id+'" class="entry">';
 			divHtml += '<div class="svg-wrapper"></div>'
 			divHtml += '<span class="main-label">' + mainLabel + '</span>';
-			divHtml += '<span class="symbols">' + symbols.join('') + '</span>';
+			// divHtml += usymbolsHtml;
+			divHtml += '<span class="usymbols">' + symbols.join('') + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
 			divHtml += '</div>';
 			resultsHtml += divHtml;
 
@@ -163,37 +235,6 @@ span.symbols {
 		}
 		$('#results').html(resultsHtml);
 	}
-	
-
-
-	// var displayedEntries = [];
-	// for (var i=0; i<10; i++) {
-	// 	var randi = Math.floor(Math.random()*signPuddleEntries.length);
-	// 	var entry = signPuddleEntries[randi];
-	// 	displayedEntries.push(entry);
-	// }
-	// // Display DisplayedEntries
-	// var areaHtml = '';
-	// for (var i=0; i<displayedEntries.length; i++) {
-	// 	var entry = displayedEntries[i];
-	// 	var id = entry._id;
-	// 	if (entry.term.length == undefined) {continue;}
-
-	// 	var fsw = entry.term[0];
-	// 	var mainLabel = "_?_";
-	// 	if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
-
-	// 	var divHtml = '<div id="e'+id+'">';
-	// 	divHtml += '<div class="svg-wrapper"></div>'
-	// 	divHtml += " " + mainLabel;
-	// 	divHtml += '</div>';
-
-	// 	areaHtml += divHtml;
-
-	// 	// Load SVG
-	// 	loadSvgToEntry(id, fsw);
-	// }
-	// $('body').append(areaHtml);
 
 	function loadSvgToEntry(id, fsw) {
 		var url = "https://swserver.wmflabs.org/svg/";
