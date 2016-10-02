@@ -13,8 +13,6 @@
 
 	<!-- Note: Currently only runs on Chrome. (SAFARI has font-handling issues with SignWriting 2010) Future ToDo: Add disclaimer if opened in safari. (Also test on chrome mobile. -->
 
-	<!-- Next: Find a way to surface all possible results. + Ability to hide swLeafs  -->
-
 <style>
 @font-face {
   font-family: "SignWriting 2010";
@@ -24,60 +22,34 @@
   /* If positioning issue reoccurs, stop using local font. (msg expires 2016-10-10) */
 }
 
-html, body {
-	height: 100%;
-	margin: 0; padding: 0;
-}
 body {
 	font-family: Helvetica, "SignWriting 2010", Serif;
 	position: relative;
 }
-#content-wrapper {
-	height: 100%;
-}
-	#upper-wrapper {
-		background-color: lightblue;
-		/* height is set via js according to keyboard-area's height */
-		overflow: auto;
-		text-align: center;
-	}
-	#keyboard-area {
-		border-top: 1px solid black;
-		background-color: #ccc;
-		padding: 5px;
-	}
 
 #inputArea {
-	margin: 5px 0;
+	margin: 20px 0;
 	width: 100%;
 	text-transform: uppercase;
 	font-size: 1.5em;
 	height: 3.3em;
 	word-spacing: 2em;
-	border-radius: 10px;
-}
-#results {
-/*	height: 500px;
-	overflow: auto;
-	border: 1px solid gray;*/
 }
 
 .entry {
 	background-color: lightcyan;
-	margin: 5px;
-	width: 120px;
+	margin: 10px;
+	width: 150px;
 	display: inline-block;
 	word-wrap: break-word;
-	text-align: center;
-	vertical-align: top;
 }
 .svg-wrapper {
 	background: beige;
 	text-align: center;
 }
-	.entry .svg-wrapper svg {
-		height: 70px;
-		max-width: 70px;
+	svg {
+		height: 100px;
+		max-width: 100px;
 	}
 span.main-label {
 	display: block;
@@ -91,46 +63,31 @@ span.main-label {
 	line-height: 0.1em;
 }
 table#handlist {
-	background-color: #ccc;
-	width: 100%;
+	background-color: gray;
+	
 	/* Optional: Make Columns equal widths */
-	/*table-layout: fixed;*/
-}
-/* Thicken Borders */
-table, table td {
-	border: 1px solid #ccc;
-}
-table td {
-	vertical-align: middle;
-	position: relative;
+	/*width: 100%;
+	table-layout: fixed;*/
 }
 
 table#handlist tr#fiveHandCategories td {
-	font-size: 2.0em;
+	font-size: 3.5em;
 	position: relative;
 }
 table#handlist tr#swroot td {
 	font-size: 1.5em;
-	
-	/*padding-top: 8px;*/
-	/*padding-bottom: 2px;*/
-	
+	vertical-align: middle;
+	padding-top: 8px;
+	padding-bottom: 2px;
+	position: relative;
 }
-
-table#handlist tr#kleafsymbols td {
-	/*background-color: transparent;*/
-	background: #eee;
-}
-
 table#handlist tr td {
-	background-color: #eee;
+	background-color: white;
 	vertical-align: top;
 	text-align: center;
-	padding: 0;
-	margin: 0;
 }
 	table#handlist div.unicode-symbols {
-		/*background-color: beige;*/
+		background-color: beige;
 		font-family: 'SignWriting 2010';
 		line-height: 3.0em;
 	}
@@ -140,11 +97,10 @@ table#handlist tr td {
 		border: 1px solid gray;
 		margin-right: 5px;
 		margin-bottom: 5px;
-		border-radius: 3px;
 	}
 
 	table#handlist div.unicode-symbols a span {
-		/*border: 1px dashed orange;*/
+		border: 1px dashed orange;
 		padding: 0 5px;
 		position: relative;
 		top: 10px;
@@ -152,18 +108,11 @@ table#handlist tr td {
 table a {
 	text-decoration: none;
 }
-a.td-emoji {
-	width: 100%;
+#swroot a, #fiveHandCategories a {
+	width: 90%;
 	display: block;
 	margin: auto;
 }
-a.td-emoji:hover {
-	background-color: darkgray;
-}
-a.td-emoji:active {
-	background-color: white;
-}
-
 .unicode-symbols a:link, .unicode-symbols a:visited{
 	color: blue;
 	text-decoration: none;
@@ -176,46 +125,19 @@ a.td-emoji:active {
 	color: red;
 }
 
-span.buttoned, a.buttoned {
-	border: 1px solid gray;
-	border-radius: 8px;
-	background-color: #eee;
-}
-a.buttoned {
-	min-height: 30px;
-	text-decoration: none;
-	display: block;
-	text-align: center;
-}
-a.buttoned:hover {
-	background-color: darkgray;	
-}
-#displaySwLeavesButton {
-
-}
-
 </style>
 </head>
 
 <body>
-	<div id="content-wrapper">
-		<div id="upper-wrapper">
-			<div id="results-text"></div>
-			<div id="results"></div>
-		</div>
-		<div id="keyboard-area">
-			<input id="inputArea" type="text" name="gloss-entry" placeholder="...">
-		</div>
-	</div>
+	
+	<div id="results"></div>
+	<div id="results-text"></div>
+	<!-- <input id="inputArea" type="text" name="gloss-entry" placeholder="..." readonly> -->
+	<input id="inputArea" type="text" name="gloss-entry" placeholder="...">
+	<div id="keyboard-area"></div>
 </body>
 
 <script>
-	var displaySwLeavesButton_html = '<a href="#" id="displaySwLeavesButton" class="buttoned">🤓 ∑</a>'
-	$('#keyboard-area').prepend(displaySwLeavesButton_html);
-	$('#displaySwLeavesButton').click(function() {
-		$('tr#kleafsymbols').toggle();
-		updateUpperHeight();
-	});
 	// Values
 	var swHandshapeRoots = ["S10000", "S10e00", "S11e00", "S14400", "S14c00", "S18600", "S1a400", "S1ba00", "S1cd00", "S1f500"]; // default 1,2,3,4,5,6,7,8,9,10 order.
 	var displayOrder_num = [1,9,2,3,4,5,10,6,7,8];
@@ -242,13 +164,18 @@ a.buttoned:hover {
 		var swroot_unicode = numberToEmoji_emoji(swroot_num);
 		var fiveHand_emoji = swroot_fiveHand_lookup[swroot_num];
 
+		console.log(swroot_num, swroot_unicode, fiveHand_emoji);
+
 		var leafs = swRootSymbolCategories[swroot_fsw];
+		console.log(leafs);
 		for (var j=0; j<leafs.length; j++) {
 			var leaf_fsw = leafs[j];
 			var leaf_unicode = findUnicode8SuttonSymbols(leaf_fsw)[0];
 			swleaf_parents_lookup[leaf_unicode] = [fiveHand_emoji, swroot_unicode];
 		}
 	}
+	console.log(swleaf_parents_lookup);
+
 
 	// Global Function
 	function findUnicode8SuttonSymbols(fsw) {
@@ -290,19 +217,14 @@ a.buttoned:hover {
 				// B.
 				// var usymbols = findUnicode8SuttonSymbols(fsw);
 				// entry['unicode8searchTerms'] = usymbols.join(" ");
-				// C. (adding parentLookup)
+				// C.
 				var usymbols = findUnicode8SuttonSymbols(fsw);
 				for (var j=0; j<usymbols.length; j++) {
 					var s = usymbols[j];
 					var parents = swleaf_parents_lookup[s];
 					if (parents) { usymbols[j] = parents.join("")+s; }
 				}
-				// entry['unicode8searchTerms'] = usymbols.join(" ");
-				// C+. (~optional) (~adding mainLabel)
-				var mainLabel = "";
-				if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
-				entry['unicode8searchTerms'] = usymbols.join(" ") + " " + mainLabel;
-
+				entry['unicode8searchTerms'] = usymbols.join(" ");
 			}
 		}
 	}
@@ -322,8 +244,7 @@ a.buttoned:hover {
 	var tr = '<tr id="fiveHandCategories">';
 	for (var i=0; i<fiveHandCategories_tableFormat.length; i++) {
 		var e = fiveHandCategories_tableFormat[i];
-		var cha = '<span class="buttoned">'+e.emoji+'</span>'
-		var html = '<a href="#" class="kfhemoji td-emoji" id="kfh'+e.index+'">'+cha+'</a>'
+		var html = '<a href="#" class="kfhemoji" id="kfh'+e.index+'">'+e.emoji+'</a>'
 		tr += '<td colspan="'+ e.colspan +'">' + html + '</td>';
 	}
 	table += tr;
@@ -333,13 +254,13 @@ a.buttoned:hover {
 		var swHandshapeRoots_id = displayOrder_num[i]-1;
 		var swroot = swHandshapeRoots[swHandshapeRoots_id];
 		var numberSymbol_html = numberToEmoji_emoji(swHandshapeRoots_id+1);
-		var td = "<td>"+'<a href="#" class="kswroot td-emoji" id="kswr'+displayOrder_num[i]+'">'+numberSymbol_html+"</div></td>";
+		var td = "<td>"+'<a href="#" class="kswroot" id="kswr'+displayOrder_num[i]+'">'+numberSymbol_html+"</div></td>";
 		tr += td;
 	}
 	tr += "</tr>";
 	table += tr;
 	// Populate Sub-Symbols Row
-	tr = '<tr id="kleafsymbols">';
+	tr = "<tr>";
 	for (var i=0; i<displayOrder_num.length; i++) {
 		var swHandshapeRoots_id = displayOrder_num[i]-1;
 		var swroot = swHandshapeRoots[swHandshapeRoots_id];
@@ -361,37 +282,32 @@ a.buttoned:hover {
 	table += "</table>"
 	$('#keyboard-area').append(table);
 
-
-
 	// Add Click-Actions
 	$('.kleafsymbol').on('click', function(e) {
 		e.preventDefault();
 		var symbol_str = $(this).attr('id');
 		var symbol_unicode = findUnicode8SuttonSymbols(symbol_str)[0];
-		appendToSearchField(symbol_unicode);
+
+		var inputVal = $('#inputArea').val();
+		var newVal =  inputVal + " " + symbol_unicode;
+		$('#inputArea').val(newVal);
+
+		refreshResultsFromInput();
 	});
 	$('.kswroot').on('click', function(e) {
 		e.preventDefault();
 		var num = $(this).attr('id'); // e.g. 'kswr10'
 		num = num.substring(4, num.length);
+
 		var emoji = numberToEmoji_emoji(num);
-		appendToSearchField(emoji);
-	});
-	$('.kfhemoji').on('click', function(e) {
-		e.preventDefault();
-		var index = $(this).attr('id'); // e.g. 'kfh0'
-		index = index.substring(3, index.length);
-		var emoji = fiveHandCategories_tableFormat[index].emoji;
-		appendToSearchField(emoji);
-	});
-	function appendToSearchField(value) {
+
 		var inputVal = $('#inputArea').val();
 		var oldVal = ""; if (inputVal.length !=0) {oldVal = inputVal + " ";}; // don't add space if empty.
-		var newVal =  oldVal + value;
+		var newVal =  oldVal + emoji;
 		$('#inputArea').val(newVal);
 
 		refreshResultsFromInput();
-	}
+	});
 
 
 	// Create Sifter
@@ -419,7 +335,7 @@ a.buttoned:hover {
 			conjunction: "and"
 		});
 
-		var displayLimit = 50; // maximum
+		var displayLimit = 10;
 		var displayText = "Displaying "+displayLimit+" of "+results.items.length+" signs. (Search terms need to be separated by spaces \" \".)";
 		$('#results-text').text(displayText);
 
@@ -436,11 +352,15 @@ a.buttoned:hover {
 			var mainLabel = "_?_";
 			if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
 			var symbols = findUnicode8SuttonSymbols(fsw);
+			var usymbolsHtml = '<div class="usymbols">'
+			// usymbolsHtml += symbols.join(' ');
+			// usymbolsHtml += '<span>' + symbols.join(' </span> <span>') + '</span>';
+			usymbolsHtml += '</div>';
 
 			var divHtml = '<div id="e'+id+'" class="entry">';
 			divHtml += '<div class="svg-wrapper"></div>'
 			divHtml += '<span class="main-label">' + mainLabel + '</span>';
-			// divHtml += '<span class="usymbols">' + entry.unicode8searchTerms + '</span>';
+			// divHtml += usymbolsHtml;
 			divHtml += '<span class="usymbols">' + symbols.join('') + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
 			divHtml += '</div>';
 			resultsHtml += divHtml;
@@ -457,54 +377,8 @@ a.buttoned:hover {
 		var url = "https://swserver.wmflabs.org/svg/";
 		url += fsw;
 		$.get(url, function(data) {
-			$('#e'+id+' .svg-wrapper').html(data.firstChild);
+			$('#e'+id+' .svg-wrapper').append(data.firstChild);
 		});
-	}
-
-</script>
-
-<script>
-
-	heightCheck();
-
-	// RESIZE Handling
-	$( window ).resize(function() {
-		heightCheck();
-	});
-	function heightCheck() {
-		// Height Check
-		var mainHeight = $('#content-wrapper').outerHeight(); // same as windowHeight // $(window).height();
-
-		$('tr#kleafsymbols').show();
-		$('displaySwLeavesButton').show();
-
-		var keyboardHeight_current = $('#keyboard-area').outerHeight();
-		$('tr#kleafsymbols').hide();
-		var keyboardHeight_withoutLeafs = $('#keyboard-area').outerHeight();
-		$('tr#kleafsymbols').show();
-		var keyboardHeight_withLeafs = $('#keyboard-area').outerHeight();
-
-		$('tr#kleafsymbols').show();
-		$('displaySwLeavesButton').show();
-
-		if (keyboardHeight_withLeafs > mainHeight*0.75) {
-			$('tr#kleafsymbols').hide();
-			keyboardHeight_current = $('#keyboard-area').outerHeight();
-		}
-
-		// console.log(contentWrapperHeight, windowHeight, keyboardHeight);
-
-		
-		updateUpperHeight();
-	}
-	function updateUpperHeight() {
-		var mainHeight = $('#content-wrapper').outerHeight(); // same as windowHeight // $(window).height();
-
-		var keyboardHeight_current = $('#keyboard-area').outerHeight();
-
-		// Update height // (this seems convoluted/impossible in css, hence the js)
-		var upperHeight = parseInt(mainHeight - keyboardHeight_current);
-		$('#upper-wrapper').height(upperHeight);	
 	}
 
 </script>
