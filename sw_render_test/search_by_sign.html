@@ -22,11 +22,35 @@
 	 -->
 </head>
 
+<style>
+#pager {
+	line-height: 2em;
+	background-color: rgba(0,0,0,0.2);
+}
+#pager div {
+	display: inline-block;
+}
+.button {
+	border: 1px solid gray;
+	border-radius: 10px;
+}
+#pager .button {
+	background-color: #eee;
+	padding: 0 10px;
+	margin: 5px;
+}
+</style>
+
 <body>
 	<div id="content-wrapper">
 		<div id="upper-wrapper">
 			<div id="results-text"></div>
 			<div id="results"></div>
+			<div id="pager">
+				<div class="button prev-button"><a href="#" id="pager-back">← back</a></div>
+				<div class="text">#</div>
+				<div class="button next-button"><a href="#" id="pager-next">next →</a></div>
+			</div>
 		</div>
 		<div id="keyboard-area">
 			<input id="inputArea" type="text" name="gloss-entry" placeholder="...">
@@ -292,9 +316,13 @@
 		results.items.sort(compareResultItem_mainLabel);
 
 		// DISPLAY
-		var displayLimit = 50; // maximum
+		var displayLimit = 18; // maximum
+
+		// Update Texts:
 		var displayText = "Displaying "+displayLimit+" of "+results.items.length+" signs. (Search terms need to be separated by spaces \" \".) (Chrome required to view.)";
 		$('#results-text').text(displayText);
+		var pagerText = "Last Item: #[][] of "+results.items.length;
+		$('#pager .text').text(pagerText);
 
 		// Display Results
 		var resultsHtml = '';
@@ -309,11 +337,15 @@
 			if (!mainLabel) { mainLabel = "…?…"; }
 			var symbols = findUnicode8SuttonSymbols(fsw);
 
+			var descriptionHtml = '<div class="description">'
+			descriptionHtml += '<span class="main-label">' + mainLabel + '</span>';
+			// divHtml += '<span class="usymbols">' + entry.unicode8searchTerms + '</span>';
+			descriptionHtml += '<span class="usymbols">' + symbols.join('') + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
+			descriptionHtml += '</div>'
+
 			var divHtml = '<div id="e'+id+'" class="entry">';
 			divHtml += '<div class="svg-wrapper"></div>'
-			divHtml += '<span class="main-label">' + mainLabel + '</span>';
-			// divHtml += '<span class="usymbols">' + entry.unicode8searchTerms + '</span>';
-			divHtml += '<span class="usymbols">' + symbols.join('') + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
+			divHtml += descriptionHtml;
 			divHtml += '</div>';
 			resultsHtml += divHtml;
 

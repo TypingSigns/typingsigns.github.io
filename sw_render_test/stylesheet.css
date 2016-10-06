@@ -22,6 +22,8 @@ body {
 		/* height is set via js according to keyboard-area's height */
 		overflow: auto;
 		text-align: center;
+		position: relative;
+		display: block;
 	}
 	#keyboard-area {
 		border-top: 1px solid black;
@@ -60,6 +62,13 @@ body {
 	.entry .svg-wrapper svg {
 		height: 70px;
 		max-width: 70px;
+	}
+	.entry .description {
+		max-height: 95px;
+		overflow: scroll;
+
+		/* Optional */
+		height: 95px;
 	}
 span.main-label {
 	display: block;
