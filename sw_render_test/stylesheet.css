@@ -56,8 +56,12 @@ body {
 	vertical-align: top;
 }
 .svg-wrapper {
-	background: beige;
+	background: orange;
 	text-align: center;
+	height: 70px;
+}
+.svg-wrapper.loaded-svg {
+	background: beige;
 }
 	.entry .svg-wrapper svg {
 		height: 70px;

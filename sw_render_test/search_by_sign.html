@@ -58,8 +58,18 @@
 	</div>
 </body>
 
-<!-- GLOBAL FUNCTIONS -->
+<!-- GLOBAL FUNCTIONS & VARIABLES -->
 <script>
+	// variables
+	var _searchResults = [];
+	// Paging Mechanism
+	var _page = 0; // as an index
+	var _items_per_page = 18;
+	function _getMaxPage() {
+		if (!!!_searchResults.items) return 0;
+		return Math.floor(_searchResults.items.length * 1.0 / _items_per_page);
+	}
+
 	// Global Function
 	function findUnicode8SuttonSymbols(fsw) {
 		var symbols = fsw.match(/S.{5}/g);
@@ -249,27 +259,42 @@
 		var newVal =  oldVal + value;
 		$('#inputArea').val(newVal);
 
-		refreshResultsFromInput();
+		refreshSearchResults();
 	}
+</script>
+
+<!-- PAGING BUTTONS -->
+<script>
+	$('#pager-back').click(function() {
+		_page = Math.max(_page-1, 0);
+		refreshPage();
+	});
+	$('#pager-next').click(function() {
+		_page = Math.min(_page+1, _getMaxPage()); // maxPage-1 ~
+		refreshPage();
+	});
 </script>
 
 <!-- DYNAMIC FUNCTIONS -->
 <script>
-	
-	var sifter = new Sifter(signPuddleEntries); // Create Sifter
+
 
 	// ON Load
-	refreshResultsFromInput(); // On Load // ~temp
+	var sifter = new Sifter(signPuddleEntries); // Create Sifter
+	refreshSearchResults(); // On Load // ~temp
 
 	// Input Area
 	$('#inputArea').focus();
 	$('#inputArea').on('input', function(e) {
 		e.preventDefault();
-		refreshResultsFromInput();
+		refreshSearchResults();
 	})
 
 	// Update Results
-	function refreshResultsFromInput() {
+	function refreshSearchResults() {
+		// Reset page to 0
+		_page = 0;
+
 		// Get Value
 		var value = $('#inputArea').val();
 		value = value.trim();
@@ -315,18 +340,34 @@
 		}
 		results.items.sort(compareResultItem_mainLabel);
 
+		_searchResults = results;
+
+		refreshPage();
+	}
+
+	function refreshPage() {
+		var results = _searchResults;
 		// DISPLAY
-		var displayLimit = 18; // maximum
+
+		console.log(results);
 
 		// Update Texts:
-		var displayText = "Displaying "+displayLimit+" of "+results.items.length+" signs. (Search terms need to be separated by spaces \" \".) (Chrome required to view.)";
-		$('#results-text').text(displayText);
-		var pagerText = "Last Item: #[][] of "+results.items.length;
+		// var displayText = "Displaying "+_items_per_page+" of "+results.items.length+" signs. (Search terms need to be separated by spaces \" \".) (Chrome required to view.)";
+		// $('#results-text').text(displayText);
+		$('#results-text').text("");
+		var lastItemNumber = Math.min((_page+1) * _items_per_page, results.items.length);
+		var pagerText = "Last Item: #"+lastItemNumber+"/"+results.items.length;
+		pagerText += ". " + "Page "+(_page+1)+" of "+(_getMaxPage()+1);
 		$('#pager .text').text(pagerText);
+
+		var startingId = _page * _items_per_page;
+		var endingId = Math.min(startingId + _items_per_page, results.items.length);
+		console.log(startingId, endingId);
 
 		// Display Results
 		var resultsHtml = '';
-		for (var i=0; i<results.items.length; i++) {
+		for (var i=startingId; i<endingId; i++) {
+
 			var _id = results.items[i].id;
 			var entry = sifter.items[_id];
 			var id = entry._id;
@@ -351,9 +392,6 @@
 
 			// Load SVG
 			loadSvgToEntry(id, fsw);
-
-			// limit items displayed
-			if (i>displayLimit) { break; }
 		}
 		$('#results').html(resultsHtml);
 	}
@@ -363,6 +401,7 @@
 		url += fsw;
 		$.get(url, function(data) {
 			$('#e'+id+' .svg-wrapper').html(data.firstChild);
+			$('#e'+id+' .svg-wrapper').addClass("loaded-svg");
 		});
 	}
 
