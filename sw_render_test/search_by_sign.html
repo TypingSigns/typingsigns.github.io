@@ -2,13 +2,11 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<script src="jquery.min.js"></script>
-	<script src="sifter.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/sifter.js"></script>
 
-	<script src="2_sgn4.js"></script>
-	<script src="swRootSymbolCategories.js"></script>
-
-	<!-- Note: Currently only runs on Chrome. (SAFARI has font-handling issues with SignWriting 2010) Future ToDo: Add disclaimer if opened in safari. (Also test on chrome mobile. -->
+	<script src="js/2_sgn4.js"></script>
+	<script src="js/swRootSymbolCategories.js"></script>
 
 	<!-- Next: Find a way to surface all possible results.  -->
 
@@ -17,6 +15,7 @@
 		- create a font of single-characters u8 symbols with corrected height.
 		- Use own Server for rendering icons. Or pre-render and store them locally.
 		- Allow images to be dragged out (e.g. PNGs)
+		- Add Chrome-Desktop-Only disclaimer if opened in Safari. (SAFARI has font-handling issues with SignWriting 2010)
 	 -->
 <style>
 @font-face {
@@ -460,7 +459,7 @@ a.buttoned:hover {
 		results.items.sort(compareResultItem_mainLabel);
 
 		// DISPLAY
-		
+
 		var displayLimit = 50; // maximum
 		var displayText = "Displaying "+displayLimit+" of "+results.items.length+" signs. (Search terms need to be separated by spaces \" \".) (Chrome required to view.)";
 		$('#results-text').text(displayText);
