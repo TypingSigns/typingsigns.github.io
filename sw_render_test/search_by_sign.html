@@ -7,14 +7,17 @@
 
 	<script src="2_sgn4.js"></script>
 	<script src="swRootSymbolCategories.js"></script>
-	
-
-	<!-- Future TODO: Use own Server for rendering icons. -->
 
 	<!-- Note: Currently only runs on Chrome. (SAFARI has font-handling issues with SignWriting 2010) Future ToDo: Add disclaimer if opened in safari. (Also test on chrome mobile. -->
 
-	<!-- Next: Find a way to surface all possible results. + Ability to hide swLeafs  -->
+	<!-- Next: Find a way to surface all possible results.  -->
 
+	<!-- Misc Future Potenital ToDos:
+		- remove excessive unicode8 symbols, from the regex search of an FSW-string.
+		- create a font of single-characters u8 symbols with corrected height.
+		- Use own Server for rendering icons. Or pre-render and store them locally.
+		- Allow images to be dragged out (e.g. PNGs)
+	 -->
 <style>
 @font-face {
   font-family: "SignWriting 2010";
@@ -210,7 +213,7 @@ a.buttoned:hover {
 </body>
 
 <script>
-	var displaySwLeavesButton_html = '<a href="#" id="displaySwLeavesButton" class="buttoned">🤓 ∑</a>'
+	var displaySwLeavesButton_html = '<a href="#" id="displaySwLeavesButton" class="buttoned">🤓 Expand / Collapse </a>'
 	$('#keyboard-area').prepend(displaySwLeavesButton_html);
 	$('#displaySwLeavesButton').click(function() {
 		$('tr#kleafsymbols').toggle();
@@ -301,7 +304,8 @@ a.buttoned:hover {
 				// C+. (~optional) (~adding mainLabel)
 				var mainLabel = "";
 				if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
-				entry['unicode8searchTerms'] = usymbols.join(" ") + " " + mainLabel;
+				entry['unicode8searchTerms'] = usymbols.join(" ");
+				entry['mainLabel'] = mainLabel;
 
 			}
 		}
@@ -415,10 +419,48 @@ a.buttoned:hover {
 
 		// Iniiate a sift search
 		var results = sifter.search(value, {
-			fields: ['unicode8searchTerms'],
-			conjunction: "and"
+			fields: ['mainLabel', 'unicode8searchTerms'],
+			// sort: [{field: "mainLabel", direction:"asc"], // sifter.js only uses this sort for items with the same score, and scoring can't be easily disabled atm.
+			conjunction: "and",
 		});
 
+		console.log(results);
+
+		// TEMP: Filtering out items with no main label (this should be done in pre-processed data)
+		for (var i=0; i<results.items.length; i++) {
+			var _id = results.items[i].id;
+			var entry = sifter.items[_id];
+
+			var mainLabel = entry.mainLabel;
+			if (!mainLabel) {
+				results.items.splice(i, 1); // remove 1 item
+				i--; // decrement i
+			}
+		}
+
+		// TEMP-DEBUG: sort results by main label - temporarily useful for navigating searches based on SignSymbols - so they have a logical ordering. SignSymbols should actually be able to be filtered by mode symbols - when we introduce these, we can remove this function.
+		function sort_withNumbersAfterLetters(a,b) {
+			// can just ad zzz in front
+			var a1 = a.charAt(0);
+			var b1 = b.charAt(0);
+			if ( $.isNumeric(a1) ) { a = "Ω" + a; }
+			if ( $.isNumeric(b1) ) { b = "Ω" + b; }
+			return a.localeCompare(b);
+		}
+		function compareResultItem_mainLabel(a, b) {
+			var aid = a.id;
+			var bid = b.id;
+			var aEntry = sifter.items[aid];
+			var bEntry = sifter.items[bid];
+			var aLabel = aEntry.mainLabel;
+			var bLabel = bEntry.mainLabel;
+			// return aLabel.localeCompare(bLabel);
+			return sort_withNumbersAfterLetters(aLabel, bLabel);
+		}
+		results.items.sort(compareResultItem_mainLabel);
+
+		// DISPLAY
+		
 		var displayLimit = 50; // maximum
 		var displayText = "Displaying "+displayLimit+" of "+results.items.length+" signs. (Search terms need to be separated by spaces \" \".) (Chrome required to view.)";
 		$('#results-text').text(displayText);
@@ -433,8 +475,13 @@ a.buttoned:hover {
 			if (entry.term.length == undefined) {continue;}
 
 			var fsw = entry.term[0];
-			var mainLabel = "_?_";
-			if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
+
+			var mainLabel = entry.mainLabel;
+			if (!mainLabel) { mainLabel = "…?…"; }
+
+			// var mainLabel = "_?_";
+			// if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
+
 			var symbols = findUnicode8SuttonSymbols(fsw);
 
 			var divHtml = '<div id="e'+id+'" class="entry">';
