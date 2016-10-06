@@ -1,0 +1,174 @@
+@font-face {
+  font-family: "SignWriting 2010";
+  src: 
+  	local('SignWriting 2010'),
+  	url('SignWriting 2010.ttf') format('truetype');
+  /* If positioning issue reoccurs, stop using local font. (msg expires 2016-10-10) */
+}
+
+html, body {
+	height: 100%;
+	margin: 0; padding: 0;
+}
+body {
+	font-family: Helvetica, "SignWriting 2010", Serif;
+	position: relative;
+}
+#content-wrapper {
+	height: 100%;
+}
+	#upper-wrapper {
+		background-color: lightblue;
+		/* height is set via js according to keyboard-area's height */
+		overflow: auto;
+		text-align: center;
+	}
+	#keyboard-area {
+		border-top: 1px solid black;
+		background-color: #ccc;
+		padding: 5px;
+	}
+
+#inputArea {
+	margin: 5px 0;
+	width: 100%;
+	text-transform: uppercase;
+	font-size: 1.5em;
+	height: 3.3em;
+	word-spacing: 2em;
+	border-radius: 10px;
+}
+#results {
+/*	height: 500px;
+	overflow: auto;
+	border: 1px solid gray;*/
+}
+
+.entry {
+	background-color: lightcyan;
+	margin: 5px;
+	width: 120px;
+	display: inline-block;
+	word-wrap: break-word;
+	text-align: center;
+	vertical-align: top;
+}
+.svg-wrapper {
+	background: beige;
+	text-align: center;
+}
+	.entry .svg-wrapper svg {
+		height: 70px;
+		max-width: 70px;
+	}
+span.main-label {
+	display: block;
+	margin: 10px 0;
+}
+.usymbols, .usymbols span {
+	letter-spacing: 0.8em;
+	border-top: 2px dashed #ccc;
+	font-family: 'SignWriting 2010';
+	font-weight: normal;
+	line-height: 0.1em;
+}
+table#handlist {
+	background-color: #ccc;
+	width: 100%;
+	/* Optional: Make Columns equal widths */
+	/*table-layout: fixed;*/
+}
+/* Thicken Borders */
+table, table td {
+	border: 1px solid #ccc;
+}
+table td {
+	vertical-align: middle;
+	position: relative;
+}
+
+table#handlist tr#fiveHandCategories td {
+	font-size: 2.0em;
+	position: relative;
+}
+table#handlist tr#swroot td {
+	font-size: 1.5em;
+	
+	/*padding-top: 8px;*/
+	/*padding-bottom: 2px;*/
+	
+}
+
+table#handlist tr#kleafsymbols td {
+	/*background-color: transparent;*/
+	background: #eee;
+}
+
+table#handlist tr td {
+	background-color: #eee;
+	vertical-align: top;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+}
+	table#handlist div.unicode-symbols {
+		/*background-color: beige;*/
+		font-family: 'SignWriting 2010';
+		line-height: 3.0em;
+	}
+	/* Fix for SignWriting 2010 Offset */
+	table#handlist div.unicode-symbols a {
+		position: relative;
+		border: 1px solid gray;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		border-radius: 3px;
+	}
+
+	table#handlist div.unicode-symbols a span {
+		/*border: 1px dashed orange;*/
+		padding: 0 5px;
+		position: relative;
+		top: 10px;
+	}
+table a {
+	text-decoration: none;
+}
+a.td-emoji {
+	width: 100%;
+	display: block;
+	margin: auto;
+}
+a.td-emoji:hover {
+	background-color: darkgray;
+}
+a.td-emoji:active {
+	background-color: white;
+}
+
+.unicode-symbols a:link, .unicode-symbols a:visited{
+	color: blue;
+	text-decoration: none;
+}
+.unicode-symbols a:hover {
+	color: white;
+	background-color: darkgray;
+}
+.unicode-symbols a:active {
+	color: red;
+}
+
+span.buttoned, a.buttoned {
+	border: 1px solid gray;
+	border-radius: 8px;
+	background-color: #eee;
+}
+a.buttoned {
+	min-height: 30px;
+	text-decoration: none;
+	display: block;
+	text-align: center;
+}
+a.buttoned:hover {
+	background-color: darkgray;	
+}
