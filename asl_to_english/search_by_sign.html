@@ -427,7 +427,7 @@
 			}
 		}
 
-		// TEMP-DEBUG: sort results by main label - temporarily useful for navigating searches based on SignSymbols - so they have a logical ordering. SignSymbols should actually be able to be filtered by mode symbols - when we introduce these, we can remove this function.
+		// TEMP: Sort Alphabetically by ABC // TEMP-DEBUG: sort results by main label - temporarily useful for navigating searches based on SignSymbols - so they have a logical ordering. SignSymbols should actually be able to be filtered by mode symbols - when we introduce these, we can remove this function.
 		function sort_withNumbersAfterLetters(a,b) {
 			// can just ad zzz in front
 			var a1 = a.charAt(0);
@@ -446,7 +446,7 @@
 			// return aLabel.localeCompare(bLabel);
 			return sort_withNumbersAfterLetters(aLabel, bLabel);
 		}
-		results.items.sort(compareResultItem_mainLabel);
+		// results.items.sort(compareResultItem_mainLabel);
 
 		_searchResults = results;
 
