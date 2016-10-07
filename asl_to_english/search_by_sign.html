@@ -334,9 +334,7 @@
 		if (value == "") {value = " 𝧫"; } // ~temp
 
 		// DIVIDE UP STRING BY CODEPOINTS - AND EXTRACT SEARCH TERMS
-
 		var codePoints = value.toCodePoints();
-		console.log(codePoints);
 		// ^ CodePoints seem to work well - just gotta figure out how to convert them back to unicode. // Especially the complex ones
 
 		var searchWords = [];
@@ -382,10 +380,21 @@
 			var unicodeSequence = String.fromCodePoint(codePoint);
 			searchWords.push(unicodeSequence);
 		}
-		// console.log(searchWords);
-		// value = searchWords.join(" ");
-		// console.log(value);
-
+		
+		// Sequencify Strings - so we're sensitive to replicated Base/ParentSymbols .
+		searchWords.sort();
+		var prvString = null;
+		for (var i=0; i<searchWords.length; i++) {
+			var string = searchWords[i];
+			if (string == prvString) {
+				// delete current item
+				searchWords.splice(i,1);
+				i--;
+				// set the previous word to add another version of itself
+				searchWords[i] = searchWords[i] + string;
+			}
+			prvString = string; // set to the singleWord, not the word-sequence
+		}
 
 		return searchWords;
 	}
