@@ -258,7 +258,8 @@
 	});
 	function appendToSearchField(value) {
 		var inputVal = $('#inputArea').val();
-		var oldVal = ""; if (inputVal.length !=0) {oldVal = inputVal + " ";}; // don't add space if empty.
+		// var oldVal = ""; if (inputVal.length !=0) {oldVal = inputVal + " ";}; // don't add space if empty.
+		var oldVal = inputVal;
 		var newVal =  oldVal + value;
 		$('#inputArea').val(newVal);
 
@@ -280,7 +281,24 @@
 
 <!-- DYNAMIC FUNCTIONS -->
 <script>
-
+	// Via: http://stackoverflow.com/questions/21397316/split-javascript-string-into-array-of-codepoints-taking-into-account-surrogat
+	String.prototype.toCodePoints = function() {
+	    chars = [];
+	    for (var i= 0; i<this.length; i++) {
+	        var c1= this.charCodeAt(i);
+	        if (c1>=0xD800 && c1<0xDC00 && i+1<this.length) {
+	            var c2= this.charCodeAt(i+1);
+	            if (c2>=0xDC00 && c2<0xE000) {
+	                chars.push(0x10000 + ((c1-0xD800)<<10) + (c2-0xDC00));
+	                i++;
+	                continue;
+	            }
+	        }
+	        chars.push(c1);
+	    }
+	    return chars;
+	}
+	//
 
 	// ON Load
 	var sifter = new Sifter(signPuddleEntries); // Create Sifter
@@ -293,15 +311,76 @@
 		refreshSearchResults();
 	})
 
+	// Search Term
+	function getSearchTerm() {
+		// Get Value
+		var value = $('#inputArea').val();
+		value = value.trim();
+		if (value == "") {value = " 𝧫"; } // ~temp
+
+		// DIVIDE UP STRING BY CODEPOINTS - AND EXTRACT SEARCH TERMS
+
+		var codePoints = value.toCodePoints();
+		console.log(codePoints);
+		// ^ CodePoints seem to work well - just gotta figure out how to convert them back to unicode. // Especially the complex ones
+
+		var searchWords = [];
+		var wordBuffer = [];
+		for (var i=0; i<codePoints.length; i++) {
+			var codePoint = codePoints[i];
+			
+			// Handle AZ/az/- strings // whatevs, just covering everything for now
+			// fyi - 0-9 numbers are: (codePoint >= 48 && codePoint <= 57)
+			if (codePoint < 254) {
+				wordBuffer.push(codePoint);
+				if (i == codePoints.length-1) { // Handle if this was the last character
+					var bufferedWord = String.fromCodePoint.apply(this, wordBuffer);
+					searchWords.push(bufferedWord);
+				}
+				continue;
+			}
+			// Handle Emoji Number (end-numpad-codepoint)
+			if (codePoint == 8419) { // this is the 'combining-numpad'-character
+				wordBuffer.push(codePoint);
+
+				// Assuming it only requires the previous character. 
+				if (wordBuffer.length > 2) {
+					var wordBufferHead = wordBuffer.splice(0, wordBuffer.length-2); // splice simultaneously removes items, and returns removed items
+					var bufferedWordHead = String.fromCodePoint.apply(this, wordBufferHead);
+					searchWords.push(bufferedWordHead);
+				}
+
+				var bufferedWord = String.fromCodePoint.apply(this, wordBuffer); // <- This is how we feed multiple parametres into a function
+				searchWords.push(bufferedWord);
+				wordBuffer = [];
+				continue;
+			}
+
+			// Finish off current WordBuffer if any
+			if (wordBuffer.length != 0) {
+				var bufferedWord = String.fromCodePoint.apply(this, wordBuffer);
+				searchWords.push(bufferedWord);
+				wordBuffer = [];
+			}
+
+			// Add Current unicode Sequence
+			var unicodeSequence = String.fromCodePoint(codePoint);
+			searchWords.push(unicodeSequence);
+		}
+		console.log(searchWords);
+		value = searchWords.join(" ");
+		console.log(value);
+
+
+		return value;
+	}
+
 	// Update Results
 	function refreshSearchResults() {
 		// Reset page to 0
 		_page = 0;
 
-		// Get Value
-		var value = $('#inputArea').val();
-		value = value.trim();
-		if (value == "") {value = " 𝧫"; } // ~temp
+		value = getSearchTerm();
 
 		// Iniiate a sift search
 		var results = sifter.search(value, {
@@ -352,8 +431,6 @@
 		var results = _searchResults;
 		// DISPLAY
 
-		console.log(results);
-
 		// Update Texts:
 		// var displayText = "Displaying "+_items_per_page+" of "+results.items.length+" signs. (Search terms need to be separated by spaces \" \".) (Chrome required to view.)";
 		// $('#results-text').text(displayText);
@@ -365,7 +442,6 @@
 
 		var startingId = _page * _items_per_page;
 		var endingId = Math.min(startingId + _items_per_page, results.items.length);
-		console.log(startingId, endingId);
 
 		// Display Results
 		var resultsHtml = '';
