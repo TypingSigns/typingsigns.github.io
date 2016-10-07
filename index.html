@@ -30,21 +30,118 @@
 </head>
 
 <style>
+	html, body {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		background: gray;
+	}
 	body {
 		text-align: center;
-		width: 100%;
-		margin: 0;
+		position: relative;
+		font-family: Avenir, Helvetica, sans-serif;
 	}
+	h2 {
+		font-weight: normal;
+	}
+	
+
+	#body-header {
+		background: gray;
+		color: white;
+		text-align: left;
+		z-index: 10;
+		position: fixed;
+		width: 100%;
+	}
+		#body-header a {
+			color: white;
+			text-decoration: none;
+			padding:0 20px;
+			display: inline-block;
+			padding: 5px;
+			font-size: 0.8em;
+
+		}
+		#body-header a:hover {
+			color: lightgray;
+		}
+
 	body .content-block {
-		border-bottom: 1px solid;
-		margin-top: 30px;
+		background-color: #f5f5f5;
+		border-bottom: 2px solid white;
 		padding: 0 20px;
+		padding-top: 30px;
 		padding-bottom: 40px;
 	}
 
-	#ts-wrapper{}
+	#ts-wrapper{
+		margin-top: 0;
+		padding: 0;
+		/*color: white;*/
+
+		background: url(sunset-beach-1082204_1920.jpg) no-repeat center center;
+		background: url(sunset-beach-light1.jpg) no-repeat center center;
+		background: url(light-sunset-man-beach-light1.jpg) no-repeat center center;
+
+		background: url(dawn-nature-sunset-people-light1.jpg) no-repeat center center;
+		background: url(dawn-nature-sunset-people-light1-blur1.jpg) no-repeat center center;
+		background: url(dawn-nature-sunset-people-light1-blur2.jpg) no-repeat center center;
+		/*background: url(dawn-nature-sunset-people-dark1.jpg) no-repeat center center;*/
+		/*background: url(dawn-nature-sunset-people.jpg) no-repeat center center;*/
+
+		/*background-attachment: fixed;*/
+
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+		position: relative;
+
+		background-color: #eee;
+		min-height: 75%;
+	}
+		.centre-wrapper {
+			/*padding-top: 50px;*/
+			/*padding-bottom: 30px;*/
+			position: relative;
+
+			position: absolute;
+			height: 100%;
+			width: 100%;
+			/*background-color: orange;*/
+			/*opacity: 0.5;*/
+		}
+
+		.columns-2 {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 100%;
+		}
+			.columns-2 > div {
+				display: inline-block;
+				/*vertical-align: top;*/
+				padding: 0 20px;
+			}
+			.columns-2 > div:first-child {
+				max-width: 400px;
+				text-align: left;
+				vertical-align: middle;
+			}
+
+		#ts-wrapper h1 {
+			margin-top: 0;
+		}
+		#ts-wrapper .multilingual-container .emoji {
+			display: none;
+		}
+		.faq {}
 		.faq span {
 			display: block;
+		}
+		.faq span.question {
+			font-weight: bold;
 		}
 		.faq span.contact {
 			padding-top: 15px;
@@ -55,22 +152,30 @@
 			border-radius: 5px;
 			height: 39px !important;
 			position: relative;
+			margin-top: 30px;
+			-webkit-transition: 0.5s;
+			transition: 0.5s;
+			top: 0.0px;
 		}
 		a.apple-button:hover {
 			-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 2px;
 			-moz-box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 2px;
 			box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 2px;
-			top:-2px;
+			/*top:-2.0px;*/
+			transform: translateY(-2px);
 		}
 		a.apple-button:active {
 			-webkit-box-shadow: inherit;
 			-moz-box-shadow: inherit;
 			box-shadow: inherit;
-			top:2px;
+			-webkit-transition: 0.2s;
+			transition: 0.2s;
+			transform: translateY(2px);
 		}
 		#ts-wrapper img {
-			border: 1px solid gray;
-			max-height: 400px;
+			border: 1px solid white;
+			max-height: 500px;
+			border-radius: 5px;
 		}
 
 	#other-projects-wrapper {}
@@ -79,22 +184,30 @@
 			display: inline-block;
 			padding: 20px;
 			border-radius: 10px;
-			border: 1px solid lightgray;
+			border: 1px solid white;
 			margin: 20px;
 			vertical-align: top;
+			/*background: white;*/
 		}
 		.project a {
 			border: 1px solid lightgray;
 			border-radius: 5px;
-			background-color: #eee;
+			background-color: white;
 			display: block;
 			padding: 10px;
+		}
+		.project a:hover {
+			background-color: beige;
 		}
 		.project span.description {
 			font-size: 0.8em;
 			margin-top: 20px;
 			display: block;
 		}
+
+	#feedback-wrapper {
+		background-color: gainsboro;
+	}
 
 	/* General */
 	.screen-reader-transparent-text {
@@ -108,42 +221,54 @@
 	.multilingual-container .emoji {
 		font-size: 2em;
 	}
+	.light-gradient-background {
+		background: #f5f5f5; /* For browsers that do not support gradients */
+		background: -webkit-linear-gradient(white, #f5f5f5); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(white, #f5f5f5); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(white, #f5f5f5); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(white, #f5f5f5); /* Standard syntax */
+	}
 
 </style>
 
 <body>
 
-<div id="body-header"><!-- Future Universal Header --></div>
+<div id="body-header">
+	<a href="#">🏠 Typing Signs</a>
+	<a href="asl_to_english/search_by_sign.html">👋 ASL to English (β)</a>
+	<a href="asl_lookup/ASL-lookup.html">🔤 English to ASL</a>
+</div>
 
 <div id="ts-wrapper" class="content-block">
-	<h1 class="multilingual-container"><span class="emoji">⌨👋</span><span class="english">Typing Signs</span></h1>
-	<p>Type in Sign Language</p>
+	<div class="centre-wrapper">
+		<div class="columns-2">
+			<div>
+				<h1 class="multilingual-container"><span class="emoji">⌨👋</span><span class="english">Typing Signs</span></h1>
+				<p>Express yourself with animated gestures and fingerspelling in your messages.</p>
 
-	<p>Typing Signs lets you express your messages with hands! From fingerspelling to animated gestures that can be pasted anywhere in your Messages. <a href="https://itunes.apple.com/us/app/typing-signs/id1153271467?mt=8">Try it out!</a></p>
+				<p><a class="apple-button" href="https://itunes.apple.com/us/app/typing-signs/id1153271467?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/images/badges/en-us/badge_appstore-lrg.svg) no-repeat;width:165px;height:40px;"><span class="screen-reader-transparent-text">Download Typing Signs</span></a></p>
 
-	<img src="ts-image.jpg" alt="Image of 'Typing Signs' on iPhone, with stickers of common signs, and fingerspelled messages in the official Gallaudet font.">
-	
-	<p><a class="apple-button" href="https://itunes.apple.com/us/app/typing-signs/id1153271467?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/images/badges/en-us/badge_appstore-lrg.svg) no-repeat;width:165px;height:40px;"><span class="screen-reader-transparent-text">Download Typing Signs</span></a></p>
-
-
-	<div class="faq">
-		<span class="question">FAQ: Installed but can't find the app?</span>
-		<span class="answer">TypingSigns is an iMessage App. First check that your phone is running iOS 10. Then TypingSigns can be found in <a target="_blank" href="http://www.imore.com/how-to-use-stickers-and-apps-imessage">'s official Messages App, in the App drawer🔗</a>. </span>
-		<span class="contact">Having trouble? <a href="mailto:typingsigns@gmail.com?Subject=Help!">Let us know! 📧</a></span>
+			</div>
+			<div>
+				<a href="https://itunes.apple.com/us/app/typing-signs/id1153271467?mt=8"><img src="ts-image.png" alt="Image of 'Typing Signs' on iPhone, with stickers of common signs, and fingerspelled messages in the Gallaudet font."></a>
+			</div>
+		</div>		
 	</div>
+
+	
 </div>
-<div id="other-projects-wrapper" class="content-block">
+<div id="other-projects-wrapper" class="content-block light-gradient-background">
 	<h2>Other Projects</h2>
 	<div class="project">
 		<a href="asl_to_english/search_by_sign.html" class="multilingual-container"><span class="emoji">👋→🔤</span><span class="english">ASL to English Dictionary (β)</span></a>
+		<span class="description">Look up the English meaning of ASL Signs. (Experimental. Requires Chrome.)</span>
 		<img src="signing.png" alt="SignWriting symbol for the gloss: SIGNING">
-		<span class="description">Look up the English meaning of ASL Signs. (Experimental. Requires Chrome on Desktop)</span>
 	</div>
 
 	<div class="project">
 		<a href="asl_lookup/ASL-lookup.html" class="multilingual-container"><span class="emoji">🔤→👋</span><span class="english">English to ASL Dictionary</span></a>
-		<img src="english.png" alt="SignWriting symbol for the gloss: ENGLISH">
 		<span class="description">Look up American Sign Language by their English Gloss - across multiple dictionaries.</span>
+		<img src="english.png" alt="SignWriting symbol for the gloss: ENGLISH">
 
 	</div>
 </div>
@@ -152,8 +277,17 @@
 	We would ♥︎ hearing from you.
 </div>
 <div id="about-wrapper" class="content-block">
-	<p>About</p>
+	<h2>About</h2>
 	<p>The Goal of Typing Signs is to make ASL and other Sign Languages more accessible and common. Starting with the ability to type in sign.</p>
+
+	<p> --- </p>
+
+	<h2>Help</h2>
+	<div class="faq">
+		<span class="question">Q: Installed but can't find the TypingSigns app?</span>
+		<span class="answer">Q: TypingSigns is an iMessage App. First check that your phone is running iOS 10. Then TypingSigns can be found in <a target="_blank" href="http://www.imore.com/how-to-use-stickers-and-apps-imessage">'s official Messages App, in the App drawer🔗</a>. </span>
+		<span class="contact">Having trouble? <a href="mailto:typingsigns@gmail.com?Subject=Help!">Let us know! 📧</a></span>
+	</div>
 </div>
 
 </body>
