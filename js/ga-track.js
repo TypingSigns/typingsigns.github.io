@@ -5,3 +5,24 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 
 ga('create', 'UA-85384832-1', 'auto');
 ga('send', 'pageview');
+
+setUserId();
+
+// Setting User ID
+function setUserId() {
+	// will just store a random number in local store for now
+
+	if (typeof(Storage) !== "undefined") {
+		if (!localStorage.randomNumber) {
+			localStorage.randomNumber = Math.floor(Math.random() * 1000000000);
+		}
+
+		var randomLocalNumber = localStorage.randomNumber;
+		ga('set', 'userId', randomLocalNumber); // Set the user ID using signed-in user_id.
+
+		console.log("UID: "+randomLocalNumber);
+	} else {
+		console.log("Sorry! No Web Storage support..");
+	}
+}
+
