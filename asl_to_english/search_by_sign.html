@@ -12,8 +12,6 @@
 
 	<link rel="stylesheet" href="stylesheet.css" type="text/css">
 
-	<!-- Next: Find a way to surface all possible results.  -->
-
 	<!-- Misc Future Potenital ToDos (no order):
 		- Remove abc-alphabetical ordering of search terms. (once more keyboard-keys are in)
 		- remove excessive unicode8 symbols, from the regex search of an FSW-string.
@@ -22,6 +20,7 @@
 		- Allow images to be dragged out (e.g. PNGs)
 		- Add Chrome-Desktop-Only disclaimer if opened in Safari. (SAFARI has font-handling issues with SignWriting 2010)
 		- Add note that 'Search Terms need to be separated by " " spaces - currently', or make it so spaces aren't needed
+		- allow entry-fsw-base-symbols to be clicked, and added to the input field, for additional filtering.
 	 -->
 </head>
 
@@ -75,6 +74,22 @@
 
 	// Global Function
 	function findUnicode8SuttonSymbols(fsw) {
+
+		// Remove the Marker-Sequence from FSW, e.g. "AS20350S20358S2eb00S2eb4cS2fb04" from "AS20350S20358S2eb00S2eb4cS2fb04M522x529S20350506x472S20358477x472S2fb04491x523S2eb00507x492S2eb4c477x492"
+
+		// We assume 'A' is the first character. (^A)
+		// We assume all FSW-BaseSymbols are only 5 digits long.
+		// We currently assume no Punctuation-BaseSymbols are used (denoted with P instead of S)
+
+		var markerSequences = fsw.match( /^A(S.{5})+/g );
+		if (markerSequences) {
+			var markerSequence = markerSequences[0];
+			// remove markerSequence from fsw
+			fsw = fsw.substring(markerSequence.length, fsw.length);
+		}
+
+		// MATCH S-BASE-SYMBOLS
+
 		var symbols = fsw.match(/S.{5}/g);
 
 		var u8symbols = [];
@@ -92,6 +107,7 @@
 
 			u8symbols.push(u8);
 		}
+
 		return u8symbols;
 	}
 
@@ -470,17 +486,19 @@
 			resultsHtml += divHtml;
 
 			// Load SVG
-			loadSvgToEntry(id, fsw);
+			loadSvgToEntry(id, fsw, entry.unicode8searchTerms);
 		}
 		$('#results').html(resultsHtml);
 	}
 
-	function loadSvgToEntry(id, fsw) {
+	function loadSvgToEntry(id, fsw, unicode8searchTerms) {
 		var url = "https://swserver.wmflabs.org/svg/";
 		url += fsw;
 		$.get(url, function(data) {
+			$('#e'+id).attr("search-terms", unicode8searchTerms);
 			$('#e'+id+' .svg-wrapper').html(data.firstChild);
 			$('#e'+id+' .svg-wrapper').addClass("loaded-svg");
+			$('#e'+id+' .svg-wrapper').attr("fsw", fsw);
 		});
 	}
 
