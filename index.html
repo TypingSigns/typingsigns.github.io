@@ -68,10 +68,14 @@
 			box-shadow: inherit;
 			top:2px;
 		}
+		#ts-wrapper img {
+			border: 1px solid gray;
+			max-height: 400px;
+		}
 
 	#other-projects-wrapper {}
 		.project {
-			width: 250px;
+			max-width: 250px;
 			display: inline-block;
 			padding: 20px;
 			border-radius: 10px;
@@ -97,10 +101,7 @@
 		opacity: 0.5;
 		font-size: 0em;
 	}
-	img {
-		border: 1px solid gray;
-		max-height: 400px;
-	}
+	
 	.multilingual-container span {
 		display: block;
 	}
@@ -135,13 +136,15 @@
 	<h2>Other Projects</h2>
 	<div class="project">
 		<a href="asl_to_english/search_by_sign.html" class="multilingual-container"><span class="emoji">👋→🔤</span><span class="english">ASL to English Dictionary (β)</span></a>
-		<!-- Insert image of this in Sign Writing -->
+		<img src="signing.png" alt="SignWriting symbol for the gloss: SIGNING">
 		<span class="description">Look up the English meaning of ASL Signs. (Experimental. Requires Chrome on Desktop)</span>
 	</div>
 
 	<div class="project">
 		<a href="asl_lookup/ASL-lookup.html" class="multilingual-container"><span class="emoji">🔤→👋</span><span class="english">English to ASL Dictionary</span></a>
+		<img src="english.png" alt="SignWriting symbol for the gloss: ENGLISH">
 		<span class="description">Look up American Sign Language by their English Gloss - across multiple dictionaries.</span>
+
 	</div>
 </div>
 <div id="feedback-wrapper" class="content-block">
