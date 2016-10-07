@@ -46,6 +46,7 @@
 <body>
 	<div id="content-wrapper">
 		<div id="upper-wrapper">
+			<div id="search-header"></div>
 			<div id="results-text"></div>
 			<div id="results"></div>
 			<div id="pager">
@@ -162,26 +163,22 @@
 		if (entry.term != undefined) {
 			var fsw = entry.term[0];
 			if (typeof fsw !== 'object') { // weirdly enough, some entry.term don't contain an FSW, but do contain a 'mainLabel'
-				// A.
-				// entry['unicode8searchTerms'] = fsw;
-				// B.
-				// var usymbols = findUnicode8SuttonSymbols(fsw);
-				// entry['unicode8searchTerms'] = usymbols.join(" ");
 				// C. (adding parentLookup)
 				var usymbols = findUnicode8SuttonSymbols(fsw);
-				var parentSymbols = "";
+				var parentSymbols = [];
 				for (var j=0; j<usymbols.length; j++) {
 					var s = usymbols[j];
 					var parents = swleaf_parents_lookup[s];
-					// if (parents) { usymbols[j] = parents.join("")+s; }
-					if (parents) { parentSymbols += parents.join(""); }
+					if (parents) {
+						parentSymbols = [].concat(parentSymbols, parents);
+					}
 				}
-				// entry['unicode8searchTerms'] = usymbols.join(" ");
+				parentSymbols.sort();
+				usymbols.sort();
 				// C+. (~optional) (~adding mainLabel)
 				var mainLabel = "";
 				if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
-				// entry['unicode8searchTerms'] = usymbols.join(" ");
-				entry['unicode8searchTerms'] = usymbols.join(" ") + parentSymbols;
+				entry['unicode8searchTerms'] = usymbols.join("") + parentSymbols.join("");
 				entry['mainLabel'] = mainLabel;
 			}
 		}
@@ -330,7 +327,7 @@
 	})
 
 	// Search Term
-	function getSearchTerm() {
+	function getSearchTerms() {
 		// Get Value
 		var value = $('#inputArea').val();
 		value = value.trim();
@@ -385,12 +382,12 @@
 			var unicodeSequence = String.fromCodePoint(codePoint);
 			searchWords.push(unicodeSequence);
 		}
-		console.log(searchWords);
-		value = searchWords.join(" ");
-		console.log(value);
+		// console.log(searchWords);
+		// value = searchWords.join(" ");
+		// console.log(value);
 
 
-		return value;
+		return searchWords;
 	}
 
 	// Update Results
@@ -398,7 +395,9 @@
 		// Reset page to 0
 		_page = 0;
 
-		value = getSearchTerm();
+		$('#search-header').text("Searching for: " + getSearchTerms());
+		var value = getSearchTerms().join(" ");
+		
 
 		// Iniiate a sift search
 		var results = sifter.search(value, {
