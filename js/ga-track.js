@@ -10,7 +10,7 @@ setUserId();
 
 // Setting User ID
 function setUserId() {
-	// will just store a random number in local store for now
+	// will just store a random number in local store for now // Not the most reliable thing, especially in companies/schools/libraries
 
 	if (typeof(Storage) !== "undefined") {
 		if (!localStorage.randomNumber) {
