@@ -169,18 +169,20 @@
 				// entry['unicode8searchTerms'] = usymbols.join(" ");
 				// C. (adding parentLookup)
 				var usymbols = findUnicode8SuttonSymbols(fsw);
+				var parentSymbols = "";
 				for (var j=0; j<usymbols.length; j++) {
 					var s = usymbols[j];
 					var parents = swleaf_parents_lookup[s];
-					if (parents) { usymbols[j] = parents.join("")+s; }
+					// if (parents) { usymbols[j] = parents.join("")+s; }
+					if (parents) { parentSymbols += parents.join(""); }
 				}
 				// entry['unicode8searchTerms'] = usymbols.join(" ");
 				// C+. (~optional) (~adding mainLabel)
 				var mainLabel = "";
 				if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
-				entry['unicode8searchTerms'] = usymbols.join(" ");
+				// entry['unicode8searchTerms'] = usymbols.join(" ");
+				entry['unicode8searchTerms'] = usymbols.join(" ") + parentSymbols;
 				entry['mainLabel'] = mainLabel;
-
 			}
 		}
 	}
@@ -472,6 +474,7 @@
 			var mainLabel = entry.mainLabel;
 			if (!mainLabel) { mainLabel = "…?…"; }
 			var symbols = findUnicode8SuttonSymbols(fsw);
+			symbols.sort(); // display symbols alphabetically
 
 			var descriptionHtml = '<div class="description">'
 			descriptionHtml += '<span class="main-label">' + mainLabel + '</span>';
