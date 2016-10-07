@@ -24,6 +24,9 @@
 	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
 	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
 
+	<!-- iOS Viewport -->
+	<!-- <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"> -->
+
 </head>
 
 <style>
@@ -80,8 +83,10 @@
 			display: block;
 			padding: 10px;
 		}
-		.project span {
+		.project span.description {
 			font-size: 0.8em;
+			margin-top: 20px;
+			display: block;
 		}
 
 	/* General */
@@ -95,6 +100,9 @@
 	}
 	.multilingual-container span {
 		display: block;
+	}
+	.multilingual-container .emoji {
+		font-size: 2em;
 	}
 
 </style>
@@ -125,12 +133,12 @@
 	<div class="project">
 		<a href="asl_to_english/search_by_sign.html" class="multilingual-container"><span class="emoji">👋→🔤</span><span class="english">ASL to English Dictionary (β)</span></a>
 		<!-- Insert image of this in Sign Writing -->
-		<span>Look up the English meaning of ASL Signs. (Experimental. Requires Chrome on Desktop)</span>
+		<span class="description">Look up the English meaning of ASL Signs. (Experimental. Requires Chrome on Desktop)</span>
 	</div>
 
 	<div class="project">
 		<a href="asl_lookup/ASL-lookup.html" class="multilingual-container"><span class="emoji">🔤→👋</span><span class="english">English to ASL Dictionary</span></a>
-		<span>Look up American Sign Language by their English Gloss - across multiple dictionaries.</span>
+		<span class="description">Look up American Sign Language by their English Gloss - across multiple dictionaries.</span>
 	</div>
 </div>
 <div id="feedback-wrapper" class="content-block">
