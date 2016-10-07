@@ -61,7 +61,7 @@
 			display: inline-block;
 			padding: 5px;
 			font-size: 0.8em;
-
+			border: none;
 		}
 		#body-header a:hover {
 			color: lightgray;
@@ -190,6 +190,10 @@
 		}
 
 	#other-projects-wrapper {}
+		h2 {
+			margin-top: 10px;
+			margin-bottom: 0;
+		}
 		.project {
 			max-width: 250px;
 			display: inline-block;
@@ -202,13 +206,16 @@
 		}
 		.project a {
 			border: 1px solid lightgray;
-			border-radius: 5px;
+			border-radius: 10px;
 			background-color: white;
 			display: block;
 			padding: 10px;
+			text-decoration: none;
+			font-weight: normal;
 		}
 		.project a:hover {
 			background-color: beige;
+			font-weight: bold;
 		}
 		.project span.description {
 			font-size: 0.8em;
@@ -221,6 +228,10 @@
 	}
 
 	/* General */
+	a {
+		border-bottom: 1px solid;
+		text-decoration: none;
+	}
 	.screen-reader-transparent-text {
 		opacity: 0.5;
 		font-size: 0em;
@@ -296,7 +307,7 @@
 	<h2>Help</h2>
 	<div class="faq">
 		<span class="question">Q: Installed but can't find the TypingSigns app?</span>
-		<span class="answer">Q: TypingSigns is an iMessage App. First check that your phone is running iOS 10. Then TypingSigns can be found in <a target="_blank" href="http://www.imore.com/how-to-use-stickers-and-apps-imessage">'s official Messages App, in the App drawer🔗</a>. </span>
+		<span class="answer">Q: TypingSigns is an iMessage App. First check that your phone is running iOS 10. Then TypingSigns can be found in <a target="_blank" href="https://support.apple.com/en-us/HT206906">Apple's official Messages App, in the App drawer</a>. </span>
 		<span class="contact">Having trouble? <a href="mailto:typingsigns@gmail.com?Subject=Help!">Let us know! 📧</a></span>
 	</div>
 </div>
