@@ -79,13 +79,21 @@ span.main-label {
 	display: block;
 	margin: 10px 0;
 }
-.usymbols, .usymbols span {
+/*.usymbols, .usymbols span {*/
+span.usymbols {
 	letter-spacing: 0.8em;
 	border-top: 2px dashed #ccc;
 	font-family: 'SignWriting 2010';
 	font-weight: normal;
 	line-height: 0.1em;
 }
+	span.usymbols a {
+		text-decoration: none;
+	}
+	span.usymbols a:hover {
+		color: orange;
+		font-size: 1.1em;
+	}
 table#handlist {
 	background-color: #ccc;
 	width: 100%;

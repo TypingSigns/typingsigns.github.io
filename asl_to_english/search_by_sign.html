@@ -271,7 +271,7 @@
 		var emoji = fiveHandCategories_tableFormat[index].emoji;
 		appendToSearchField(emoji);
 	});
-	function appendToSearchField(value) {
+	function appendToSearchField(value) { //or addToInputArea
 		var inputVal = $('#inputArea').val();
 		// var oldVal = ""; if (inputVal.length !=0) {oldVal = inputVal + " ";}; // don't add space if empty.
 		var oldVal = inputVal;
@@ -471,6 +471,7 @@
 
 		// Display Results
 		var resultsHtml = '';
+		var symbolTagsOnPage = [];
 		for (var i=startingId; i<endingId; i++) {
 
 			var _id = results.items[i].id;
@@ -483,11 +484,25 @@
 			if (!mainLabel) { mainLabel = "…?…"; }
 			var symbols = findUnicode8SuttonSymbols(fsw);
 			symbols.sort(); // display symbols alphabetically
+			// var symbolsString = symbols.join('');
+			// var symbolsString = '<span><a href="#">'+symbols.join('</a></span><span><a href="#">')+'</a></span>'
+			var symbolsString = "";
+			for (var s=0; s<symbols.length; s++) {
+				var symbol = symbols[s];
+				var symbolHtml = '<span><a href="#" class="symbol-tag symbol-'+symbol+'" u8baseSymbol="'+symbol+'">'+symbol+'</a></span>';
+				symbolsString += symbolHtml;
+				symbolTagsOnPage.push(symbol);
+				// brute force binding click // should move to somewhere more efficient later
+				// $(".symbol-"+symbol).unbind().click(function() {
+				// 	console.log(symbol);
+				// 	console.log("---");
+				// });
+			}
 
 			var descriptionHtml = '<div class="description">'
 			descriptionHtml += '<span class="main-label">' + mainLabel + '</span>';
 			// divHtml += '<span class="usymbols">' + entry.unicode8searchTerms + '</span>';
-			descriptionHtml += '<span class="usymbols">' + symbols.join('') + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
+			descriptionHtml += '<span class="usymbols">' + symbolsString + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
 			descriptionHtml += '</div>'
 
 			var divHtml = '<div id="e'+id+'" class="entry">';
@@ -498,9 +513,20 @@
 
 			// Load SVG
 			loadSvgToEntry(id, fsw, entry.unicode8searchTerms);
+
+			
+
 		}
 		$('#results').html(resultsHtml);
+
+		$('.symbol-tag').unbind().click(function(e) {
+			e.preventDefault();
+			var schar = $(this).attr('u8baseSymbol');
+			appendToSearchField(schar);
+		})
 	}
+
+	
 
 	function loadSvgToEntry(id, fsw, unicode8searchTerms) {
 		var url = "https://swserver.wmflabs.org/svg/";
