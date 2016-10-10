@@ -138,6 +138,27 @@
 		8: "🤘",
 	}
 
+	///////////////
+	// PRINT swRootSymbolCategories:
+	console.log(swRootSymbolCategories);
+	// iterate through; replace with actualy symbol
+	for (var property in swRootSymbolCategories) {
+		console.log(property);
+		// var property_swBaseSymbol = findUnicode8SuttonSymbols(property);
+		if (swRootSymbolCategories.hasOwnProperty(property)) {
+			var subfsws = swRootSymbolCategories[property];
+			var sub_swbaseSymbols = [];
+			for (var i=0; i<subfsws.length; i++) {
+				var subfsw = subfsws[i];
+				var sub_swBaseSymbol = findUnicode8SuttonSymbols(subfsw)[0];
+				sub_swbaseSymbols.push(sub_swBaseSymbol);
+			}
+			console.log(subfsws);
+			console.log(sub_swbaseSymbols);
+		}
+	}
+
+
 	// One-Time Generation.
 	// Create a ancestryLookup for swLeafSymbols from swRootSymbolCategories // At publication, can be ported to a separate js file.
 	var swleaf_parents_lookup = {};
@@ -196,8 +217,118 @@
 
 	// KEYBOARD TABLE(S):
 
+	var tr = '';
+
+	///////////////////////////////////////////////
 	// CONTACT TABLE
-	// $('#keyboard-area').append(contactTable);
+	// var fingerContacts = swRootSymbolCategories['S21600']; // Future Addition
+	// FINGER CONTACT
+	var fingerContactLevel1 = [
+		{'id':'squeeze|flick', 'children':["S21600", "S21700", "S21800", "S21900", "S21a00", "S21b00", "S21c00", "S21d00", "S21e00", "S21f00", "S22000"], 'rep':'•'}, 
+		{'id':'hinge', 'children':["S22100", "S22200", "S22300", "S22400", "S22500", "S22600", "S22700", "S22800", "S22900"], 'rep':'^'}, // +fingerContactMovement
+	];
+	var fingerContactTable = '<table id="fingercontactlist">';
+	
+	// Add Level0-Header (custom - over 2 columns)
+	tr = '<tr>';
+	tr += '<td colspan="2">' + '〽️'+ '</td>';
+	tr += '</tr>';
+	fingerContactTable += tr;
+	// Add Leaf-Headers (level1)
+	tr = '<tr>';
+	for (var i=0; i<fingerContactLevel1.length; i++) {
+		var item = fingerContactLevel1[i];
+		var html = '<td>' + item.rep + '</td>';
+		tr += html;
+	}
+	tr += '</tr>';
+	fingerContactTable += tr;
+	// Add Leaf-Content (level1)
+	tr = '<tr>';
+	for (var i=0; i<fingerContactLevel1.length; i++) {
+		var item = fingerContactLevel1[i];
+		var children_u8symbol = [];
+		for (var h=0; h<item.children.length; h++) {
+			var child_fsw = item.children[h];
+			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
+			children_u8symbol.push(child_u8symbol);
+		}
+		var html = '<td>' + children_u8symbol.join(" ") + '</td>';
+		tr += html;
+	}
+	tr += '</tr>';
+	fingerContactTable += tr;
+
+	// Add Table
+	fingerContactTable += '</table>';
+	$('#keyboard-area').append(fingerContactTable);
+
+
+	// GENERAL CONTACT
+	var contactLevel1 = [
+		{'id':'touch|grasp|strike', 'children':['touch', 'grasp', 'strike'], 'rep':'⚡'},
+		{'id':'brush|rub', 'children':['brush', 'rub'], 'rep':'🍥'},
+		{'id':'between', 'children':['between'], 'rep':'§'}
+	];
+	var contactLevel2 = [
+		{'id':'touch', 'children':["S20500", "S20600", "S20700"], 'rep':'*'}, 
+		{'id':'grasp', 'children':["S20800", "S20900", "S20a00"], 'rep':'+'},
+		{'id':'strike', 'children':["S20b00", "S20c00", "S20d00"], 'rep':'#'},
+		{'id':'brush', 'children':["S20e00", "S20f00", "S21000", "S21400", "S21500"], 'rep':'Ø'}, // includes the odd symbols.
+		{'id':'rub', 'children':["S21100", "S21200", "S21300"], 'rep':'@'},
+		{'id':'between', 'children':["S20700", "S20a00", "S20d00", "S21000", "S21300"], 'rep':'§'}
+	]; // <- this is custom, compared to the swRootSymbolCategories' generic categories
+			// swRootSymbolCategories : S20500 - contacts/touches
+			// swRootSymbolCategories : S21600 - finger-movements
+	
+	var contactTable = '<table id="contactlist">';
+	// var tr = '';
+	// Add Level0-Header (custom - over 6 columns)
+	tr = '<tr>';
+	tr += '<td colspan="6">' + '✳️'+ '</td>';
+	tr += '</tr>';
+	contactTable += tr;
+	// Add Level1-Headers (currently assume, in correct order)
+	tr = '<tr>';
+	for (var i=0; i<contactLevel1.length; i++) {
+		var item = contactLevel1[i];
+		var html = '<td colspan="'+item.children.length+'">' + item.rep + '</td>';
+		tr += html;
+	}
+	tr += '</tr>';
+	contactTable += tr;
+	// Add Leaf-Headers (level2)
+	tr = '<tr>';
+	for (var i=0; i<contactLevel2.length; i++) {
+		var item = contactLevel2[i];
+		var html = '<td>' + item.rep + '</td>';
+		tr += html;
+	}
+	tr += '</tr>';
+	contactTable += tr;
+	// Add Leaf-Content (level2)
+	tr = '<tr>';
+	for (var i=0; i<contactLevel2.length; i++) {
+		var item = contactLevel2[i];
+		var children_u8symbol = [];
+		for (var h=0; h<item.children.length; h++) {
+			var child_fsw = item.children[h];
+			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
+			children_u8symbol.push(child_u8symbol);
+		}
+		var html = '<td>' + children_u8symbol.join(" ") + '</td>';
+		tr += html;
+	}
+	tr += '</tr>';
+	contactTable += tr;
+
+
+	// Add Table
+	contactTable += '</table>';
+	$('#keyboard-area').append(contactTable);
+
+
+	////////////////////////////////////////////////////////////////
 
 	// HAND TABLE
 
@@ -211,7 +342,7 @@
 		{"emoji":"👍", "colspan":"1", "index":3},
 		{"emoji":"🤘", "colspan":"3", "index":4},
 	];
-	var tr = '<tr id="fiveHandCategories">';
+	tr = '<tr id="fiveHandCategories">';
 	for (var i=0; i<fiveHandCategories_tableFormat.length; i++) {
 		var e = fiveHandCategories_tableFormat[i];
 		var cha = '<span class="buttoned">'+e.emoji+'</span>'
@@ -482,7 +613,7 @@
 			var id = entry._id;
 			if (entry.term.length == undefined) {continue;}
 
-			console.log(entry);
+			// console.log(entry);
 
 			var fsw = entry.term[0];
 			var mainLabel = entry.mainLabel;

@@ -94,11 +94,19 @@ span.usymbols {
 		color: orange;
 		font-size: 1.1em;
 	}
-table#handlist {
+table {
 	background-color: #ccc;
 	width: 100%;
 	/* Optional: Make Columns equal widths */
 	/*table-layout: fixed;*/
+}
+table#contactlist, table#fingercontactlist {
+	width: 50%;
+	display: inline-table;
+	display: none;
+}
+table#contactlist td, table#fingercontactlist td {
+	border: 1px solid white;
 }
 /* Thicken Borders */
 table, table td {
