@@ -19,8 +19,6 @@
 		- Use own Server for rendering icons. Or pre-render and store them locally.
 		- Allow images to be dragged out (e.g. PNGs)
 		- Add Chrome-Desktop-Only disclaimer if opened in Safari. (SAFARI has font-handling issues with SignWriting 2010)
-		- Add note that 'Search Terms need to be separated by " " spaces - currently', or make it so spaces aren't needed
-		- allow entry-fsw-base-symbols to be clicked, and added to the input field, for additional filtering.
 	 -->
 </head>
 
@@ -196,7 +194,12 @@
 		updateUpperHeight();
 	});
 
-	// KEYBOARD TABLE:
+	// KEYBOARD TABLE(S):
+
+	// CONTACT TABLE
+	// $('#keyboard-area').append(contactTable);
+
+	// HAND TABLE
 
 	// LOAD BUTTONS
 	var table = '<table id="handlist">';
@@ -479,6 +482,8 @@
 			var id = entry._id;
 			if (entry.term.length == undefined) {continue;}
 
+			console.log(entry);
+
 			var fsw = entry.term[0];
 			var mainLabel = entry.mainLabel;
 			if (!mainLabel) { mainLabel = "…?…"; }
@@ -498,9 +503,10 @@
 				// 	console.log("---");
 				// });
 			}
+			var signPuddleLink = "http://www.signbank.org/signpuddle2.0/searchword.php?sid="+id;
 
 			var descriptionHtml = '<div class="description">'
-			descriptionHtml += '<span class="main-label">' + mainLabel + '</span>';
+			descriptionHtml += '<span class="main-label">' + '<a href="'+signPuddleLink+'" target="_blank">' + mainLabel + '</a>' + '</span>';
 			// divHtml += '<span class="usymbols">' + entry.unicode8searchTerms + '</span>';
 			descriptionHtml += '<span class="usymbols">' + symbolsString + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
 			descriptionHtml += '</div>'
@@ -513,8 +519,6 @@
 
 			// Load SVG
 			loadSvgToEntry(id, fsw, entry.unicode8searchTerms);
-
-			
 
 		}
 		$('#results').html(resultsHtml);
