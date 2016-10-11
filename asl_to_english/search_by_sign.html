@@ -221,49 +221,8 @@
 
 	///////////////////////////////////////////////
 	// CONTACT TABLE
-	// var fingerContacts = swRootSymbolCategories['S21600']; // Future Addition
-	// FINGER CONTACT
-	var fingerContactLevel1 = [
-		{'id':'squeeze|flick', 'children':["S21600", "S21700", "S21800", "S21900", "S21a00", "S21b00", "S21c00", "S21d00", "S21e00", "S21f00", "S22000"], 'rep':'•'}, 
-		{'id':'hinge', 'children':["S22100", "S22200", "S22300", "S22400", "S22500", "S22600", "S22700", "S22800", "S22900"], 'rep':'^'}, // +fingerContactMovement
-	];
-	var fingerContactTable = '<table id="fingercontactlist">';
-	
-	// Add Level0-Header (custom - over 2 columns)
-	tr = '<tr>';
-	tr += '<td colspan="2">' + '〽️'+ '</td>';
-	tr += '</tr>';
-	fingerContactTable += tr;
-	// Add Leaf-Headers (level1)
-	tr = '<tr>';
-	for (var i=0; i<fingerContactLevel1.length; i++) {
-		var item = fingerContactLevel1[i];
-		var html = '<td>' + item.rep + '</td>';
-		tr += html;
-	}
-	tr += '</tr>';
-	fingerContactTable += tr;
-	// Add Leaf-Content (level1)
-	tr = '<tr>';
-	for (var i=0; i<fingerContactLevel1.length; i++) {
-		var item = fingerContactLevel1[i];
-		var children_u8symbol = [];
-		for (var h=0; h<item.children.length; h++) {
-			var child_fsw = item.children[h];
-			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
-			children_u8symbol.push(child_u8symbol);
-		}
-		var html = '<td>' + children_u8symbol.join(" ") + '</td>';
-		tr += html;
-	}
-	tr += '</tr>';
-	fingerContactTable += tr;
 
-	// Add Table
-	fingerContactTable += '</table>';
-	$('#keyboard-area').append(fingerContactTable);
-
-
+	///////////////////////////////
 	// GENERAL CONTACT
 	var contactLevel1 = [
 		{'id':'touch|grasp|strike', 'children':['touch', 'grasp', 'strike'], 'rep':'⚡'},
@@ -322,10 +281,53 @@
 	tr += '</tr>';
 	contactTable += tr;
 
-
 	// Add Table
 	contactTable += '</table>';
 	$('#keyboard-area').append(contactTable);
+
+	
+	///////////////////////////////
+	// FINGER CONTACT
+	var fingerContactLevel1 = [
+		{'id':'squeeze|flick', 'children':["S21600", "S21700", "S21800", "S21900", "S21a00", "S21b00", "S21c00", "S21d00", "S21e00", "S21f00", "S22000"], 'rep':'•'}, 
+		{'id':'hinge', 'children':["S22100", "S22200", "S22300", "S22400", "S22500", "S22600", "S22700", "S22800", "S22900"], 'rep':'^'}, // +fingerContactMovement
+	];
+	var fingerContactTable = '<table id="fingercontactlist">';
+	
+	// Add Level0-Header (custom - over 2 columns)
+	tr = '<tr>';
+	tr += '<td colspan="2">' + '〽️'+ '</td>';
+	tr += '</tr>';
+	fingerContactTable += tr;
+	// Add Leaf-Headers (level1)
+	tr = '<tr>';
+	for (var i=0; i<fingerContactLevel1.length; i++) {
+		var item = fingerContactLevel1[i];
+		var html = '<td>' + item.rep + '</td>';
+		tr += html;
+	}
+	tr += '</tr>';
+	fingerContactTable += tr;
+	// Add Leaf-Content (level1)
+	tr = '<tr>';
+	for (var i=0; i<fingerContactLevel1.length; i++) {
+		var item = fingerContactLevel1[i];
+		var children_u8symbol = [];
+		for (var h=0; h<item.children.length; h++) {
+			var child_fsw = item.children[h];
+			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
+			children_u8symbol.push(child_u8symbol);
+		}
+		var html = '<td>' + children_u8symbol.join(" ") + '</td>';
+		tr += html;
+	}
+	tr += '</tr>';
+	fingerContactTable += tr;
+
+	// Add Table
+	fingerContactTable += '</table>';
+	$('#keyboard-area').append(fingerContactTable);
+
 
 
 	////////////////////////////////////////////////////////////////

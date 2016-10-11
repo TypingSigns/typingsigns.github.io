@@ -96,71 +96,77 @@ span.usymbols {
 	}
 table {
 	background-color: #ccc;
-	width: 100%;
+	text-align: center;
 	/* Optional: Make Columns equal widths */
 	/*table-layout: fixed;*/
 }
-table#contactlist, table#fingercontactlist {
-	width: 50%;
-	display: inline-table;
-	display: none;
-}
-table#contactlist td, table#fingercontactlist td {
-	border: 1px solid white;
+table tr td {
+	vertical-align: middle;
+	position: relative;
+
+	background-color: #eee;
+	vertical-align: top;
+	padding: 0;
+	margin: 0;
 }
 /* Thicken Borders */
 table, table td {
 	border: 1px solid #ccc;
 }
-table td {
-	vertical-align: middle;
-	position: relative;
+table#contactlist, table#fingercontactlist {
+	display: inline-table;
+	/*TEMP HIDE*/
+	/*display: none;*/
+}
+table#contactlist td, table#fingercontactlist td { /*temp*/
+	/*border: 1px solid white;*/
+}
+table#contactlist {
+	width: 66%;
+}
+table#fingercontactlist {
+	width: 34%;
+}
+table#handlist {
+	width: 100%;
 }
 
-table#handlist tr#fiveHandCategories td {
-	font-size: 2.0em;
-	position: relative;
-}
-table#handlist tr#swroot td {
-	font-size: 1.5em;
-	
-	/*padding-top: 8px;*/
-	/*padding-bottom: 2px;*/
-	
-}
-
-table#handlist tr#kleafsymbols td {
-	/*background-color: transparent;*/
-	background: #eee;
-}
-
-table#handlist tr td {
-	background-color: #eee;
-	vertical-align: top;
-	text-align: center;
-	padding: 0;
-	margin: 0;
-}
-	table#handlist div.unicode-symbols {
-		/*background-color: beige;*/
-		font-family: 'SignWriting 2010';
-		line-height: 3.0em;
-	}
-	/* Fix for SignWriting 2010 Offset */
-	table#handlist div.unicode-symbols a {
+	table#handlist tr#fiveHandCategories td {
+		font-size: 2.0em;
 		position: relative;
-		border: 1px solid gray;
-		margin-right: 5px;
-		margin-bottom: 5px;
-		border-radius: 3px;
+	}
+	table#handlist tr#swroot td {
+		font-size: 1.5em;
+		
+		/*padding-top: 8px;*/
+		/*padding-bottom: 2px;*/
+		
 	}
 
-	table#handlist div.unicode-symbols a span {
-		/*border: 1px dashed orange;*/
-		padding: 0 5px;
-		position: relative;
-		top: 10px;
+	table#handlist tr#kleafsymbols td {
+		background: #e5e5e5;
 	}
+		table#handlist div.unicode-symbols {
+			/*background-color: beige;*/
+			font-family: 'SignWriting 2010';
+			line-height: 3.0em;
+		}
+		/* Fix for SignWriting 2010 Offset */
+		table#handlist div.unicode-symbols a {
+			position: relative;
+			border: 1px solid gray;
+			margin-right: 5px;
+			margin-bottom: 5px;
+			border-radius: 3px;
+		}
+
+		table#handlist div.unicode-symbols a span {
+			/*border: 1px dashed orange;*/
+			padding: 0 5px;
+			position: relative;
+			top: 10px;
+		}
+
 table a {
 	text-decoration: none;
 }
