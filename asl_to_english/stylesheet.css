@@ -116,7 +116,26 @@ table, table td {
 table tr.u8symbols-row td {
 	background: #e5e5e5;
 }
+	table tr.u8symbols-row div.unicode-symbols {
+		/*background-color: beige;*/
+		font-family: 'SignWriting 2010';
+		line-height: 3.0em;
+	}
+	/* Fix for SignWriting 2010 Offset */
+	table tr.u8symbols-row div.unicode-symbols a {
+		position: relative;
+		border: 1px solid gray;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		border-radius: 3px;
+	}
 
+	table tr.u8symbols-row div.unicode-symbols a span {
+		/*border: 1px dashed orange;*/
+		padding: 0 5px;
+		position: relative;
+		top: 10px;
+	}
 
 table#contactlist, table#fingercontactlist {
 	display: inline-table;
@@ -140,34 +159,10 @@ table#fingercontactlist {
 table#handlist {
 	width: 100%;
 }
-	table#handlist tr#fiveHandCategories td {
+	table#handlist tr:first-child td {
 		font-size: 2.0em;
 		position: relative;
 	}
-	table#handlist tr#swroot td {
-		font-size: 1.5em;
-	}
-
-		table tr.u8symbols-row div.unicode-symbols {
-			/*background-color: beige;*/
-			font-family: 'SignWriting 2010';
-			line-height: 3.0em;
-		}
-		/* Fix for SignWriting 2010 Offset */
-		table tr.u8symbols-row div.unicode-symbols a {
-			position: relative;
-			border: 1px solid gray;
-			margin-right: 5px;
-			margin-bottom: 5px;
-			border-radius: 3px;
-		}
-
-		table tr.u8symbols-row div.unicode-symbols a span {
-			/*border: 1px dashed orange;*/
-			padding: 0 5px;
-			position: relative;
-			top: 10px;
-		}
 
 table a {
 	text-decoration: none;

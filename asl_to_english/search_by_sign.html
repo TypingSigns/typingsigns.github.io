@@ -354,7 +354,7 @@
 	for (var i=0; i<fiveHandCategories_tableFormat.length; i++) {
 		var e = fiveHandCategories_tableFormat[i];
 		var cha = '<span class="buttoned">'+e.emoji+'</span>'
-		var html = '<a href="#" class="kfhemoji td-emoji" id="kfh'+e.index+'">'+cha+'</a>'
+		var html = '<a href="#" class="ku8ancestor td-emoji" id="kfh'+e.index+'" string="'+e.emoji+'">'+cha+'</a>'
 		tr += '<td colspan="'+ e.colspan +'">' + html + '</td>';
 	}
 	table += tr;
@@ -364,7 +364,7 @@
 		var swHandshapeRoots_id = displayOrder_num[i]-1;
 		var swroot = swHandshapeRoots[swHandshapeRoots_id];
 		var numberSymbol_html = numberToEmoji_emoji(swHandshapeRoots_id+1);
-		var td = "<td>"+'<a href="#" class="kswroot td-emoji" id="kswr'+displayOrder_num[i]+'">'+numberSymbol_html+"</div></td>";
+		var td = "<td>"+'<a href="#" class="ku8ancestor td-emoji" id="kswr'+displayOrder_num[i]+'" string="'+numberSymbol_html+'">'+numberSymbol_html+"</div></td>";
 		tr += td;
 	}
 	tr += "</tr>";
@@ -399,19 +399,25 @@
 		var symbol_unicode = findUnicode8SuttonSymbols(symbol_str)[0];
 		appendToSearchField(symbol_unicode);
 	});
-	$('.kswroot').on('click', function(e) {
+	$('.ku8ancestor').on('click', function(e) {
 		e.preventDefault();
-		var num = $(this).attr('id'); // e.g. 'kswr10'
-		num = num.substring(4, num.length);
-		var emoji = numberToEmoji_emoji(num);
-		appendToSearchField(emoji);
+		var string = $(this).attr('string');
+		appendToSearchField(string);
+
+		// var num = $(this).attr('id'); // e.g. 'kswr10'
+		// num = num.substring(4, num.length);
+		// var emoji = numberToEmoji_emoji(num);
+		// appendToSearchField(emoji);
 	});
 	$('.kfhemoji').on('click', function(e) {
 		e.preventDefault();
-		var index = $(this).attr('id'); // e.g. 'kfh0'
-		index = index.substring(3, index.length);
-		var emoji = fiveHandCategories_tableFormat[index].emoji;
-		appendToSearchField(emoji);
+		var string = $(this).attr('string');
+		appendToSearchField(string);
+		
+		// var index = $(this).attr('id'); // e.g. 'kfh0'
+		// index = index.substring(3, index.length);
+		// var emoji = fiveHandCategories_tableFormat[index].emoji;
+		// appendToSearchField(emoji);
 	});
 	function appendToSearchField(value) { //or addToInputArea
 		var inputVal = $('#inputArea').val();
