@@ -137,6 +137,38 @@ table tr.u8symbols-row td {
 		top: 10px;
 	}
 
+		.unicode-symbols a:link, .unicode-symbols a:visited{
+			color: blue;
+			text-decoration: none;
+		}
+		.unicode-symbols a:hover {
+			color: white;
+			background-color: darkgray;
+		}
+		.unicode-symbols a:active {
+			color: red;
+		}
+
+table a {
+	text-decoration: none;
+}
+	a.ku8ancestor {
+		width: 100%;
+		display: block;
+		margin: auto;
+	}
+	a.ku8ancestor:hover {
+		background-color: darkgray;
+	}
+	a.ku8ancestor:active {
+		background-color: white;
+	}
+table tr:first-child td {
+	font-size: 2.0em;
+}
+table tr:nth-child(2) td {
+	font-size: 1.5em;
+}
 table#contactlist, table#fingercontactlist {
 	display: inline-table;
 	/*TEMP HIDE*/
@@ -144,11 +176,11 @@ table#contactlist, table#fingercontactlist {
 }
 table#contactlist td, table#fingercontactlist td { /*temp*/
 	/*border: 1px solid white;*/
-	opacity: 0.25;
+	/*opacity: 0.25;*/
 }
 table#contactlist tr.u8symbols-row td, table#fingercontactlist tr.u8symbols-row td {
 	/*temp*/
-	opacity: 1.0;
+	/*opacity: 1.0;*/
 }
 table#contactlist {
 	width: 66%;
@@ -158,37 +190,6 @@ table#fingercontactlist {
 }
 table#handlist {
 	width: 100%;
-}
-	table#handlist tr:first-child td {
-		font-size: 2.0em;
-		position: relative;
-	}
-
-table a {
-	text-decoration: none;
-}
-a.td-emoji {
-	width: 100%;
-	display: block;
-	margin: auto;
-}
-a.td-emoji:hover {
-	background-color: darkgray;
-}
-a.td-emoji:active {
-	background-color: white;
-}
-
-.unicode-symbols a:link, .unicode-symbols a:visited{
-	color: blue;
-	text-decoration: none;
-}
-.unicode-symbols a:hover {
-	color: white;
-	background-color: darkgray;
-}
-.unicode-symbols a:active {
-	color: red;
 }
 
 span.buttoned, a.buttoned {

@@ -121,7 +121,9 @@
 
 <!-- PRE-GENERATION FUNCTIONS -->
 <script>
-	// Values
+	// VALUES
+	///////////////////////////////
+	// HANDSHAPES
 	var swHandshapeRoots = ["S10000", "S10e00", "S11e00", "S14400", "S14c00", "S18600", "S1a400", "S1ba00", "S1cd00", "S1f500"]; // default 1,2,3,4,5,6,7,8,9,10 order.
 	var displayOrder_num = [1,9,2,3,4,5,10,6,7,8];
 
@@ -137,31 +139,58 @@
 		7: "🤘",
 		8: "🤘",
 	}
+	///////////////////////////////
+	// GENERAL CONTACT
+	var contactLevel1 = [
+		{'id':'touch|grasp|strike', 'children':['touch', 'grasp', 'strike'], 'rep':'⚡'},
+		{'id':'brush|rub', 'children':['brush', 'rub'], 'rep':'🍥'},
+		{'id':'between', 'children':['between'], 'rep':'§'}
+	];
+	var contactLevel2 = [
+		{'id':'touch', 'children':["S20500", "S20600", "S20700"], 'rep':'*'}, 
+		{'id':'grasp', 'children':["S20800", "S20900", "S20a00"], 'rep':'+'},
+		{'id':'strike', 'children':["S20b00", "S20c00", "S20d00"], 'rep':'#'},
+		{'id':'brush', 'children':["S20e00", "S20f00", "S21000", "S21400", "S21500"], 'rep':'⨀'}, // includes the odd symbols.
+		{'id':'rub', 'children':["S21100", "S21200", "S21300"], 'rep':'@'},
+		{'id':'between', 'children':["S20700", "S20a00", "S20d00", "S21000", "S21300"], 'rep':'§'}
+	]; // <- this is custom, compared to the swRootSymbolCategories' generic categories
+			// swRootSymbolCategories : S20500 - contacts/touches
+			// swRootSymbolCategories : S21600 - finger-movements
+	
+	///////////////////////////////
+	// FINGER CONTACT
+	var fingerContactLevel1 = [
+		{'id':'squeeze|flick', 'children':["S21600", "S21700", "S21800", "S21900", "S21a00", "S21b00", "S21c00", "S21d00", "S21e00", "S21f00", "S22000"], 'rep':'•'}, 
+		{'id':'hinge', 'children':["S22100", "S22200", "S22300", "S22400", "S22500", "S22600", "S22700", "S22800", "S22900"], 'rep':'^'}, // +fingerContactMovement
+	];
+	var fingerContactTable = '<table id="fingercontactlist">';
 
-	///////////////
+	
+	///////////////////////////////////////////////////////////////////////////////////////////
 	// PRINT swRootSymbolCategories:
-	console.log(swRootSymbolCategories);
-	// iterate through; replace with actualy symbol
-	for (var property in swRootSymbolCategories) {
-		console.log(property);
-		// var property_swBaseSymbol = findUnicode8SuttonSymbols(property);
-		if (swRootSymbolCategories.hasOwnProperty(property)) {
-			var subfsws = swRootSymbolCategories[property];
-			var sub_swbaseSymbols = [];
-			for (var i=0; i<subfsws.length; i++) {
-				var subfsw = subfsws[i];
-				var sub_swBaseSymbol = findUnicode8SuttonSymbols(subfsw)[0];
-				sub_swbaseSymbols.push(sub_swBaseSymbol);
-			}
-			console.log(subfsws);
-			console.log(sub_swbaseSymbols);
-		}
-	}
+	// console.log(swRootSymbolCategories);
+	// // iterate through; replace with actualy symbol
+	// for (var property in swRootSymbolCategories) {
+	// 	console.log(property);
+	// 	// var property_swBaseSymbol = findUnicode8SuttonSymbols(property);
+	// 	if (swRootSymbolCategories.hasOwnProperty(property)) {
+	// 		var subfsws = swRootSymbolCategories[property];
+	// 		var sub_swbaseSymbols = [];
+	// 		for (var i=0; i<subfsws.length; i++) {
+	// 			var subfsw = subfsws[i];
+	// 			var sub_swBaseSymbol = findUnicode8SuttonSymbols(subfsw)[0];
+	// 			sub_swbaseSymbols.push(sub_swBaseSymbol);
+	// 		}
+	// 		console.log(subfsws);
+	// 		console.log(sub_swbaseSymbols);
+	// 	}
+	// }
 
-
-	// One-Time Generation.
+	///////////////////////////////////////////////////////////////////////////////////////////
+	// ONE-TIME GENERATION.
 	// Create a ancestryLookup for swLeafSymbols from swRootSymbolCategories // At publication, can be ported to a separate js file.
 	var swleaf_parents_lookup = {};
+	// Add HandShapre Parent Symbols
 	for (var i=0; i<swHandshapeRoots.length; i++) {
 		var swroot_num = displayOrder_num[i];
 		var swroot_fsw = swHandshapeRoots[swroot_num-1];
@@ -222,24 +251,6 @@
 	///////////////////////////////////////////////
 	// CONTACT TABLE
 
-	///////////////////////////////
-	// GENERAL CONTACT
-	var contactLevel1 = [
-		{'id':'touch|grasp|strike', 'children':['touch', 'grasp', 'strike'], 'rep':'⚡'},
-		{'id':'brush|rub', 'children':['brush', 'rub'], 'rep':'🍥'},
-		{'id':'between', 'children':['between'], 'rep':'§'}
-	];
-	var contactLevel2 = [
-		{'id':'touch', 'children':["S20500", "S20600", "S20700"], 'rep':'*'}, 
-		{'id':'grasp', 'children':["S20800", "S20900", "S20a00"], 'rep':'+'},
-		{'id':'strike', 'children':["S20b00", "S20c00", "S20d00"], 'rep':'#'},
-		{'id':'brush', 'children':["S20e00", "S20f00", "S21000", "S21400", "S21500"], 'rep':'Ø'}, // includes the odd symbols.
-		{'id':'rub', 'children':["S21100", "S21200", "S21300"], 'rep':'@'},
-		{'id':'between', 'children':["S20700", "S20a00", "S20d00", "S21000", "S21300"], 'rep':'§'}
-	]; // <- this is custom, compared to the swRootSymbolCategories' generic categories
-			// swRootSymbolCategories : S20500 - contacts/touches
-			// swRootSymbolCategories : S21600 - finger-movements
-	
 	var contactTable = '<table id="contactlist">';
 	// var tr = '';
 	// Add Level0-Header (custom - over 6 columns)
@@ -274,7 +285,7 @@
 			var child_fsw = item.children[h];
 			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
 			var id = 'k' + child_fsw;
-			children_html += '<a href="#" class="kleafsymbol" id="'+id+'"><span>'+child_u8symbol+'</span></a> ';
+			children_html += '<a href="#" class="kleafsymbol" id="'+id+'" string="'+child_u8symbol+'"><span>'+child_u8symbol+'</span></a> ';
 		}
 		children_html += '</div>';
 		tr += "<td>"+children_html+"</td>";
@@ -289,12 +300,6 @@
 	
 	///////////////////////////////
 	// FINGER CONTACT
-	var fingerContactLevel1 = [
-		{'id':'squeeze|flick', 'children':["S21600", "S21700", "S21800", "S21900", "S21a00", "S21b00", "S21c00", "S21d00", "S21e00", "S21f00", "S22000"], 'rep':'•'}, 
-		{'id':'hinge', 'children':["S22100", "S22200", "S22300", "S22400", "S22500", "S22600", "S22700", "S22800", "S22900"], 'rep':'^'}, // +fingerContactMovement
-	];
-	var fingerContactTable = '<table id="fingercontactlist">';
-	
 	// Add Level0-Header (custom - over 2 columns)
 	tr = '<tr>';
 	tr += '<td colspan="2">' + '〽️'+ '</td>';
@@ -304,7 +309,7 @@
 	tr = '<tr>';
 	for (var i=0; i<fingerContactLevel1.length; i++) {
 		var item = fingerContactLevel1[i];
-		var html = '<td>' + item.rep + '</td>';
+		var html = '<td><a href="#" class="ku8ancestor" string="'+item.rep+'">' + item.rep + '</a></td>';
 		tr += html;
 	}
 	tr += '</tr>';
@@ -320,7 +325,7 @@
 			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
 			// children_u8symbol.push(child_u8symbol);
 			var id = 'k' + child_fsw; //~
-			children_html += '<a href="#" class="kleafsymbol" id="'+id+'"><span>'+child_u8symbol+'</span></a> ';
+			children_html += '<a href="#" class="kleafsymbol" id="'+id+'" string="'+child_u8symbol+'"><span>'+child_u8symbol+'</span></a> ';
 		}
 		children_html += '</div>';
 		// var html = '<td>' + children_u8symbol.join(" ") + '</td>';
@@ -340,7 +345,7 @@
 
 	// HAND TABLE
 
-	// LOAD BUTTONS
+	// LOAD BUTTONS // p.s. 2016-10-11 - a lot of 'id' tags are no longer used in handTable
 	var table = '<table id="handlist">';
 	// Populate 5-Hand-Categories
 	var fiveHandCategories_tableFormat = [
@@ -354,7 +359,7 @@
 	for (var i=0; i<fiveHandCategories_tableFormat.length; i++) {
 		var e = fiveHandCategories_tableFormat[i];
 		var cha = '<span class="buttoned">'+e.emoji+'</span>'
-		var html = '<a href="#" class="ku8ancestor td-emoji" id="kfh'+e.index+'" string="'+e.emoji+'">'+cha+'</a>'
+		var html = '<a href="#" class="ku8ancestor" id="kfh'+e.index+'" string="'+e.emoji+'">'+cha+'</a>'
 		tr += '<td colspan="'+ e.colspan +'">' + html + '</td>';
 	}
 	table += tr;
@@ -364,7 +369,7 @@
 		var swHandshapeRoots_id = displayOrder_num[i]-1;
 		var swroot = swHandshapeRoots[swHandshapeRoots_id];
 		var numberSymbol_html = numberToEmoji_emoji(swHandshapeRoots_id+1);
-		var td = "<td>"+'<a href="#" class="ku8ancestor td-emoji" id="kswr'+displayOrder_num[i]+'" string="'+numberSymbol_html+'">'+numberSymbol_html+"</div></td>";
+		var td = "<td>"+'<a href="#" class="ku8ancestor" id="kswr'+displayOrder_num[i]+'" string="'+numberSymbol_html+'">'+numberSymbol_html+"</div></td>";
 		tr += td;
 	}
 	tr += "</tr>";
@@ -381,7 +386,7 @@
 			var childSymbol = childSymbols[j];
 			var usymbol = findUnicode8SuttonSymbols(childSymbol)[0];
 			var id = 'k'+childSymbol;
-			html += '<a href="#" class="kleafsymbol" id="'+id+'"><span>'+usymbol+'</span></a> ';
+			html += '<a href="#" class="kleafsymbol" id="'+id+'" string="'+usymbol+'"><span>'+usymbol+'</span></a> ';
 		}
 		html += '</div>'
 
@@ -395,33 +400,19 @@
 	// Add Click-Actions
 	$('.kleafsymbol').on('click', function(e) {
 		e.preventDefault();
-		var symbol_str = $(this).attr('id');
-		var symbol_unicode = findUnicode8SuttonSymbols(symbol_str)[0];
-		appendToSearchField(symbol_unicode);
+		var string = $(this).attr('string');
+		appendToSearchField(string);
+		// var symbol_str = $(this).attr('id');
+		// var symbol_unicode = findUnicode8SuttonSymbols(symbol_str)[0];
+		// appendToSearchField(symbol_unicode);
 	});
 	$('.ku8ancestor').on('click', function(e) {
 		e.preventDefault();
 		var string = $(this).attr('string');
 		appendToSearchField(string);
-
-		// var num = $(this).attr('id'); // e.g. 'kswr10'
-		// num = num.substring(4, num.length);
-		// var emoji = numberToEmoji_emoji(num);
-		// appendToSearchField(emoji);
-	});
-	$('.kfhemoji').on('click', function(e) {
-		e.preventDefault();
-		var string = $(this).attr('string');
-		appendToSearchField(string);
-		
-		// var index = $(this).attr('id'); // e.g. 'kfh0'
-		// index = index.substring(3, index.length);
-		// var emoji = fiveHandCategories_tableFormat[index].emoji;
-		// appendToSearchField(emoji);
 	});
 	function appendToSearchField(value) { //or addToInputArea
 		var inputVal = $('#inputArea').val();
-		// var oldVal = ""; if (inputVal.length !=0) {oldVal = inputVal + " ";}; // don't add space if empty.
 		var oldVal = inputVal;
 		var newVal =  oldVal + value;
 		$('#inputArea').val(newVal);
