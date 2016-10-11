@@ -141,6 +141,7 @@
 	}
 	///////////////////////////////
 	// GENERAL CONTACT
+	var contactLevel0_singleSymbol = "✳️";
 	var contactLevel1 = [
 		{'id':'touch|grasp|strike', 'children':['touch', 'grasp', 'strike'], 'rep':'⚡'},
 		{'id':'brush|rub', 'children':['brush', 'rub'], 'rep':'🍥'},
@@ -153,18 +154,16 @@
 		{'id':'brush', 'children':["S20e00", "S20f00", "S21000", "S21400", "S21500"], 'rep':'⨀'}, // includes the odd symbols.
 		{'id':'rub', 'children':["S21100", "S21200", "S21300"], 'rep':'@'},
 		{'id':'between', 'children':["S20700", "S20a00", "S20d00", "S21000", "S21300"], 'rep':'§'}
-	]; // <- this is custom, compared to the swRootSymbolCategories' generic categories
-			// swRootSymbolCategories : S20500 - contacts/touches
-			// swRootSymbolCategories : S21600 - finger-movements
+	]; // Note: this is custom, compared to the swRootSymbolCategories' generic categories
 	
 	///////////////////////////////
 	// FINGER CONTACT
+	var fingerContactLevel0_singleSymbol = "〽️";
 	var fingerContactLevel1 = [
 		{'id':'squeeze|flick', 'children':["S21600", "S21700", "S21800", "S21900", "S21a00", "S21b00", "S21c00", "S21d00", "S21e00", "S21f00", "S22000"], 'rep':'•'}, 
 		{'id':'hinge', 'children':["S22100", "S22200", "S22300", "S22400", "S22500", "S22600", "S22700", "S22800", "S22900"], 'rep':'^'}, // +fingerContactMovement
 	];
 	var fingerContactTable = '<table id="fingercontactlist">';
-
 	
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// PRINT swRootSymbolCategories:
@@ -204,6 +203,42 @@
 			swleaf_parents_lookup[leaf_unicode] = [fiveHand_emoji, swroot_unicode];
 		}
 	}
+	// Add Finger Contact Symbols
+	var ancestor0_rep = fingerContactLevel0_singleSymbol;
+	for (var i=0; i<fingerContactLevel1.length; i++) {
+		var item = fingerContactLevel1[i];
+		var ancestor1_rep = item.rep;
+		var children = item.children;
+		for (var c=0; c<children.length; c++) {
+			var child_fsw = children[c];
+			var child_u8 = findUnicode8SuttonSymbols(child_fsw)[0];
+			swleaf_parents_lookup[child_u8] = [ancestor0_rep, ancestor1_rep];
+			// ~ potential future todo: replicate twice if symbol is a 'multiple' symbol. - so multi-symbols don't get added to the 'single-symbol-search' when searching
+		}
+	}
+	// Add General Contact Symbols
+	// Sort of Create a tree - and assign at the same time
+	var ancestor0_rep = contactLevel0_singleSymbol;
+	for (var i=0; i<contactLevel1.length; i++) {
+		var e = contactLevel1[i];
+		for (var c=0; c<e.children.length; c++) {
+			var c1child_id = e.children[c];
+			// Brute force - don't have that much to iterate // If i was doing this properly; would've converted this to a tree structure (levels->tree function)
+			for (var t=0; t<contactLevel2.length; t++) {
+				var curNode = contactLevel2[t];
+				if (curNode.id == c1child_id) {
+					// set representation for all the leaf-children here
+					for (var l=0; l<curNode.children.length; l++) {
+						var leaf_fsw = curNode.children[l];
+						var leaf_u8 = findUnicode8SuttonSymbols(leaf_fsw)[0];
+						if (!swleaf_parents_lookup[leaf_u8]) { swleaf_parents_lookup[leaf_u8] = []; }
+						swleaf_parents_lookup[leaf_u8] = swleaf_parents_lookup[leaf_u8].concat([ancestor0_rep, e.rep, curNode.rep]);
+					}
+					break;
+				}
+			}
+		}
+	}
 
 	// Add SearchTerm (Updateable) (To be solidified as a separate file in Production)
 	for (var i=0; i<signPuddleEntries.length; i++) {
@@ -240,7 +275,7 @@
 	var displaySwLeavesButton_html = '<a href="#" id="displaySwLeavesButton" class="buttoned">🤓 Expand / Collapse </a>'
 	$('#keyboard-area').prepend(displaySwLeavesButton_html);
 	$('#displaySwLeavesButton').click(function() {
-		$('tr#kleafsymbols').toggle();
+		$('tr.u8symbols-row').toggle();
 		updateUpperHeight();
 	});
 
@@ -255,14 +290,14 @@
 	// var tr = '';
 	// Add Level0-Header (custom - over 6 columns)
 	tr = '<tr>';
-	tr += '<td colspan="6">' + '✳️'+ '</td>';
+	tr += '<td colspan="6"><a href="#" class="ku8ancestor" string="'+contactLevel0_singleSymbol+'">' + contactLevel0_singleSymbol + '</a></td>';
 	tr += '</tr>';
 	contactTable += tr;
 	// Add Level1-Headers (currently assume, in correct order)
 	tr = '<tr>';
 	for (var i=0; i<contactLevel1.length; i++) {
 		var item = contactLevel1[i];
-		var html = '<td colspan="'+item.children.length+'">' + item.rep + '</td>';
+		var html = '<td colspan="'+item.children.length+'"><a href="#" class="ku8ancestor" string="'+item.rep+'">' + item.rep + '</a></td>';
 		tr += html;
 	}
 	tr += '</tr>';
@@ -271,7 +306,7 @@
 	tr = '<tr>';
 	for (var i=0; i<contactLevel2.length; i++) {
 		var item = contactLevel2[i];
-		var html = '<td>' + item.rep + '</td>';
+		var html = '<td><a href="#" class="ku8ancestor" string="'+item.rep+'">' + item.rep + '</a></td>';
 		tr += html;
 	}
 	tr += '</tr>';
@@ -302,7 +337,7 @@
 	// FINGER CONTACT
 	// Add Level0-Header (custom - over 2 columns)
 	tr = '<tr>';
-	tr += '<td colspan="2">' + '〽️'+ '</td>';
+	tr += '<td colspan="2"><a href="#" class="ku8ancestor" string="'+fingerContactLevel0_singleSymbol+'">' + fingerContactLevel0_singleSymbol + '</a></td>';
 	tr += '</tr>';
 	fingerContactTable += tr;
 	// Add Leaf-Headers (level1)
@@ -481,9 +516,8 @@
 		for (var i=0; i<codePoints.length; i++) {
 			var codePoint = codePoints[i];
 			
-			// Handle AZ/az/- strings // whatevs, just covering everything for now
-			// fyi - 0-9 numbers are: (codePoint >= 48 && codePoint <= 57)
-			if (codePoint < 254) {
+			// HANDLE STANDARD CHARACTERS (Including AZ, 0-9, etc.)
+			if (codePoint < 254 && codePoint != "§".codePointAt(0)) {
 				wordBuffer.push(codePoint);
 				if (i == codePoints.length-1) { // Handle if this was the last character
 					var bufferedWord = String.fromCodePoint.apply(this, wordBuffer);
@@ -491,10 +525,9 @@
 				}
 				continue;
 			}
-			// Handle Emoji Number (end-numpad-codepoint)
-			if (codePoint == 8419) { // this is the 'combining-numpad'-character
+			// HANDLE END-NUMPAD-CODEPOINT - pulling from 'WORDS'
+			if (codePoint == 8419) { // this is the 'combining-numpad'-character // Also adding the other one
 				wordBuffer.push(codePoint);
-
 				// Assuming it only requires the previous character. 
 				if (wordBuffer.length > 2) {
 					var wordBufferHead = wordBuffer.splice(0, wordBuffer.length-2); // splice simultaneously removes items, and returns removed items
@@ -507,17 +540,39 @@
 				wordBuffer = [];
 				continue;
 			}
-
-			// Finish off current WordBuffer if any
-			if (wordBuffer.length != 0) {
-				var bufferedWord = String.fromCodePoint.apply(this, wordBuffer);
-				searchWords.push(bufferedWord);
-				wordBuffer = [];
+			// HANDLE 8* EMOJI CASE
+			if (codePoint == 10035) {
+				var nxtCodePoint = codePoints[i+1];
+				if (nxtCodePoint == 65039) {
+					// Add to search word
+					var searchPicto = String.fromCodePoint(10035, 65039);
+					searchWords.push(searchPicto);
+					i += 1; // skip next codePoint
+					continue;
+				}
+			}
+			// HANDLE FINGER-MOVEMENT EMOJI CASE: 〽️
+			if (codePoint == 12349) {
+				var nxtCodePoint = codePoints[i+1];
+				if (nxtCodePoint == 65039) {
+					// Add to search word
+					var searchPicto = String.fromCodePoint(12349, 65039);
+					searchWords.push(searchPicto);
+					i += 1; // skip next codePoint
+					continue;
+				}
 			}
 
-			// Add Current unicode Sequence
-			var unicodeSequence = String.fromCodePoint(codePoint);
-			searchWords.push(unicodeSequence);
+			// At this point, the codePoint is neither Standard nor handled as one of the special cases above:
+				//End the WordBuffer and record the Word to search terms. (For when an english word is typed)
+				if (wordBuffer.length != 0) {
+					var bufferedWord = String.fromCodePoint.apply(this, wordBuffer);
+					searchWords.push(bufferedWord);
+					wordBuffer = [];
+				}
+				// Simply add the current non-standard, non-handled, unique codePoint as a straightforward searchWord
+				var unicodeSequence = String.fromCodePoint(codePoint);
+				searchWords.push(unicodeSequence);
 		}
 		
 		// Sequencify Strings - so we're sensitive to replicated Base/ParentSymbols .
@@ -694,20 +749,20 @@
 		// Height Check
 		var mainHeight = $('#content-wrapper').outerHeight(); // same as windowHeight // $(window).height();
 
-		$('tr#kleafsymbols').show();
+		$('tr.u8symbols-row').show();
 		$('displaySwLeavesButton').show();
 
 		var keyboardHeight_current = $('#keyboard-area').outerHeight();
-		$('tr#kleafsymbols').hide();
+		$('tr.u8symbols-row').hide();
 		var keyboardHeight_withoutLeafs = $('#keyboard-area').outerHeight();
-		$('tr#kleafsymbols').show();
+		$('tr.u8symbols-row').show();
 		var keyboardHeight_withLeafs = $('#keyboard-area').outerHeight();
 
-		$('tr#kleafsymbols').show();
+		$('tr.u8symbols-row').show();
 		$('displaySwLeavesButton').show();
 
 		if (keyboardHeight_withLeafs > mainHeight*0.75) {
-			$('tr#kleafsymbols').hide();
+			$('tr.u8symbols-row').hide();
 			keyboardHeight_current = $('#keyboard-area').outerHeight();
 		}
 		

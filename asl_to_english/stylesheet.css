@@ -171,6 +171,7 @@ table tr:nth-child(2) td {
 }
 table#contactlist, table#fingercontactlist {
 	display: inline-table;
+	vertical-align: top;
 	/*TEMP HIDE*/
 	/*display: none;*/
 }
