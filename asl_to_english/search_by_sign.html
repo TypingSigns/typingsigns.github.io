@@ -266,17 +266,18 @@
 	tr += '</tr>';
 	contactTable += tr;
 	// Add Leaf-Content (level2)
-	tr = '<tr>';
+	tr = '<tr class="u8symbols-row">';
 	for (var i=0; i<contactLevel2.length; i++) {
 		var item = contactLevel2[i];
-		var children_u8symbol = [];
+		var children_html = '<div class="unicode-symbols">'
 		for (var h=0; h<item.children.length; h++) {
 			var child_fsw = item.children[h];
 			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
-			children_u8symbol.push(child_u8symbol);
+			var id = 'k' + child_fsw;
+			children_html += '<a href="#" class="kleafsymbol" id="'+id+'"><span>'+child_u8symbol+'</span></a> ';
 		}
-		var html = '<td>' + children_u8symbol.join(" ") + '</td>';
-		tr += html;
+		children_html += '</div>';
+		tr += "<td>"+children_html+"</td>";
 	}
 	tr += '</tr>';
 	contactTable += tr;
@@ -309,17 +310,22 @@
 	tr += '</tr>';
 	fingerContactTable += tr;
 	// Add Leaf-Content (level1)
-	tr = '<tr>';
+	tr = '<tr class="u8symbols-row">';
 	for (var i=0; i<fingerContactLevel1.length; i++) {
 		var item = fingerContactLevel1[i];
-		var children_u8symbol = [];
+		// var children_u8symbol = [];
+		var children_html = '<div class="unicode-symbols">'
 		for (var h=0; h<item.children.length; h++) {
 			var child_fsw = item.children[h];
 			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
-			children_u8symbol.push(child_u8symbol);
+			// children_u8symbol.push(child_u8symbol);
+			var id = 'k' + child_fsw; //~
+			children_html += '<a href="#" class="kleafsymbol" id="'+id+'"><span>'+child_u8symbol+'</span></a> ';
 		}
-		var html = '<td>' + children_u8symbol.join(" ") + '</td>';
-		tr += html;
+		children_html += '</div>';
+		// var html = '<td>' + children_u8symbol.join(" ") + '</td>';
+		// tr += html;
+		tr += "<td>"+children_html+"</td>";
 	}
 	tr += '</tr>';
 	fingerContactTable += tr;
@@ -364,7 +370,7 @@
 	tr += "</tr>";
 	table += tr;
 	// Populate Sub-Symbols Row
-	tr = '<tr id="kleafsymbols">';
+	tr = '<tr id="kleafsymbols" class="u8symbols-row">';
 	for (var i=0; i<displayOrder_num.length; i++) {
 		var swHandshapeRoots_id = displayOrder_num[i]-1;
 		var swroot = swHandshapeRoots[swHandshapeRoots_id];

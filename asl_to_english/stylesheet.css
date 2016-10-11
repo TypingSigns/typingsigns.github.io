@@ -113,6 +113,11 @@ table tr td {
 table, table td {
 	border: 1px solid #ccc;
 }
+table tr.u8symbols-row td {
+	background: #e5e5e5;
+}
+
+
 table#contactlist, table#fingercontactlist {
 	display: inline-table;
 	/*TEMP HIDE*/
@@ -120,6 +125,11 @@ table#contactlist, table#fingercontactlist {
 }
 table#contactlist td, table#fingercontactlist td { /*temp*/
 	/*border: 1px solid white;*/
+	opacity: 0.25;
+}
+table#contactlist tr.u8symbols-row td, table#fingercontactlist tr.u8symbols-row td {
+	/*temp*/
+	opacity: 1.0;
 }
 table#contactlist {
 	width: 66%;
@@ -130,29 +140,21 @@ table#fingercontactlist {
 table#handlist {
 	width: 100%;
 }
-
 	table#handlist tr#fiveHandCategories td {
 		font-size: 2.0em;
 		position: relative;
 	}
 	table#handlist tr#swroot td {
 		font-size: 1.5em;
-		
-		/*padding-top: 8px;*/
-		/*padding-bottom: 2px;*/
-		
 	}
 
-	table#handlist tr#kleafsymbols td {
-		background: #e5e5e5;
-	}
-		table#handlist div.unicode-symbols {
+		table tr.u8symbols-row div.unicode-symbols {
 			/*background-color: beige;*/
 			font-family: 'SignWriting 2010';
 			line-height: 3.0em;
 		}
 		/* Fix for SignWriting 2010 Offset */
-		table#handlist div.unicode-symbols a {
+		table tr.u8symbols-row div.unicode-symbols a {
 			position: relative;
 			border: 1px solid gray;
 			margin-right: 5px;
@@ -160,7 +162,7 @@ table#handlist {
 			border-radius: 3px;
 		}
 
-		table#handlist div.unicode-symbols a span {
+		table tr.u8symbols-row div.unicode-symbols a span {
 			/*border: 1px dashed orange;*/
 			padding: 0 5px;
 			position: relative;
