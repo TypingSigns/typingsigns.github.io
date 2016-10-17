@@ -58,6 +58,9 @@
 		<div id="keyboard-area">
 			<input id="inputArea" type="text" name="gloss-entry" placeholder="𝧫...">
 		</div>
+		<div id="test-area">
+			<div id="temp-svg-holder"></div>
+		</div>
 	</div>
 </body>
 
@@ -507,7 +510,7 @@
 		// Get Value
 		var value = $('#inputArea').val();
 		value = value.trim();
-		if (value == "") {value = " 𝧫"; } // ~temp
+		if (value == "") {value = "EAT𝢅𝧫"; } //" 𝧫"; } // ~temp
 
 		// DIVIDE UP STRING BY CODEPOINTS - AND EXTRACT SEARCH TERMS
 		var codePoints = value.toCodePoints();
@@ -723,16 +726,73 @@
 		})
 	}
 
-	
+	function svgToPng_uri(rawSVG, callback) {
+		
+		var canvas = document.createElement('canvas');
+		var canvasId = 'canvas-'+($('cavans').length+1);
+		canvas.id = canvasId;
+		// document.body.appendChild(canvas); // unnecessary
+
+		// DETERMINE IMAGE SIZE
+		// Version 2016-10-early - when SignWriting Server had no width/height specifications. Erroneous as of 2016-10-17 - when the viewbox is set to large.
+		// ~ add to 'temp-svg-holder'
+		// H: This code-block-version remains here until we stop relying on SW-Server
+		// $('#temp-svg-holder').html(rawSVG);
+		// var svg = document.getElementById('temp-svg-holder').firstChild;
+		// var bbox = svg.getBBox(); //bbox.width, .height
+		// var width = bbox.width;
+		// var height = bbox.height;
+		// console.log(width, height);
+		// Version 2016-10-17 - when SignWriting Server's SVG's now have width and height specifications.
+		var svg = $.parseHTML(rawSVG);
+		var width = $(rawSVG).attr('width');
+		var height = $(rawSVG).attr('height');
+
+		// Set CANVAS SIZE
+		canvas.width = width;
+		canvas.height = height;
+
+		// Canvas Context
+		var ctx = canvas.getContext("2d");
+
+		// DRAW INLINE SVG
+		// via: http://stackoverflow.com/questions/27230293/how-to-convert-svg-to-png-using-html5-canvas-javascript-jquery-and-save-on-serve
+	    var svg = new Blob([rawSVG], {type:"image/svg+xml;charset=utf-8"}),
+	        domURL = self.URL || self.webkitURL || self,
+	        url = domURL.createObjectURL(svg),
+	        img = new Image;
+	    img.onload = function () {
+	        ctx.drawImage(this, 0,0);
+	        domURL.revokeObjectURL(url);
+
+	        var pngURI = canvas.toDataURL();
+	        callback(pngURI);
+
+	    };
+	    img.src = url;
+	}
 
 	function loadSvgToEntry(id, fsw, unicode8searchTerms) {
 		var url = "https://swserver.wmflabs.org/svg/";
 		url += fsw;
+		// Load SVG
 		$.get(url, function(data) {
+			var svgHtml = data.firstChild.outerHTML;
+			// console.log(svgHtml);
+			// console.log('---');
+
+			// Set ENTRY Data
 			$('#e'+id).attr("search-terms", unicode8searchTerms);
-			$('#e'+id+' .svg-wrapper').html(data.firstChild);
+			$('#e'+id+' .svg-wrapper').html(svgHtml);
 			$('#e'+id+' .svg-wrapper').addClass("loaded-svg");
 			$('#e'+id+' .svg-wrapper').attr("fsw", fsw);
+
+			// LOAD SVG
+			svgToPng_uri(svgHtml, function(uri) {
+				var imgHtml = '<img src="'+uri+'">';
+				$('#e'+id+' .svg-wrapper').append(imgHtml)
+			});
+
 		});
 	}
 
