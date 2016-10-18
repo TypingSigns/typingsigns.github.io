@@ -15,17 +15,23 @@
 	<meta name="twitter:title" content="TypingSigns">
 	<meta name="twitter:url" content="http://www.typingsigns.com/">
 	<meta name="twitter:card" content="summary">
-	<meta name="description" content="Discover ASL and Sign Languages with the Typing Signs iOS App, keyboard, ASL to English dictionary, and English Gloss to American Sign Language lookup.">
 
-	<script src="js/ga-track.js"></script> 
+	<meta name="description" content="Discover ASL and Sign Languages with the Typing Signs iOS App, keyboard, ASL to English dictionary, and English Gloss to American Sign Language lookup.">
+	<meta name="keywords" content="Write,Type,Typing,American,Sign,Language,ASL,Dictionary">
+	<meta name="author" content="Typing Signs">
+
 	<!-- Switch to root reference after tests that ga-track works -->
-	<!-- <script src="/js/ga-track.js"></script> -->
+	<script src="/js/ga-track.js"></script>
 
 	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
 	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
 
 	<!-- iOS Viewport -->
 	<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+
+	<!-- Potential Futures:
+		- perhaps introduce a simple English-Gloss -> SignWritten-ASL translator (word-by-word, no grammar support yet)
+	 -->
 
 </head>
 
@@ -269,8 +275,8 @@
 
 <div id="body-header">
 	<a href="#">🏠 Typing Signs</a>
-	<a href="asl_to_english/search_by_sign.html">👋 ASL to English (β)</a>
-	<a href="asl_lookup/ASL-lookup.html">🔤 English to ASL</a>
+	<a href="asl-by-sign/index.html">👋 ASL to English (β)</a>
+	<a href="english-to-asl/index.html">🔤 English to ASL</a>
 </div>
 
 <div id="ts-wrapper" class="content-block">
@@ -294,20 +300,19 @@
 <div id="other-projects-wrapper" class="content-block light-gradient-background">
 	<h2>Other Projects</h2>
 	<div class="project">
-		<a href="asl_to_english/search_by_sign.html" class="multilingual-container"><span class="emoji">👋→🔤</span><span class="english">ASL to English Dictionary (β)</span></a>
+		<a href="asl-by-sign/index.html" class="multilingual-container"><span class="emoji">👋→🔤</span><span class="english">ASL to English Dictionary (β)</span></a>
 		<span class="description">Look up the English meaning of ASL Signs. (Experimental. Requires Chrome.)</span>
 		<img src="signing.png" alt="SignWriting symbol for the gloss: SIGNING">
 	</div>
 
 	<div class="project">
-		<a href="asl_lookup/ASL-lookup.html" class="multilingual-container"><span class="emoji">🔤→👋</span><span class="english">English to ASL Dictionary</span></a>
+		<a href="english-to-asl/index.html" class="multilingual-container"><span class="emoji">🔤→👋</span><span class="english">English to ASL Dictionary</span></a>
 		<span class="description">Look up American Sign Language by their English Gloss - across multiple dictionaries.</span>
 		<img src="english.png" alt="SignWriting symbol for the gloss: ENGLISH">
-
 	</div>
 </div>
 <div id="feedback-wrapper" class="content-block">
-	Write to us at: <a href="mailto:typingsigns@gmail.com?Subject=Hello">typingsigns@gmail.com</a>.
+	Write to us at: <a href="mailto:typingsigns@gmail.com?Subject=Hello" itemprop="email">typingsigns@gmail.com</a>.
 	We would ♥︎ reading your thoughts.
 </div>
 <div id="about-wrapper" class="content-block">
