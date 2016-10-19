@@ -7,19 +7,19 @@
 
 <url>
   <loc>http://www.typingsigns.com/</loc>
-  <lastmod>2016-10-18T08:55:24+00:00</lastmod>
+  <lastmod>2016-10-18T10:02:37+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>http://www.typingsigns.com/asl_to_english/search_by_sign.html</loc>
-  <lastmod>2016-10-18T08:55:24+00:00</lastmod>
+  <loc>http://www.typingsigns.com/asl-by-sign/index.html</loc>
+  <lastmod>2016-10-18T10:02:37+00:00</lastmod>
   <changefreq>monthly</changefreq>
-  <priority>0.80</priority>
+  <priority>0.70</priority>
 </url>
 <url>
-  <loc>http://www.typingsigns.com/asl_lookup/ASL-lookup.html</loc>
-  <lastmod>2016-10-18T08:55:24+00:00</lastmod>
+  <loc>http://www.typingsigns.com/english-to-asl/index.html</loc>
+  <lastmod>2016-10-18T10:02:37+00:00</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.80</priority>
 </url>
