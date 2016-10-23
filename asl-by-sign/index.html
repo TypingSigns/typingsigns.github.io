@@ -299,7 +299,7 @@
 	}
 	// Add General Contact Symbols
 	// Sort of Create a tree - and assign at the same time
-	var ancestor0_rep = contactLevel0_singleSymbol;
+	var ancestor0_rep1 = contactLevel0_singleSymbol;
 	for (var i=0; i<contactLevel1.length; i++) {
 		var e = contactLevel1[i];
 		for (var c=0; c<e.children.length; c++) {
@@ -313,16 +313,31 @@
 						var leaf_fsw = curNode.children[l];
 						var leaf_u8 = findUnicode8SuttonSymbols(leaf_fsw)[0];
 						if (!swleaf_parents_lookup[leaf_u8]) { swleaf_parents_lookup[leaf_u8] = []; }
-						swleaf_parents_lookup[leaf_u8] = swleaf_parents_lookup[leaf_u8].concat([ancestor0_rep, e.rep, curNode.rep]);
+						swleaf_parents_lookup[leaf_u8] = swleaf_parents_lookup[leaf_u8].concat([ancestor0_rep1, e.rep, curNode.rep]);
 					}
 					break;
 				}
 			}
 		}
 	}
-	// Add Face Table Symbols
-	// var tableTree_3L1 = faceTableTree_3L1;
 
+	// Add Face Table Symbols
+	var tableTree_3L1 = faceTableTree_3L1;
+	var ancester0_rep2 = tableTree_3L1[0].rep; // ensure ancester0_rep is this one
+	for (var i=0; i<tableTree_3L1[0].children.length; i++) {
+		var e = tableTree_3L1[0].children[i];
+		var ancestor1_rep = e.rep;
+		var children = e.children;
+		for (var c=0; c<children.length; c++) {
+			var leaf_fsw = children[c];
+			var leaf_u8 = findUnicode8SuttonSymbols(leaf_fsw)[0];
+			// Add Parents to Leaf-Lookup
+			if (!swleaf_parents_lookup[leaf_u8]) { swleaf_parents_lookup[leaf_u8] = []; }
+			swleaf_parents_lookup[leaf_u8] = swleaf_parents_lookup[leaf_u8].concat([ancester0_rep2, ancestor1_rep]);
+
+			console.log(swleaf_parents_lookup[leaf_u8]);
+		}
+	}
 
 	// Add SearchTerm (Updateable) (To be solidified as a separate file in Production)
 	for (var i=0; i<signPuddleEntries.length; i++) {
@@ -420,7 +435,6 @@
 		row_html += '</tr>\n'
 		rows_html += row_html;
 	}
-	console.log(rows_html);
 
 	// Add Table
 	var faceTable = '<table id="facelist" class="debug">';
