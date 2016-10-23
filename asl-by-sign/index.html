@@ -245,14 +245,13 @@
 	var ubodyTableTree_3L1 = [
 		{
 			'id':'UPPER-BODY',
-			'rep':'🏋',
+			'rep':'🏋', //👕ꆜ웃
 			'children':ubodyLevelA
 		}
 	]
 
 	///////////////////////////////
 	// MOVEMENT // just using the signWriting-category-defaults for the time-being.
-	var moveLevel0_singleSymbol = "⚛";
 	var moveLevelA_swDefault = [
 		{'id':'WALL-STRAIGHT', 	'swrootcat':'S22a00', 'rep': '◫✛'},
 		{'id':'DIAGONAL',	 	'swrootcat':'S25500', 'rep': '▤◫✯'},
@@ -270,6 +269,13 @@
 		var childrenBaseSw = swRootSymbolCategories[swCategory];
 		e['children'] = childrenBaseSw;
 	}
+	var moveTableTree_3L1 = [
+		{
+			'id':'MOVEMENT',
+			'rep':'⚛',
+			'children':moveLevelA_swDefault
+		}
+	]
 	
 
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +355,9 @@
 
 	// Add UpperBody Table Symbols
 	import_tableTree3L1Symbols_to_swleafParentsLookup(ubodyTableTree_3L1);
+
+	// Add Movement Table Symbols
+	import_tableTree3L1Symbols_to_swleafParentsLookup(moveTableTree_3L1);
 	
 
 	// Add SearchTerm (Updateable) (To be solidified as a separate file in Production)
@@ -456,8 +465,16 @@
 	}
 
 	///////////////////////////////////////////////
+	// MOVE TABLE
+	var moveTable = '<table id="movelist">';
+	var moveTable3L1_arr = convert_tableTree3L1_to_tableArray3L1(moveTableTree_3L1);
+	moveTable += convert_tableArray3L1_to_tdHtml(moveTable3L1_arr);
+	moveTable += '</table>';
+	$('#keyboard-area').append(moveTable);
+
+	///////////////////////////////////////////////
 	// UPPERBODY TABLE
-	var ubodyTable = '<table id="ubodylist" class="debug">';
+	var ubodyTable = '<table id="ubodylist">';
 	var ubodyTable3L1_arr = convert_tableTree3L1_to_tableArray3L1(ubodyTableTree_3L1);
 	ubodyTable += convert_tableArray3L1_to_tdHtml(ubodyTable3L1_arr);
 	ubodyTable += '</table>';
