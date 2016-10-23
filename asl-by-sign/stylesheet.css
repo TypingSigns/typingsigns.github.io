@@ -186,25 +186,25 @@ table tr:first-child td {
 table tr:nth-child(2) td {
 	font-size: 1.5em;
 }
-table#contactlist, table#fingercontactlist {
+table#contactlist, table#fingercontactlist, table#movelist, table#ubodylist, table#facelist {
 	display: inline-table;
 	vertical-align: top;
-	/*TEMP HIDE*/
-	/*display: none;*/
 }
-table#contactlist td, table#fingercontactlist td { /*temp*/
-	/*border: 1px solid white;*/
-	/*opacity: 0.25;*/
+table#movelist {
+	width: 100%;
 }
-table#contactlist tr.u8symbols-row td, table#fingercontactlist tr.u8symbols-row td {
-	/*temp*/
-	/*opacity: 1.0;*/
+
+table#facelist {
+	width: 60%;
+}
+table#ubodylist {
+	width: 10%;
 }
 table#contactlist {
-	width: 66%;
+	width: 20%;
 }
 table#fingercontactlist {
-	width: 34%;
+	width: 10%;
 }
 table#handlist {
 	width: 100%;

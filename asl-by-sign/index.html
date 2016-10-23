@@ -260,7 +260,7 @@
 		{'id':'WALL-HITTING', 	'swrootcat':'S2a600', 'rep': '◫✯'},
 		{'id':'FLOOR-HITTING', 	'swrootcat':'S2b700', 'rep': '▤✯'},
 		{'id':'FLOOR-CURVE', 	'swrootcat':'S2d500', 'rep': '▤◡'},
-		{'id':'CIRCLE', 		'swrootcat':'S2e300', 'rep': '○'},
+		{'id':'CIRCLE', 		'swrootcat':'S2e300', 'rep': '🔃'},
 	];
 	// fill with children, according to swRootSymbolCategories
 	for (var i=0; i<moveLevelA_swDefault.length; i++) {
@@ -472,13 +472,6 @@
 	moveTable += '</table>';
 	$('#keyboard-area').append(moveTable);
 
-	///////////////////////////////////////////////
-	// UPPERBODY TABLE
-	var ubodyTable = '<table id="ubodylist">';
-	var ubodyTable3L1_arr = convert_tableTree3L1_to_tableArray3L1(ubodyTableTree_3L1);
-	ubodyTable += convert_tableArray3L1_to_tdHtml(ubodyTable3L1_arr);
-	ubodyTable += '</table>';
-	$('#keyboard-area').append(ubodyTable);
 
 	///////////////////////////////////////////////
 	// FACE TABLE
@@ -487,6 +480,16 @@
 	faceTable += convert_tableArray3L1_to_tdHtml(faceTable3L1_arr);
 	faceTable += '</table>';
 	$('#keyboard-area').append(faceTable);
+
+
+	///////////////////////////////////////////////
+	// UPPERBODY TABLE
+	var ubodyTable = '<table id="ubodylist">';
+	var ubodyTable3L1_arr = convert_tableTree3L1_to_tableArray3L1(ubodyTableTree_3L1);
+	ubodyTable += convert_tableArray3L1_to_tdHtml(ubodyTable3L1_arr);
+	ubodyTable += '</table>';
+	$('#keyboard-area').append(ubodyTable);
+	
 
 	///////////////////////////////////////////////
 	// CONTACT TABLE
