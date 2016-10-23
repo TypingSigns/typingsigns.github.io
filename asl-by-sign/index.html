@@ -206,7 +206,8 @@
 	///////////////////////////////
 	// BODY PARTS
 	// Going in inverse order
-	var faceLevelB_singleSymbol = "😑️";
+
+	// Face:
 	var faceLevelA = [
 		{'id':'HEAD', 		'rootSymbolCategory':'S2ff00', 'rep':'🔵'},
 		{'id':'EYEBROWS', 	'rootSymbolCategory':'S30a00', 'rep':'👀'},
@@ -221,7 +222,6 @@
 		var childrenBaseSw = swRootSymbolCategories[swCategory];
 		e['children'] = childrenBaseSw;
 	}
-	// ~
 	var faceTableTree_3L1 = [ // ~ assuming for now a 3-level-tree with only 1 header element
 		{
 			'id':'FACE-ELEMENTS',
@@ -229,20 +229,26 @@
 			'children':faceLevelA
 		}
 	];
-	// ~
 
-	var chestLevelB_singleSymbol = "ꆜ"
-	var chestLevelA = [
+	// Upper Body
+	var ubodyLevelA = [
 		{'id':'TORSO', 		'rootSymbolCategory':'S36d00', 'rep':'🎽'},
 		{'id':'LIMBS', 		'rootSymbolCategory':'S37600', 'rep':'💪'},
 	];
 	// fill with children, according to swRootSymbolCategories
-	for (var i=0; i<chestLevelA.length; i++) {
-		var e = chestLevelA[i];
+	for (var i=0; i<ubodyLevelA.length; i++) {
+		var e = ubodyLevelA[i];
 		var swCategory = e['rootSymbolCategory'];
 		var childrenBaseSw = swRootSymbolCategories[swCategory];
 		e['children'] = childrenBaseSw;
 	}
+	var ubodyTableTree_3L1 = [
+		{
+			'id':'UPPER-BODY',
+			'rep':'🏋',
+			'children':ubodyLevelA
+		}
+	]
 
 	///////////////////////////////
 	// MOVEMENT // just using the signWriting-category-defaults for the time-being.
@@ -321,23 +327,29 @@
 		}
 	}
 
-	// Add Face Table Symbols
-	var tableTree_3L1 = faceTableTree_3L1;
-	var ancester0_rep2 = tableTree_3L1[0].rep; // ensure ancester0_rep is this one
-	for (var i=0; i<tableTree_3L1[0].children.length; i++) {
-		var e = tableTree_3L1[0].children[i];
-		var ancestor1_rep = e.rep;
-		var children = e.children;
-		for (var c=0; c<children.length; c++) {
-			var leaf_fsw = children[c];
-			var leaf_u8 = findUnicode8SuttonSymbols(leaf_fsw)[0];
-			// Add Parents to Leaf-Lookup
-			if (!swleaf_parents_lookup[leaf_u8]) { swleaf_parents_lookup[leaf_u8] = []; }
-			swleaf_parents_lookup[leaf_u8] = swleaf_parents_lookup[leaf_u8].concat([ancester0_rep2, ancestor1_rep]);
-
-			console.log(swleaf_parents_lookup[leaf_u8]);
+	// FUNCTION add tableTree_3L1 symbols to swleaf_parents
+	function import_tableTree3L1Symbols_to_swleafParentsLookup(tableTree_3L1) {
+		var ancester0_rep = tableTree_3L1[0].rep; // ensure ancester0_rep is this one
+		for (var i=0; i<tableTree_3L1[0].children.length; i++) {
+			var e = tableTree_3L1[0].children[i];
+			var ancestor1_rep = e.rep;
+			var children = e.children;
+			for (var c=0; c<children.length; c++) {
+				var leaf_fsw = children[c];
+				var leaf_u8 = findUnicode8SuttonSymbols(leaf_fsw)[0];
+				// Add Parents to Leaf-Lookup
+				if (!swleaf_parents_lookup[leaf_u8]) { swleaf_parents_lookup[leaf_u8] = []; }
+				swleaf_parents_lookup[leaf_u8] = swleaf_parents_lookup[leaf_u8].concat([ancester0_rep, ancestor1_rep]);
+			}
 		}
 	}
+
+	// Add Face Table Symbols
+	import_tableTree3L1Symbols_to_swleafParentsLookup(faceTableTree_3L1);
+
+	// Add UpperBody Table Symbols
+	import_tableTree3L1Symbols_to_swleafParentsLookup(ubodyTableTree_3L1);
+	
 
 	// Add SearchTerm (Updateable) (To be solidified as a separate file in Production)
 	for (var i=0; i<signPuddleEntries.length; i++) {
@@ -382,63 +394,80 @@
 	var tr = '';
 
 	///////////////////////////////////////////////
+	// TABLE-FORMATS CONVERSION FUNCTIONS
+
+	function convert_tableTree3L1_to_tableArray3L1(tableTree_3L1) {
+		// TURN 3-LEVEL-TREE-WITH-ONE-HEAD.json INTO Table-Array
+		var table_3L = tableTree_3L1[0]; // assuming a 3Level tree - with Only one Head
+		var table_arr = new Array(3);
+		var children = table_3L.children;
+		var table_rep = table_3L.rep;
+		var tr0td0_rep = '<a href="#" class="ku8ancestor" string="'+table_rep+'">' + table_rep + '</a>'
+		table_arr[0] = {'cells':[{'rep':tr0td0_rep, 'colspan':children.length}]}; // <- on deeper levels, ColSpan would be fed upwards.
+		table_arr[1] = {'cells':[]};
+		table_arr[2] = {'class':'u8symbols-row', 'cells':[]};
+		// table_arr[2] = {'cells':[]}; // ~ temp unclassed - so we can see
+		for (var i=0; i<children.length; i++) {
+			var e = children[i];
+			var rep = e.rep;
+			var leaves = e.children;
+
+			// Level 1 Representation
+			var level1td_html = '<a href="#" class="ku8ancestor" string="'+rep+'">' + rep + '</a>';
+			var level1_td = {'rep':level1td_html};
+			table_arr[1].cells.push(level1_td);
+
+			// Level 2 (Leaf) Representation
+			var level2_td = {'rep':leaves.join(' ')};
+			var children_html = '<div class="unicode-symbols">'
+			for (var h=0; h<leaves.length; h++) {
+				var child_fsw = leaves[h];
+				var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
+				var id = 'k' + child_fsw;
+				children_html += '<a href="#" class="kleafsymbol" id="'+id+'" string="'+child_u8symbol+'"><span>'+child_u8symbol+'</span></a> ';
+			}
+			children_html += '</div>';
+			// table_arr[2].cells.push( {'rep':leaves.join(' ')} ); 
+			table_arr[2].cells.push( {'rep':children_html} ); 
+		}
+		return table_arr;
+	}
+
+	function convert_tableArray3L1_to_tdHtml(table_arr) {
+		// Turn Table-Array-3-Level into Actual Table // Assumes a 3-level-array-representing-table
+		var rows_html = "";
+		for (var i=0; i<table_arr.length; i++) {
+			var row = table_arr[i];
+			var class_html = row.class?(' class="'+row.class+'"'):'';
+			var row_html = '<tr' + class_html + '>';
+			var cols = row.cells;
+			for (var j=0; j<cols.length; j++) {
+				var cell = cols[j];
+				var colspan_html = cell.colspan?(' colspan="'+cell.colspan+'"'):'';
+				var cell_html = '<td'+colspan_html+'>';
+				cell_html += cell.rep;
+				cell_html += '</td>'
+				row_html += cell_html;
+			}
+			row_html += '</tr>\n'
+			rows_html += row_html;
+		}
+		return rows_html;
+	}
+
+	///////////////////////////////////////////////
+	// UPPERBODY TABLE
+	var ubodyTable = '<table id="ubodylist" class="debug">';
+	var ubodyTable3L1_arr = convert_tableTree3L1_to_tableArray3L1(ubodyTableTree_3L1);
+	ubodyTable += convert_tableArray3L1_to_tdHtml(ubodyTable3L1_arr);
+	ubodyTable += '</table>';
+	$('#keyboard-area').append(ubodyTable);
+
+	///////////////////////////////////////////////
 	// FACE TABLE
-	// TURN 3-LEVEL-TREE-WITH-ONE-HEAD.json INTO Table-Array
-	var table_3L = faceTableTree_3L1[0]; // assuming a 3Level tree - with Only one Head
-	var table_arr = new Array(3);
-	var children = table_3L.children;
-	var table_rep = table_3L.rep;
-	var tr0td0_rep = '<a href="#" class="ku8ancestor" string="'+table_rep+'">' + table_rep + '</a>'
-	table_arr[0] = {'cells':[{'rep':tr0td0_rep, 'colspan':children.length}]}; // <- on deeper levels, ColSpan would be fed upwards.
-	table_arr[1] = {'cells':[]};
-	table_arr[2] = {'class':'u8symbols-row', 'cells':[]};
-	// table_arr[2] = {'cells':[]}; // ~ temp unclassed - so we can see
-	for (var i=0; i<children.length; i++) {
-		var e = children[i];
-		var rep = e.rep;
-		var leaves = e.children;
-
-		// Level 1 Representation
-		var level1td_html = '<a href="#" class="ku8ancestor" string="'+rep+'">' + rep + '</a>';
-		var level1_td = {'rep':level1td_html};
-		table_arr[1].cells.push(level1_td);
-
-		// Level 2 (Leaf) Representation
-		var level2_td = {'rep':leaves.join(' ')};
-		var children_html = '<div class="unicode-symbols">'
-		for (var h=0; h<leaves.length; h++) {
-			var child_fsw = leaves[h];
-			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
-			var id = 'k' + child_fsw;
-			children_html += '<a href="#" class="kleafsymbol" id="'+id+'" string="'+child_u8symbol+'"><span>'+child_u8symbol+'</span></a> ';
-		}
-		children_html += '</div>';
-		// table_arr[2].cells.push( {'rep':leaves.join(' ')} ); 
-		table_arr[2].cells.push( {'rep':children_html} ); 
-	}
-
-	// Turn Table-Array-3-Level into Actual Table // Assumes a 3-level-array-representing-table
-	var rows_html = "";
-	for (var i=0; i<table_arr.length; i++) {
-		var row = table_arr[i];
-		var class_html = row.class?(' class="'+row.class+'"'):'';
-		var row_html = '<tr' + class_html + '>';
-		var cols = row.cells;
-		for (var j=0; j<cols.length; j++) {
-			var cell = cols[j];
-			var colspan_html = cell.colspan?(' colspan="'+cell.colspan+'"'):'';
-			var cell_html = '<td'+colspan_html+'>';
-			cell_html += cell.rep;
-			cell_html += '</td>'
-			row_html += cell_html;
-		}
-		row_html += '</tr>\n'
-		rows_html += row_html;
-	}
-
-	// Add Table
-	var faceTable = '<table id="facelist" class="debug">';
-	faceTable += rows_html;
+	var faceTable = '<table id="facelist">';
+	var faceTable3L1_arr = convert_tableTree3L1_to_tableArray3L1(faceTableTree_3L1);
+	faceTable += convert_tableArray3L1_to_tdHtml(faceTable3L1_arr);
 	faceTable += '</table>';
 	$('#keyboard-area').append(faceTable);
 
