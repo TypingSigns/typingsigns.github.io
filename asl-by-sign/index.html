@@ -24,6 +24,8 @@
 		- Use own Server for rendering icons. Or pre-render and store them locally.
 		- Add Chrome-Desktop-Only disclaimer if opened in Safari. (SAFARI has font-handling issues with SignWriting 2010)
 
+		- Clean Up Code - starting with unifying the handling of table-generation (~ in a modularised form to still allow for flexibility)
+
 		- Allow search terms to be encoded to URL, so they can be copied and pasted and searched-for again.
 
 		- move '+' (grasps) from ⚡ too § (parents)
@@ -223,7 +225,7 @@
 	var faceTableTree_3L1 = [ // ~ assuming for now a 3-level-tree with only 1 header element
 		{
 			'id':'FACE-ELEMENTS',
-			'rep':'😑️',
+			'rep':'😑',
 			'children':faceLevelA
 		}
 	];
@@ -318,6 +320,9 @@
 			}
 		}
 	}
+	// Add Face Table Symbols
+	// var tableTree_3L1 = faceTableTree_3L1;
+
 
 	// Add SearchTerm (Updateable) (To be solidified as a separate file in Production)
 	for (var i=0; i<signPuddleEntries.length; i++) {
@@ -366,37 +371,46 @@
 	// TURN 3-LEVEL-TREE-WITH-ONE-HEAD.json INTO Table-Array
 	var table_3L = faceTableTree_3L1[0]; // assuming a 3Level tree - with Only one Head
 	var table_arr = new Array(3);
-	var table_rep = table_3L.rep;
 	var children = table_3L.children;
-	table_arr[0] = [{'rep':table_rep, 'colspan':children.length}]; // <- on deeper levels, ColSpan would be fed upwards.
-	table_arr[1] = [];
-	table_arr[2] = [];
+	var table_rep = table_3L.rep;
+	var tr0td0_rep = '<a href="#" class="ku8ancestor" string="'+table_rep+'">' + table_rep + '</a>'
+	table_arr[0] = {'cells':[{'rep':tr0td0_rep, 'colspan':children.length}]}; // <- on deeper levels, ColSpan would be fed upwards.
+	table_arr[1] = {'cells':[]};
+	table_arr[2] = {'class':'u8symbols-row', 'cells':[]};
+	// table_arr[2] = {'cells':[]}; // ~ temp unclassed - so we can see
 	for (var i=0; i<children.length; i++) {
 		var e = children[i];
 		var rep = e.rep;
 		var leaves = e.children;
 
 		// Level 1 Representation
-		var level1_td = {'rep':rep};
-		table_arr[1].push(level1_td);
+		var level1td_html = '<a href="#" class="ku8ancestor" string="'+rep+'">' + rep + '</a>';
+		var level1_td = {'rep':level1td_html};
+		table_arr[1].cells.push(level1_td);
 
 		// Level 2 (Leaf) Representation
 		var level2_td = {'rep':leaves.join(' ')};
-		table_arr[2].push(level2_td); 
-
-		for (var j=0; j<leaves.length; j++) {
-			var leaf = leaves[j];
-			// console.log(leaf);
+		var children_html = '<div class="unicode-symbols">'
+		for (var h=0; h<leaves.length; h++) {
+			var child_fsw = leaves[h];
+			var child_u8symbol = findUnicode8SuttonSymbols(child_fsw)[0];
+			var id = 'k' + child_fsw;
+			children_html += '<a href="#" class="kleafsymbol" id="'+id+'" string="'+child_u8symbol+'"><span>'+child_u8symbol+'</span></a> ';
 		}
+		children_html += '</div>';
+		// table_arr[2].cells.push( {'rep':leaves.join(' ')} ); 
+		table_arr[2].cells.push( {'rep':children_html} ); 
 	}
 
 	// Turn Table-Array-3-Level into Actual Table // Assumes a 3-level-array-representing-table
 	var rows_html = "";
 	for (var i=0; i<table_arr.length; i++) {
-		var row_html = '<tr>'
 		var row = table_arr[i];
-		for (var j=0; j<row.length; j++) {
-			var cell = row[j];
+		var class_html = row.class?(' class="'+row.class+'"'):'';
+		var row_html = '<tr' + class_html + '>';
+		var cols = row.cells;
+		for (var j=0; j<cols.length; j++) {
+			var cell = cols[j];
 			var colspan_html = cell.colspan?(' colspan="'+cell.colspan+'"'):'';
 			var cell_html = '<td'+colspan_html+'>';
 			cell_html += cell.rep;
@@ -406,9 +420,10 @@
 		row_html += '</tr>\n'
 		rows_html += row_html;
 	}
+	console.log(rows_html);
 
 	// Add Table
-	var faceTable = '<table id="facelist">';
+	var faceTable = '<table id="facelist" class="debug">';
 	faceTable += rows_html;
 	faceTable += '</table>';
 	$('#keyboard-area').append(faceTable);
@@ -948,9 +963,13 @@
 		$('displaySwLeavesButton').show();
 
 		if (keyboardHeight_withLeafs > mainHeight*0.75) {
+			// HIDE MODE
 			$('tr.u8symbols-row').hide();
 			keyboardHeight_current = $('#keyboard-area').outerHeight();
 		}
+
+		// TEMP: DEBUG:
+			$('table.debug tr.u8symbols-row').show(); // ~ // DEBUG
 		
 		updateUpperHeight();
 	}
@@ -959,7 +978,7 @@
 
 		var keyboardHeight_current = $('#keyboard-area').outerHeight();
 
-		// Update height // (this seems convoluted/impossible in css, hence the js)
+		// Update height // (this seems convoluted/annoying in css, hence the js)
 		var upperHeight = parseInt(mainHeight - keyboardHeight_current);
 		$('#upper-wrapper').height(upperHeight);	
 	}
