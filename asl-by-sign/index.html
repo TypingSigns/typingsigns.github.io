@@ -22,10 +22,15 @@
 		- remove excessive unicode8 symbols, from the regex search of an FSW-string.
 		- create a font of single-characters u8 symbols with corrected height.
 		- Use own Server for rendering icons. Or pre-render and store them locally.
-		- Allow images to be dragged out (e.g. PNGs)
 		- Add Chrome-Desktop-Only disclaimer if opened in Safari. (SAFARI has font-handling issues with SignWriting 2010)
 
 		- Allow search terms to be encoded to URL, so they can be copied and pasted and searched-for again.
+
+		- move '+' (grasps) from ⚡ too § (parents)
+		- ~ custom scoring and grouping of results by their ~meaning (~gloss)
+		- add in a generic 'Face' symbol button
+
+		- ~ add relative positioning/direction for face-element-positions / movements - for easier search - if necessary
 	 -->
 </head>
 
@@ -181,7 +186,8 @@
 	// // iterate through; replace with actualy symbol
 	// for (var property in swRootSymbolCategories) {
 	// 	console.log(property);
-	// 	// var property_swBaseSymbol = findUnicode8SuttonSymbols(property);
+	// 	var property_swBaseSymbol = findUnicode8SuttonSymbols(property)[0];
+	// 	console.log(property_swBaseSymbol);
 	// 	if (swRootSymbolCategories.hasOwnProperty(property)) {
 	// 		var subfsws = swRootSymbolCategories[property];
 	// 		var sub_swbaseSymbols = [];
@@ -194,6 +200,70 @@
 	// 		console.log(sub_swbaseSymbols);
 	// 	}
 	// }
+
+	///////////////////////////////
+	// BODY PARTS
+	// Going in inverse order
+	var faceLevelB_singleSymbol = "😑️";
+	var faceLevelA = [
+		{'id':'HEAD', 		'rootSymbolCategory':'S2ff00', 'rep':'🔵'},
+		{'id':'EYEBROWS', 	'rootSymbolCategory':'S30a00', 'rep':'👀'},
+		{'id':'CHEEKS', 	'rootSymbolCategory':'S32a00', 'rep':'🌬'},
+		{'id':'MOUTH', 		'rootSymbolCategory':'S33b00', 'rep':'👄'},
+		{'id':'TONGUE', 	'rootSymbolCategory':'S35900', 'rep':'👅'},
+	];
+	// fill with children, according to swRootSymbolCategories
+	for (var i=0; i<faceLevelA.length; i++) {
+		var e = faceLevelA[i];
+		var swCategory = e['rootSymbolCategory'];
+		var childrenBaseSw = swRootSymbolCategories[swCategory];
+		e['children'] = childrenBaseSw;
+	}
+
+	// ~
+	var faceTableTree = [
+		{
+			'id':'FACE-ELEMENTS',
+			'rep':'😑️',
+			'children':faceLevelA
+		}
+	];
+	// ~
+
+	var chestLevelB_singleSymbol = "ꆜ"
+	var chestLevelA = [
+		{'id':'TORSO', 		'rootSymbolCategory':'S36d00', 'rep':'🎽'},
+		{'id':'LIMBS', 		'rootSymbolCategory':'S37600', 'rep':'💪'},
+	];
+	// fill with children, according to swRootSymbolCategories
+	for (var i=0; i<chestLevelA.length; i++) {
+		var e = chestLevelA[i];
+		var swCategory = e['rootSymbolCategory'];
+		var childrenBaseSw = swRootSymbolCategories[swCategory];
+		e['children'] = childrenBaseSw;
+	}
+
+	///////////////////////////////
+	// MOVEMENT // just using the signWriting-category-defaults for the time-being.
+	var moveLevel0_singleSymbol = "⚛";
+	var moveLevelA_swDefault = [
+		{'id':'WALL-STRAIGHT', 	'swrootcat':'S22a00', 'rep': '◫✛'},
+		{'id':'DIAGONAL',	 	'swrootcat':'S25500', 'rep': '▤◫✯'},
+		{'id':'FLOOR-STRAIGHT',	'swrootcat':'S26500', 'rep': '▤✛'},
+		{'id':'WALL-CURVE', 	'swrootcat':'S28800', 'rep': '◫◡'},
+		{'id':'WALL-HITTING', 	'swrootcat':'S2a600', 'rep': '◫✯'},
+		{'id':'FLOOR-HITTING', 	'swrootcat':'S2b700', 'rep': '▤✯'},
+		{'id':'FLOOR-CURVE', 	'swrootcat':'S2d500', 'rep': '▤◡'},
+		{'id':'CIRCLE', 		'swrootcat':'S2e300', 'rep': '○'},
+	];
+	// fill with children, according to swRootSymbolCategories
+	for (var i=0; i<moveLevelA_swDefault.length; i++) {
+		var e = moveLevelA_swDefault[i];
+		var swCategory = e['swrootcat'];
+		var childrenBaseSw = swRootSymbolCategories[swCategory];
+		e['children'] = childrenBaseSw;
+	}
+	
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// ONE-TIME GENERATION.
@@ -290,12 +360,14 @@
 	});
 
 	// KEYBOARD TABLE(S):
-
 	var tr = '';
 
 	///////////////////////////////////////////////
-	// CONTACT TABLE
+	// FACE TABLE
 
+
+	///////////////////////////////////////////////
+	// CONTACT TABLE
 	var contactTable = '<table id="contactlist">';
 	// var tr = '';
 	// Add Level0-Header (custom - over 6 columns)
