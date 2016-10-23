@@ -219,9 +219,8 @@
 		var childrenBaseSw = swRootSymbolCategories[swCategory];
 		e['children'] = childrenBaseSw;
 	}
-
 	// ~
-	var faceTableTree = [
+	var faceTableTree_3L1 = [ // ~ assuming for now a 3-level-tree with only 1 header element
 		{
 			'id':'FACE-ELEMENTS',
 			'rep':'😑️',
@@ -364,7 +363,55 @@
 
 	///////////////////////////////////////////////
 	// FACE TABLE
+	// TURN 3-LEVEL-TREE-WITH-ONE-HEAD.json INTO Table-Array
+	var table_3L = faceTableTree_3L1[0]; // assuming a 3Level tree - with Only one Head
+	var table_arr = new Array(3);
+	var table_rep = table_3L.rep;
+	var children = table_3L.children;
+	table_arr[0] = [{'rep':table_rep, 'colspan':children.length}]; // <- on deeper levels, ColSpan would be fed upwards.
+	table_arr[1] = [];
+	table_arr[2] = [];
+	for (var i=0; i<children.length; i++) {
+		var e = children[i];
+		var rep = e.rep;
+		var leaves = e.children;
 
+		// Level 1 Representation
+		var level1_td = {'rep':rep};
+		table_arr[1].push(level1_td);
+
+		// Level 2 (Leaf) Representation
+		var level2_td = {'rep':leaves.join(' ')};
+		table_arr[2].push(level2_td); 
+
+		for (var j=0; j<leaves.length; j++) {
+			var leaf = leaves[j];
+			// console.log(leaf);
+		}
+	}
+
+	// Turn Table-Array-3-Level into Actual Table // Assumes a 3-level-array-representing-table
+	var rows_html = "";
+	for (var i=0; i<table_arr.length; i++) {
+		var row_html = '<tr>'
+		var row = table_arr[i];
+		for (var j=0; j<row.length; j++) {
+			var cell = row[j];
+			var colspan_html = cell.colspan?(' colspan="'+cell.colspan+'"'):'';
+			var cell_html = '<td'+colspan_html+'>';
+			cell_html += cell.rep;
+			cell_html += '</td>'
+			row_html += cell_html;
+		}
+		row_html += '</tr>\n'
+		rows_html += row_html;
+	}
+
+	// Add Table
+	var faceTable = '<table id="facelist">';
+	faceTable += rows_html;
+	faceTable += '</table>';
+	$('#keyboard-area').append(faceTable);
 
 	///////////////////////////////////////////////
 	// CONTACT TABLE
