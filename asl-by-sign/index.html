@@ -981,7 +981,6 @@
 	function loadSvgToEntry(id, fsw, unicode8searchTerms) {
 		// var url = "https://swserver.wmflabs.org/svg/";
 		var url = "asl-svgs-201610/"; // cross-origin issues
-
 		url += fsw;
 		// Load SVG
 		$.get(url, function(data) {
@@ -1002,8 +1001,19 @@
 				var imgHtml = '<img src="'+uri+'">';
 				$('#e'+id+' .svg-wrapper').append(imgHtml)
 			});
-
 		});
+
+		// $.getJSON(url+"?callback=?",function(json){
+		//   console.log(json);
+		//   console.log('---')
+		// });
+
+		// $.ajax({
+		// 	url: url,
+		// 	success: function(data) {
+		// 		console.log(data);
+		// 	}
+		// })
 	}
 
 </script>
