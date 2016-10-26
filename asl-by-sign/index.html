@@ -31,14 +31,15 @@
 		- Allow search terms to be encoded to URL, so they can be copied and pasted and searched-for again.
 
 		- ++ move '+' (grasps) from ⚡ too § (parents)
-		- ~ custom scoring and grouping of results by their ~meaning (~gloss)
-		- add in a generic 'Face' symbol button
-
+		
 		- ~ add relative positioning/direction for face-element-positions / movements - for easier search - if necessary
 
+		- ~ custom scoring and grouping of results by their ~meaning (~gloss)
 		- allow gloss-search with expanded (secondary+) meanings
 
-		- ~ add basic iphone compatability: (Save to Screen, proper 'zoom' settings)
+		- replace paging mechanism with a 'load-more' ∞-page mechanism
+
+		- ~ add a backspace key
 	 -->
 </head>
 
@@ -67,7 +68,37 @@
 			<div id="upper-header">
 				<div class="left"><a href="../index.html" id="#home-button">🏠️</a></div>
 				<div id="search-header" class="centre"></div>
-				<!-- <div class="right">Help ℹ️</div> -->
+				<div class="right"><a href="#" class="toggle-intro-message">Info ℹ️</a></div>
+				<!-- ^- toggle intro message -->
+			</div>
+			<div id="empty-search-input-message">
+				<p>
+					'ASL Sign Search' is an ongoing experimental (β) project to easily search the english glosses of ASL Signs. <span>It works best in Chrome.</span>
+				</p>
+				<p>
+					Getting Started:
+					<ul>
+					<li>SignWriting is used to represent Signs.</li>
+						<ul>
+						<li>What is it? 
+							<a href="http://www.signwriting.org/about/what/what02.html" target="_blank">Official Summary</a> |
+							<a href="https://en.wikipedia.org/wiki/SignWriting" target="_blank">Wiki: SignWriting</a>
+						</li>
+						<li>Examples: 
+							<a href="http://www.signwriting.org/library/children/index.html" target="_blank">Children Stories</a> | 
+							<a href="http://ase.wikipedia.wmflabs.org/wiki/Main_Page" target="_blank">Wiki articles in ASL (β)</a>
+						</li>
+						<li>Detailed Guides:  
+							<a href="http://www.signwriting.org/archive/docs9/sw0827_American_Sign_Language_Hand_Symbols_Frost_Sutton_2013.pdf">Hand Symbols</a> | 
+							<a href="http://www.signwriting.org/archive/docs7/sw0617_Cross_Linguistic_Guide_SignWriting_Parkhurst.pdf">Linguistic Guide</a></li>
+						</ul>
+					<!-- <li>The Keyboard can be Expanded to show SignWriting Keys.</li> -->
+					<!--  ^ - may hide keyboard-expandable-message to save space -->
+					<li>Tapping 🖐😑⚛ will find signs that look like 'Hello'.</li>
+					<li>Tapping 🔃🔃☝☝ will find signs that look like 'Signing'.</li>
+					</ul>
+				</p>
+				<div id="intro-message-hide-btn-container"><a href="#">Hide</a></div>
 			</div>
 			<div id="results-text"></div>
 			<div id="results"></div>
@@ -78,13 +109,24 @@
 			</div>
 		</div>
 		<div id="keyboard-area">
-			<input id="inputArea" type="text" name="gloss-entry" placeholder="Tap Search Keys ⬇ ...">
+			<input id="inputArea" type="text" name="gloss-entry" placeholder="Tap Keys ⬇ ...">
 		</div>
 		<div id="test-area">
 			<div id="temp-svg-holder"></div>
 		</div>
 	</div>
 </body>
+
+<script>
+	// QUICK INTRO MESSAGE FUNCTIONS
+	$('#intro-message-hide-btn-container a').click(function() {
+		$('#empty-search-input-message').slideUp();
+		$(".toggle-intro-message").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+	});
+	$('.toggle-intro-message').click(function() {
+		$('#empty-search-input-message').slideToggle();
+	})
+</script>
 
 <!-- GLOBAL FUNCTIONS & VARIABLES -->
 <script>

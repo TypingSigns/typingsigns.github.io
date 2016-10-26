@@ -54,10 +54,51 @@ body {
 			float: right;
 			line-height: 1em;
 			margin-right: 10px;
+			color: #aaa;
 		}
-		#search-header {
-			
+		#upper-header a {
+			text-decoration: none;
+			color: gray;
+			line-height: 1em;
 		}
+		
+		#empty-search-input-message {
+			font-size: 0.85em;
+			/*color: gray;*/
+			letter-spacing: 0.10em;
+			line-height: 1.5em;
+
+			text-align: left;
+			max-width: 600px;
+			margin: auto;
+			margin-top: 20px;
+			margin-bottom: 10px;
+			background-color: white;
+			padding: 10px 20px;
+			border-radius: 10px;
+		}
+			#empty-search-input-message a {
+				text-decoration: none;
+				border-bottom: 1px solid;
+				position: relative;
+			}
+			#empty-search-input-message a:hover {
+				top: -1px;
+				border-bottom: 2px solid;
+			}
+			#intro-message-hide-btn-container {
+				margin-bottom: 5px;
+				text-align: center;
+			}
+			#intro-message-hide-btn-container a {
+				border: 1px solid;
+				border-radius: 5px;
+				padding: 7px 10px;
+			}
+		#empty-search-input-message li {
+			padding: 5px 0;
+		}
+
 		#results {
 			padding-top: 5px;
 		}
@@ -125,6 +166,7 @@ body {
 		max-width: 70px;
 	}
 	.entry .description {
+		background-color: beige;
 		max-height: 95px;
 		overflow: scroll;
 
