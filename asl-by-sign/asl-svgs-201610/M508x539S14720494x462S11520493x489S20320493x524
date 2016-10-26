@@ -1,0 +1,6 @@
+<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='15' height='77' viewBox='493 462 15 77'>
+  <text font-size='0'>M508x539S14720494x462S11520493x489S20320493x524</text>
+  <svg x='494' y='462'><g transform="translate(0.0,22.0) scale(0.01,-0.01)"><path class="sym-fill" fill="white" d="M0 850 l0 -150 400 0 400 0 0 150 0 150 -400 0 -400 0 0 -150z"/><path class="sym-line" fill="black" d="M347 1852 l-347 -347 0 -253 0 -252 400 0 400 0 0 -150 0 -150 -400 0 -400 0 0 -350 0 -350 700 0 700 0 0 753 0 752 -348 348 c-191 191 -349 347 -352 347 -3 0 -161 -156 -353 -348z"/></g></svg>
+  <svg x='493' y='489'><g transform="translate(0.0,30.0) scale(0.01,-0.01)"><path class="sym-line" fill="black" d="M500 2250 l0 -750 -150 0 -150 0 0 600 0 600 -100 0 -100 0 0 -1350 0 -1350 750 0 750 0 0 750 0 750 -400 0 -400 0 0 750 0 750 -100 0 -100 0 0 -750z"/></g></svg>
+  <svg x='493' y='524'><g transform="translate(0.0,15.0) scale(0.01,-0.01)"><path class="sym-line" fill="black" d="M0 750 l0 -750 750 0 750 0 0 750 0 750 -750 0 -750 0 0 -750z"/></g></svg>
+</svg>

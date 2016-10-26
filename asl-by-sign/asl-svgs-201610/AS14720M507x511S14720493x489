@@ -1,0 +1,4 @@
+<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='14' height='22' viewBox='493 489 14 22'>
+  <text font-size='0'>AS14720M507x511S14720493x489</text>
+  <svg x='493' y='489'><g transform="translate(0.0,22.0) scale(0.01,-0.01)"><path class="sym-fill" fill="white" d="M0 850 l0 -150 400 0 400 0 0 150 0 150 -400 0 -400 0 0 -150z"/><path class="sym-line" fill="black" d="M347 1852 l-347 -347 0 -253 0 -252 400 0 400 0 0 -150 0 -150 -400 0 -400 0 0 -350 0 -350 700 0 700 0 0 753 0 752 -348 348 c-191 191 -349 347 -352 347 -3 0 -161 -156 -353 -348z"/></g></svg>
+</svg>

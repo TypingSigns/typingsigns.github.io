@@ -1,0 +1,6 @@
+<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='37' height='32' viewBox='481 484 37 32'>
+  <text font-size='0'>AS10002S15a18S2f700M518x516S15a18481x489S10002488x499S2f700495x484</text>
+  <svg x='481' y='489'><g transform="translate(0.0,27.0) scale(0.01,-0.01)"><path class="sym-fill" fill="white" d="M600 1307 l0 -1107 200 0 200 0 0 908 0 907 -200 200 -200 200 0 -1108z"/><path class="sym-line" fill="black" d="M297 2402 l-297 -297 0 -1053 0 -1052 600 0 600 0 0 1053 0 1052 -298 298 c-163 163 -299 297 -302 297 -3 0 -139 -134 -303 -298z m703 -1289 l0 -913 -200 0 -200 0 0 1112 0 1113 200 -200 200 -200 0 -912z"/></g></svg>
+  <svg x='488' y='499'><g transform="translate(0.0,15.0) scale(0.01,-0.01)"><path class="sym-fill" fill="white" d="M1700 750 l0 -550 550 0 550 0 0 550 0 550 -550 0 -550 0 0 -550z"/><path class="sym-line" fill="black" d="M0 1400 l0 -100 750 0 750 0 0 -650 0 -650 750 0 750 0 0 750 0 750 -1500 0 -1500 0 0 -100z m2800 -650 l0 -550 -550 0 -550 0 0 550 0 550 550 0 550 0 0 -550z"/></g></svg>
+  <svg x='495' y='484'><g transform="translate(0.0,7.0) scale(0.01,-0.01)"><path class="sym-line" fill="black" d="M463 432 l-463 -267 0 -82 0 -83 600 0 600 0 0 100 0 100 -355 2 -355 3 355 205 355 204 0 43 0 43 -137 0 -138 -1 -462 -267z"/></g></svg>
+</svg>

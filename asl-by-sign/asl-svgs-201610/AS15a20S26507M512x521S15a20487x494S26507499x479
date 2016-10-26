@@ -1,0 +1,5 @@
+<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='25' height='42' viewBox='487 479 25 42'>
+  <text font-size='0'>AS15a20S26507M512x521S15a20487x494S26507499x479</text>
+  <svg x='487' y='494'><g transform="translate(0.0,27.0) scale(0.01,-0.01)"><path class="sym-line" fill="black" d="M297 2402 l-297 -297 0 -1053 0 -1052 600 0 600 0 0 1053 0 1052 -298 298 c-163 163 -299 297 -302 297 -3 0 -139 -134 -303 -298z"/></g></svg>
+  <svg x='499' y='479'><g transform="translate(-0.0990227783968,12.7676076804) scale(0.00988294432064,-0.00992219549537)"><path class="sym-line" fill="black" d="M420 1035 l235 -235 -315 -315 -315 -315 85 -85 85 -85 315 315 315 315 237 -237 238 -238 0 558 0 557 -557 0 -558 0 235 -235z"/></g></svg>
+</svg>

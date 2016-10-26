@@ -1,0 +1,7 @@
+<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='21' height='97' viewBox='490 452 21 97'>
+  <text font-size='0'>M511x549S20320490x452S11520490x471S19220490x507S1fb20490x530</text>
+  <svg x='490' y='452'><g transform="translate(0.0,15.0) scale(0.01,-0.01)"><path class="sym-line" fill="black" d="M0 750 l0 -750 750 0 750 0 0 750 0 750 -750 0 -750 0 0 -750z"/></g></svg>
+  <svg x='490' y='471'><g transform="translate(0.0,30.0) scale(0.01,-0.01)"><path class="sym-line" fill="black" d="M500 2250 l0 -750 -150 0 -150 0 0 600 0 600 -100 0 -100 0 0 -1350 0 -1350 750 0 750 0 0 750 0 750 -400 0 -400 0 0 750 0 750 -100 0 -100 0 0 -750z"/></g></svg>
+  <svg x='490' y='507'><g transform="translate(0.151301014747,18.749322358) scale(0.00981776176264,-0.00979417818707)"><path class="sym-line" fill="black" d="M1560 1665 l-245 -235 -657 0 -658 0 0 -715 0 -715 750 0 750 0 0 528 0 527 300 284 c166 157 299 290 298 296 -4 16 -270 265 -283 264 -5 0 -120 -105 -255 -234z"/></g></svg>
+  <svg x='490' y='530'><g transform="translate(0.0,19.0) scale(0.01,-0.01)"><path class="sym-line" fill="black" d="M300 1700 l0 -200 -150 0 -150 0 0 -750 0 -750 750 0 750 0 0 750 0 750 -400 0 -400 0 0 200 0 200 -200 0 -200 0 0 -200z"/></g></svg>
+</svg>
