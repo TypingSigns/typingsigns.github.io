@@ -105,6 +105,12 @@ span.main-label {
 	display: block;
 	margin: 10px 0;
 }
+span.main-label a {
+	text-decoration: none;
+}
+span.main-label a:hover {
+	border-bottom: 1px solid;
+}
 /*.usymbols, .usymbols span {*/
 span.usymbols {
 	letter-spacing: 0.8em;
