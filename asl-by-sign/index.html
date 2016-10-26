@@ -64,7 +64,11 @@
 <body>
 	<div id="content-wrapper">
 		<div id="upper-wrapper">
-			<div id="search-header"></div>
+			<div id="upper-header">
+				<div class="left"><a href="../index.html" id="#home-button">🏠️</a></div>
+				<div id="search-header" class="centre"></div>
+				<!-- <div class="right">Help ℹ️</div> -->
+			</div>
 			<div id="results-text"></div>
 			<div id="results"></div>
 			<div id="pager">
@@ -644,11 +648,11 @@
 	///////////////////////////////////////////////
 	// ADD TABLES TO DOM
 	$('#keyboard-area').append(handTable);
-	$('#keyboard-area').append(moveTable);
 	$('#keyboard-area').append(faceTable);
 	$('#keyboard-area').append(ubodyTable);
 	$('#keyboard-area').append(contactTable);
 	$('#keyboard-area').append(fingerContactTable);
+	$('#keyboard-area').append(moveTable);
 	
 
 

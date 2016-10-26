@@ -26,17 +26,37 @@ body {
 		position: relative;
 		display: block;
 	}
-		#search-header {
-			padding: 0.5em;
+		#upper-header {
+			padding: 0.5em 0;
 			background-color: white;
 			z-index: 10;
 			width: 100%;
 			border-bottom: 1px solid lightgray;
 			min-height: 1.1em;
-			
+
 			font-size: 0.85em;
 			color: gray;
 			letter-spacing: 0.10em;
+		}
+		#upper-header div.left {
+			float: left;
+			line-height: 1em;
+			margin-left: 10px;
+
+			font-size: 1.25em;
+			/*padding-left: 10px;*/
+		}
+		#upper-header div.centre {
+			display: inline-block;
+			margin: 0 auto;
+		}
+		#upper-header div.right {
+			float: right;
+			line-height: 1em;
+			margin-right: 10px;
+		}
+		#search-header {
+			
 		}
 		#results {
 			padding-top: 5px;
@@ -225,7 +245,8 @@ table#movelist {
 }
 
 table#facelist {
-	width: 60%;
+	width: 50%;
+	/* originally 60% - temp 50% to cater for padding-offsets on this table row at narrower screen-res'*/
 }
 table#ubodylist {
 	width: 10%;
@@ -233,6 +254,10 @@ table#ubodylist {
 table#contactlist {
 	width: 20%;
 }
+	/* TEMP: Test Hiding 3rd TD */
+	table#contactlist tr:nth-child(3) {
+		display: none;
+	}	
 table#fingercontactlist {
 	width: 10%;
 }
