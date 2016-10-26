@@ -72,7 +72,7 @@
 			</div>
 		</div>
 		<div id="keyboard-area">
-			<input id="inputArea" type="text" name="gloss-entry" placeholder="Tap Search Keys ...">
+			<input id="inputArea" type="text" name="gloss-entry" placeholder="Tap Search Keys ⬇ ...">
 		</div>
 		<div id="test-area">
 			<div id="temp-svg-holder"></div>
@@ -86,7 +86,7 @@
 	var _searchResults = [];
 	// Paging Mechanism
 	var _page = 0; // as an index
-	var _items_per_page = 100;
+	var _items_per_page = 30;
 	function _getMaxPage() {
 		if (!!!_searchResults.items) return 0;
 		return Math.floor(_searchResults.items.length * 1.0 / _items_per_page);
@@ -983,7 +983,8 @@
 		var url = "asl-svgs-201610/"; // cross-origin issues
 		url += fsw;
 		// Load SVG
-		$.get(url, function(data) {
+		var request = $.get(url);
+		request.success(function(data) {
 			// var svgHtml = data.firstChild.outerHTML;
 			var svgHtml = data;
 
@@ -1001,6 +1002,10 @@
 				var imgHtml = '<img src="'+uri+'">';
 				$('#e'+id+' .svg-wrapper').append(imgHtml)
 			});
+		});
+		request.error(function(jqXHR, statusText) {
+			$('#e'+id+' .svg-wrapper').addClass("load-unsuccessful");
+			// console.log(url, statusText);
 		});
 	}
 
