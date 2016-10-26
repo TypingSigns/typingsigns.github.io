@@ -823,9 +823,9 @@
 		// Reset page to 0
 		_page = 0;
 
+		// 
 		var searchTerms = getSearchTerms();
 		var value = searchTerms.join(" ");
-		
 
 		// Iniiate a sift search
 		var results = sifter.search(value, {
@@ -869,6 +869,8 @@
 
 		_searchResults = results;
 
+		//////////////////////////
+		// DOM:
 		// UPDATE SEARCH HEADER
 		var searchHeaderText = "";
 		if (searchTerms.length >0 ) {
@@ -881,7 +883,11 @@
 			searchHeaderText = "Look up the gloss for " + count + " Signs";
 		}
 		$('#search-header').text(searchHeaderText);
+		
+		// SCROLL UPPER-WRAPPER TO TOP
+		$('#upper-wrapper').scrollTop(0);
 
+		//////////////////////////
 		// REFRESH PAGE
 		refreshPage();
 	}
