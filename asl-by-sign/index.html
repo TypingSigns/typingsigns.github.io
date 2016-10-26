@@ -470,13 +470,13 @@
 		return rows_html;
 	}
 
+
 	///////////////////////////////////////////////
 	// MOVE TABLE
 	var moveTable = '<table id="movelist">';
 	var moveTable3L1_arr = convert_tableTree3L1_to_tableArray3L1(moveTableTree_3L1);
 	moveTable += convert_tableArray3L1_to_tdHtml(moveTable3L1_arr);
 	moveTable += '</table>';
-	$('#keyboard-area').append(moveTable);
 
 
 	///////////////////////////////////////////////
@@ -485,7 +485,6 @@
 	var faceTable3L1_arr = convert_tableTree3L1_to_tableArray3L1(faceTableTree_3L1);
 	faceTable += convert_tableArray3L1_to_tdHtml(faceTable3L1_arr);
 	faceTable += '</table>';
-	$('#keyboard-area').append(faceTable);
 
 
 	///////////////////////////////////////////////
@@ -494,7 +493,6 @@
 	var ubodyTable3L1_arr = convert_tableTree3L1_to_tableArray3L1(ubodyTableTree_3L1);
 	ubodyTable += convert_tableArray3L1_to_tdHtml(ubodyTable3L1_arr);
 	ubodyTable += '</table>';
-	$('#keyboard-area').append(ubodyTable);
 	
 
 	///////////////////////////////////////////////
@@ -543,7 +541,6 @@
 
 	// Add Table
 	contactTable += '</table>';
-	$('#keyboard-area').append(contactTable);
 
 	
 	///////////////////////////////
@@ -585,7 +582,6 @@
 
 	// Add Table
 	fingerContactTable += '</table>';
-	$('#keyboard-area').append(fingerContactTable);
 
 
 
@@ -594,7 +590,7 @@
 	// HAND TABLE
 
 	// LOAD BUTTONS // p.s. 2016-10-11 - a lot of 'id' tags are no longer used in handTable
-	var table = '<table id="handlist">';
+	var handTable = '<table id="handlist">';
 	// Populate 5-Hand-Categories
 	var fiveHandCategories_tableFormat = [
 		{"emoji":"☝", "colspan":"2", "index":0},
@@ -610,7 +606,7 @@
 		var html = '<a href="#" class="ku8ancestor" id="kfh'+e.index+'" string="'+e.emoji+'">'+cha+'</a>'
 		tr += '<td colspan="'+ e.colspan +'">' + html + '</td>';
 	}
-	table += tr;
+	handTable += tr;
 	// Populate SW_Root Row
 	tr = '<tr id="swroot">';
 	for (var i=0; i<displayOrder_num.length; i++) {
@@ -621,7 +617,7 @@
 		tr += td;
 	}
 	tr += "</tr>";
-	table += tr;
+	handTable += tr;
 	// Populate Sub-Symbols Row
 	tr = '<tr id="kleafsymbols" class="u8symbols-row">';
 	for (var i=0; i<displayOrder_num.length; i++) {
@@ -641,11 +637,23 @@
 		tr += "<td>"+html+"</td>";
 	}
 	tr += "</tr>";
-	table += tr;
-	table += "</table>"
-	$('#keyboard-area').append(table);
+	handTable += tr;
+	handTable += "</table>"
 
-	// Add Click-Actions
+
+	///////////////////////////////////////////////
+	// ADD TABLES TO DOM
+	$('#keyboard-area').append(handTable);
+	$('#keyboard-area').append(moveTable);
+	$('#keyboard-area').append(faceTable);
+	$('#keyboard-area').append(ubodyTable);
+	$('#keyboard-area').append(contactTable);
+	$('#keyboard-area').append(fingerContactTable);
+	
+
+
+	///////////////////////////////////////////////
+	// Add Click-Actions TO KEYBOARD-DOM-ELEMENTS
 	$('.kleafsymbol').on('click', function(e) {
 		e.preventDefault();
 		var string = $(this).attr('string');
@@ -811,8 +819,8 @@
 		// Reset page to 0
 		_page = 0;
 
-		$('#search-header').text("Searching for: " + getSearchTerms());
-		var value = getSearchTerms().join(" ");
+		var searchTerms = getSearchTerms();
+		var value = searchTerms.join(" ");
 		
 
 		// Iniiate a sift search
@@ -857,6 +865,20 @@
 
 		_searchResults = results;
 
+		// UPDATE SEARCH HEADER
+		var searchHeaderText = "";
+		if (searchTerms.length >0 ) {
+			var count = results.items.length + '';
+			count = count.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+			searchHeaderText = searchTerms + " – " + count + " results";
+		} else {
+			var count = signPuddleEntries.length + '';
+			count = count.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+			searchHeaderText = "Look up the gloss for " + count + " Signs";
+		}
+		$('#search-header').text(searchHeaderText);
+
+		// REFRESH PAGE
 		refreshPage();
 	}
 
