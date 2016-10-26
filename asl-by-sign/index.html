@@ -28,11 +28,15 @@
 
 		- Allow search terms to be encoded to URL, so they can be copied and pasted and searched-for again.
 
-		- move '+' (grasps) from ⚡ too § (parents)
+		- ++ move '+' (grasps) from ⚡ too § (parents)
 		- ~ custom scoring and grouping of results by their ~meaning (~gloss)
 		- add in a generic 'Face' symbol button
 
 		- ~ add relative positioning/direction for face-element-positions / movements - for easier search - if necessary
+
+		- allow gloss-search with expanded (secondary+) meanings
+
+		- ~ add basic iphone compatability: (Save to Screen, proper 'zoom' settings)
 	 -->
 </head>
 
@@ -980,7 +984,7 @@
 		// Load SVG
 		$.get(url, function(data) {
 			var svgHtml = data.firstChild.outerHTML;
-			// console.log(svgHtml);
+			console.log(svgHtml);
 			// console.log('---');
 
 			// Set ENTRY Data
