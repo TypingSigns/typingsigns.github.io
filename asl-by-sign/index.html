@@ -72,7 +72,7 @@
 			</div>
 		</div>
 		<div id="keyboard-area">
-			<input id="inputArea" type="text" name="gloss-entry" placeholder="𝧫...">
+			<input id="inputArea" type="text" name="gloss-entry" placeholder="Tap Search Keys ...">
 		</div>
 		<div id="test-area">
 			<div id="temp-svg-holder"></div>
@@ -86,7 +86,7 @@
 	var _searchResults = [];
 	// Paging Mechanism
 	var _page = 0; // as an index
-	var _items_per_page = 18;
+	var _items_per_page = 100;
 	function _getMaxPage() {
 		if (!!!_searchResults.items) return 0;
 		return Math.floor(_searchResults.items.length * 1.0 / _items_per_page);
@@ -716,7 +716,7 @@
 		// Get Value
 		var value = $('#inputArea').val();
 		value = value.trim();
-		if (value == "") {value = "EAT𝢅𝧫"; } //" 𝧫"; } // ~temp
+		if (value == "") {value = ""; } //" 𝧫"; } // ~temp
 
 		// DIVIDE UP STRING BY CODEPOINTS - AND EXTRACT SEARCH TERMS
 		var codePoints = value.toCodePoints();
