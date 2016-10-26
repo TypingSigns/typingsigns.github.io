@@ -979,12 +979,16 @@
 	}
 
 	function loadSvgToEntry(id, fsw, unicode8searchTerms) {
-		var url = "https://swserver.wmflabs.org/svg/";
+		// var url = "https://swserver.wmflabs.org/svg/";
+		var url = "asl-svgs-201610/"; // cross-origin issues
+
 		url += fsw;
 		// Load SVG
 		$.get(url, function(data) {
-			var svgHtml = data.firstChild.outerHTML;
-			console.log(svgHtml);
+			// var svgHtml = data.firstChild.outerHTML;
+			var svgHtml = data;
+
+			// console.log(svgHtml);
 			// console.log('---');
 
 			// Set ENTRY Data
