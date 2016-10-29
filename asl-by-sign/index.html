@@ -446,8 +446,23 @@
 				parentSymbols.sort();
 				usymbols.sort();
 				// C+. (~optional) (~adding mainLabel)
-				var mainLabel = "";
-				if (entry.term.length > 1) { mainLabel = entry.term[1].__cdata; }
+				var mainLabel = ""; //~
+				var labels = [];
+				if (entry.term.length > 1) {
+					// 0th term is first label
+					// 1st term is mainLabel
+					// remaining terms appear to be secondary terms
+					mainLabel = entry.term[1].__cdata; //~
+
+					for (var j=1; j<entry.term.length; j++) {
+						var label = entry.term[j].__cdata;
+						labels.push(label);
+					}
+				}
+				entry['labels'] = labels;
+				entry['englishSearchTerms'] = labels.join(" | ");
+
+				// Add.
 				entry['unicode8searchTerms'] = usymbols.join("") + parentSymbols.join("");
 				entry['mainLabel'] = mainLabel;
 			}
@@ -886,8 +901,9 @@
 
 		// Iniiate a sift search
 		var results = sifter.search(value, {
-			fields: ['mainLabel', 'unicode8searchTerms'],
-			// sort: [{field: "mainLabel", direction:"asc"], // sifter.js only uses this sort for items with the same score, and scoring can't be easily disabled atm.
+			// fields: ['mainLabel', 'unicode8searchTerms'],
+			fields: ['englishSearchTerms', 'unicode8searchTerms'],
+			sort: [{field: "englishSearchTerms", direction:"asc"}], // sifter.js only uses this sort for items with the same score, and scoring can't be easily disabled atm.
 			conjunction: "and",
 		});
 
@@ -896,32 +912,37 @@
 			var _id = results.items[i].id;
 			var entry = sifter.items[_id];
 
-			var mainLabel = entry.mainLabel;
-			if (!mainLabel) {
+			if (!entry.labels) {
 				results.items.splice(i, 1); // remove 1 item
 				i--; // decrement i
-			}
+			}			
+
+			// var mainLabel = entry.mainLabel;
+			// if (!mainLabel) {
+			// 	results.items.splice(i, 1); // remove 1 item
+			// 	i--; // decrement i
+			// }
 		}
 
 		// TEMP: Sort Alphabetically by ABC // TEMP-DEBUG: sort results by main label - temporarily useful for navigating searches based on SignSymbols - so they have a logical ordering. SignSymbols should actually be able to be filtered by mode symbols - when we introduce these, we can remove this function.
-		function sort_withNumbersAfterLetters(a,b) {
-			// can just ad zzz in front
-			var a1 = a.charAt(0);
-			var b1 = b.charAt(0);
-			if ( $.isNumeric(a1) ) { a = "Ω" + a; }
-			if ( $.isNumeric(b1) ) { b = "Ω" + b; }
-			return a.localeCompare(b);
-		}
-		function compareResultItem_mainLabel(a, b) {
-			var aid = a.id;
-			var bid = b.id;
-			var aEntry = sifter.items[aid];
-			var bEntry = sifter.items[bid];
-			var aLabel = aEntry.mainLabel;
-			var bLabel = bEntry.mainLabel;
-			// return aLabel.localeCompare(bLabel);
-			return sort_withNumbersAfterLetters(aLabel, bLabel);
-		}
+		// function sort_withNumbersAfterLetters(a,b) {
+		// 	// can just ad zzz in front
+		// 	var a1 = a.charAt(0);
+		// 	var b1 = b.charAt(0);
+		// 	if ( $.isNumeric(a1) ) { a = "Ω" + a; }
+		// 	if ( $.isNumeric(b1) ) { b = "Ω" + b; }
+		// 	return a.localeCompare(b);
+		// }
+		// function compareResultItem_mainLabel(a, b) {
+		// 	var aid = a.id;
+		// 	var bid = b.id;
+		// 	var aEntry = sifter.items[aid];
+		// 	var bEntry = sifter.items[bid];
+		// 	var aLabel = aEntry.mainLabel;
+		// 	var bLabel = bEntry.mainLabel;
+		// 	// return aLabel.localeCompare(bLabel);
+		// 	return sort_withNumbersAfterLetters(aLabel, bLabel);
+		// }
 		// results.items.sort(compareResultItem_mainLabel);
 
 		_searchResults = results;
@@ -978,8 +999,10 @@
 			// console.log(entry);
 
 			var fsw = entry.term[0];
-			var mainLabel = entry.mainLabel;
-			if (!mainLabel) { mainLabel = "…?…"; }
+			var labels = entry.labels;
+			if (!labels) { labels = []; }
+			// var mainLabel = entry.mainLabel;
+			// if (!mainLabel) { mainLabel = "…?…"; }
 			var symbols = findUnicode8SuttonSymbols(fsw);
 			symbols.sort(); // display symbols alphabetically
 			// var symbolsString = symbols.join('');
@@ -999,7 +1022,7 @@
 			var signPuddleLink = "http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid="+id;
 
 			var descriptionHtml = '<div class="description">'
-			descriptionHtml += '<span class="main-label">' + '<a href="'+signPuddleLink+'" target="_blank">' + mainLabel + '</a>' + '</span>';
+			descriptionHtml += '<span class="main-label">' + '<a href="'+signPuddleLink+'" target="_blank">' + labels.join(" • ") + '</a>' + '</span>';
 			// divHtml += '<span class="usymbols">' + entry.unicode8searchTerms + '</span>';
 			descriptionHtml += '<span class="usymbols">' + symbolsString + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
 			descriptionHtml += '</div>'
