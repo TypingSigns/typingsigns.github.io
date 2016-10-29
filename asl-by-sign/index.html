@@ -443,8 +443,8 @@
 		if (entry.term != undefined) {
 
 			var id = entry._id;
-			if (id == '1960') { // catching outlier word: http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid=1960
-				break;
+			if (id == 1960) { // catching outlier word: http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid=1960
+				continue;
 			}
 
 
@@ -552,6 +552,7 @@
 				var meaningId = entry.meaningId;
 				if (meaningId) { meaningCount = meanings[meaningId].count; }
 				// if (meaningCount > maxCount) { maxCount = meaningCount; } //~
+				// if (!meaningId) { console.log(labels); }
 				meaningCount = padZeroes(meaningCount, 3);
 				meaningCount += " - " + meaningId + " - " + labels[0]; // ~ this helps separate words with the same meaning-count, but separate meanings. e.g. 7-cat,7-hello,7-cat,
 				// and helps cater for overfitting of the paired-meaning-terms
