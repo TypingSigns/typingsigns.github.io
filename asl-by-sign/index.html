@@ -200,6 +200,13 @@
 		if (number == 10) { return "🔟"; }
 		return number+"⃣";
 	}
+
+	// via http://stackoverflow.com/questions/2998784/how-to-output-integers-with-leading-zeros-in-javascript
+	function padZeroes(num, size) {
+		var s = num+"";
+		while (s.length < size) s = "0" + s;
+		return s;
+	}
 </script>
 
 
@@ -425,8 +432,74 @@
 
 	// Add Movement Table Symbols
 	import_tableTree3L1Symbols_to_swleafParentsLookup(moveTableTree_3L1);
-	
 
+	/////////////////////////////////////
+	// DETERMINE MEANING GROUPS
+	// Add Same-Words (from SignPuddleEntries data) into the Same-Meaning-Group
+	// there's going to be some erroneous overlap (e.g. see,look at, observe, watch, wristwatch, view) <- but that's ok for now.
+	var meanings = []; // e.g. [{hi,hello,wave}, {maximum,limit}, ...]
+	for (var i=0; i<signPuddleEntries.length; i++) {
+		var entry = signPuddleEntries[i];
+		if (entry.term != undefined) {
+			var labels = [];
+			
+			if (entry.term.length > 1) {
+				// Get Labels
+				for (var j=1; j<entry.term.length; j++) {
+					var label = entry.term[j].__cdata;
+					labels.push(label);
+				}
+			
+				// Loop through Labels and Meanings
+					// For all meanings
+						// if any of the labels match a term in an existing meaning
+							// then add all labels to the terms of this meaning
+							// ~ can optionally increase a counter
+						// else 
+							// add a new meaning
+				var meaningId = -1;
+				var meaningMatch = false;
+				for (var m=0; m<meanings.length; m++) {
+					var meaning = meanings[m];	
+					for (var t=0; t<meaning.labels.length; t++) {
+						var mlabel = meaning.labels[t];
+						for (var k=0; k<labels.length; k++) {
+							var label = labels[k];
+							if (mlabel == label) {
+								meaningId = meaning.id;
+								meaningMatch = true;
+								break;
+							}
+						}
+						if (meaningMatch) { break; }
+					}
+					if (meaningMatch) {
+						// Up the sign-term-counter
+						meaning.count += 1;
+						// Add unique labels
+						for (k = 0; k<labels.length; k++) {
+							var label = labels[k];
+							if (meaning.labels.indexOf(label) == -1) {
+								meaning.labels.push(label);
+							}
+						}
+						break;
+					}
+				}
+				if (!meaningMatch) { // also applies to 1st case
+					meaningId = meanings.length;
+					meanings.push({'labels':labels, 'count':1, 'id':meaningId});
+				}
+
+				// Set SignPuddle-Entry-Link to Meaning-Group
+				entry['meaningId'] = meaningId;
+
+			}
+		}
+	}
+	console.log(meanings);
+
+	/////////////////////////////////////
 	// Add SearchTerm (Updateable) (To be solidified as a separate file in Production)
 	for (var i=0; i<signPuddleEntries.length; i++) {
 		var entry = signPuddleEntries[i];
@@ -460,11 +533,23 @@
 					}
 				}
 				entry['labels'] = labels;
-				entry['englishSearchTerms'] = labels.join(" | ");
+				entry['englishSearchTerms'] = labels.join(" ");
 
 				// Add.
 				entry['unicode8searchTerms'] = usymbols.join("") + parentSymbols.join("");
 				entry['mainLabel'] = mainLabel;
+
+				// Set MeaningScores/Rank/Frequency - based on the meaning's count.
+				var meaningCount = 0;
+				var meaningId = entry.meaningId;
+				if (meaningId) { meaningCount = meanings[meaningId].count; }
+				meaningCount = padZeroes(meaningCount, 3);
+				meaningCount += " - " + meaningId + " - " + labels[0]; // ~ this helps separate words with the same meaning-count, but separate meanings. e.g. 7-cat,7-hello,7-cat,
+				// and helps cater for overfitting of the paired-meaning-terms
+				entry['meaningCount'] = meaningCount;
+
+				// Current format is something like this:
+				// 011 - 159 - meet (1. MeaningFrequency-in-SignPuddle-Entries, 2. Meaning-ID, 3. First-Term-of-this-Specific-Sign)
 			}
 		}
 	}
@@ -903,7 +988,7 @@
 		var results = sifter.search(value, {
 			// fields: ['mainLabel', 'unicode8searchTerms'],
 			fields: ['englishSearchTerms', 'unicode8searchTerms'],
-			sort: [{field: "englishSearchTerms", direction:"asc"}], // sifter.js only uses this sort for items with the same score, and scoring can't be easily disabled atm.
+			sort: [{field: "meaningCount", direction:"desc"}], // sifter.js only uses this sort for items with the same score, and scoring can't be easily disabled atm.
 			conjunction: "and",
 		});
 
@@ -912,7 +997,7 @@
 			var _id = results.items[i].id;
 			var entry = sifter.items[_id];
 
-			if (!entry.labels) {
+			if (!entry.labels || entry.labels.length == 0) {
 				results.items.splice(i, 1); // remove 1 item
 				i--; // decrement i
 			}			
@@ -1021,7 +1106,7 @@
 			}
 			var signPuddleLink = "http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid="+id;
 
-			var descriptionHtml = '<div class="description">'
+			var descriptionHtml = '<div class="description" sortTerm="'+entry.meaningCount+'">'
 			descriptionHtml += '<span class="main-label">' + '<a href="'+signPuddleLink+'" target="_blank">' + labels.join(" • ") + '</a>' + '</span>';
 			// divHtml += '<span class="usymbols">' + entry.unicode8searchTerms + '</span>';
 			descriptionHtml += '<span class="usymbols">' + symbolsString + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
