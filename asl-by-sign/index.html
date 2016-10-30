@@ -439,7 +439,7 @@
 		if (entry.term != undefined) {
 
 			var id = entry._id;
-			if (id == 1960) { // catching outlier word: http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid=1960
+			if (id == 1960 || id == 1911) { // catching outlier word: http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid=1960
 				continue;
 			}
 
@@ -1008,12 +1008,6 @@
 				results.items.splice(i, 1); // remove 1 item
 				i--; // decrement i
 			}			
-
-			// var mainLabel = entry.mainLabel;
-			// if (!mainLabel) {
-			// 	results.items.splice(i, 1); // remove 1 item
-			// 	i--; // decrement i
-			// }
 		}
 
 		// TEMP: Sort Alphabetically by ABC // TEMP-DEBUG: sort results by main label - temporarily useful for navigating searches based on SignSymbols - so they have a logical ordering. SignSymbols should actually be able to be filtered by mode symbols - when we introduce these, we can remove this function.
