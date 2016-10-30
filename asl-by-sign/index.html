@@ -996,6 +996,7 @@
 			// fields: ['mainLabel', 'unicode8searchTerms'],
 			fields: ['englishSearchTerms', 'unicode8searchTerms'],
 			sort: [{field: "meaningCount", direction:"desc"}], // sifter.js only uses this sort for items with the same score, and scoring can't be easily disabled atm.
+			// sort: [{field: "englishSearchTerms", direction:"asc"}],
 			conjunction: "and",
 		});
 
@@ -1009,6 +1010,7 @@
 				i--; // decrement i
 			}			
 		}
+		// ^- uncertain if this is actually being used
 
 		// TEMP: Sort Alphabetically by ABC // TEMP-DEBUG: sort results by main label - temporarily useful for navigating searches based on SignSymbols - so they have a logical ordering. SignSymbols should actually be able to be filtered by mode symbols - when we introduce these, we can remove this function.
 		// function sort_withNumbersAfterLetters(a,b) {
