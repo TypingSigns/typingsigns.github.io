@@ -78,7 +78,7 @@
 		<div id="upper-wrapper">
 			<div id="upper-header">
 				<div class="left"><a href="../index.html" id="#home-button">🏠️</a></div>
-				<div id="search-header" class="centre"></div>
+				<div id="search-header" class="centre">LOADING …</div>
 				<div class="right"><a href="#" class="toggle-intro-message">Info ℹ️</a></div>
 				<!-- ^- toggle intro message -->
 			</div>
@@ -352,58 +352,65 @@
 	// ONE-TIME GENERATION.
 	// Create a ancestryLookup for swLeafSymbols from swRootSymbolCategories // At publication, can be ported to a separate js file.
 	var swleaf_parents_lookup = {};
-	// Add HandShapre Parent Symbols
-	for (var i=0; i<swHandshapeRoots.length; i++) {
-		var swroot_num = displayOrder_num[i];
-		var swroot_fsw = swHandshapeRoots[swroot_num-1];
-		var swroot_unicode = numberToEmoji_emoji(swroot_num);
-		var fiveHand_emoji = swroot_fiveHand_lookup[swroot_num];
 
-		var leafs = swRootSymbolCategories[swroot_fsw];
-		for (var j=0; j<leafs.length; j++) {
-			var leaf_fsw = leafs[j];
-			var leaf_unicode = findUnicode8SuttonSymbols(leaf_fsw)[0];
-			swleaf_parents_lookup[leaf_unicode] = [fiveHand_emoji, swroot_unicode];
+	function fill_swleaf_parents_lookup() {
+		// Add HandShapre Parent Symbols
+		for (var i=0; i<swHandshapeRoots.length; i++) {
+			var swroot_num = displayOrder_num[i];
+			var swroot_fsw = swHandshapeRoots[swroot_num-1];
+			var swroot_unicode = numberToEmoji_emoji(swroot_num);
+			var fiveHand_emoji = swroot_fiveHand_lookup[swroot_num];
+
+			var leafs = swRootSymbolCategories[swroot_fsw];
+			for (var j=0; j<leafs.length; j++) {
+				var leaf_fsw = leafs[j];
+				var leaf_unicode = findUnicode8SuttonSymbols(leaf_fsw)[0];
+				swleaf_parents_lookup[leaf_unicode] = [fiveHand_emoji, swroot_unicode];
+			}
 		}
-	}
-	// Add Finger Contact Symbols
-	var ancestor0_rep = fingerContactLevel0_singleSymbol;
-	for (var i=0; i<fingerContactLevel1.length; i++) {
-		var item = fingerContactLevel1[i];
-		var ancestor1_rep = item.rep;
-		var children = item.children;
-		for (var c=0; c<children.length; c++) {
-			var child_fsw = children[c];
-			var child_u8 = findUnicode8SuttonSymbols(child_fsw)[0];
-			swleaf_parents_lookup[child_u8] = [ancestor0_rep, ancestor1_rep];
-			// ~ potential future todo: replicate twice if symbol is a 'multiple' symbol. - so multi-symbols don't get added to the 'single-symbol-search' when searching
+		// Add Finger Contact Symbols
+		var ancestor0_rep = fingerContactLevel0_singleSymbol;
+		for (var i=0; i<fingerContactLevel1.length; i++) {
+			var item = fingerContactLevel1[i];
+			var ancestor1_rep = item.rep;
+			var children = item.children;
+			for (var c=0; c<children.length; c++) {
+				var child_fsw = children[c];
+				var child_u8 = findUnicode8SuttonSymbols(child_fsw)[0];
+				swleaf_parents_lookup[child_u8] = [ancestor0_rep, ancestor1_rep];
+				// ~ potential future todo: replicate twice if symbol is a 'multiple' symbol. - so multi-symbols don't get added to the 'single-symbol-search' when searching
+			}
 		}
-	}
-	// Add General Contact Symbols
-	// Sort of Create a tree - and assign at the same time
-	var ancestor0_rep1 = contactLevel0_singleSymbol;
-	for (var i=0; i<contactLevel1.length; i++) {
-		var e = contactLevel1[i];
-		for (var c=0; c<e.children.length; c++) {
-			var c1child_id = e.children[c];
-			// Brute force - don't have that much to iterate // If i was doing this properly; would've converted this to a tree structure (levels->tree function)
-			for (var t=0; t<contactLevel2.length; t++) {
-				var curNode = contactLevel2[t];
-				if (curNode.id == c1child_id) {
-					// set representation for all the leaf-children here
-					for (var l=0; l<curNode.children.length; l++) {
-						var leaf_fsw = curNode.children[l];
-						var leaf_u8 = findUnicode8SuttonSymbols(leaf_fsw)[0];
-						if (!swleaf_parents_lookup[leaf_u8]) { swleaf_parents_lookup[leaf_u8] = []; }
-						swleaf_parents_lookup[leaf_u8] = swleaf_parents_lookup[leaf_u8].concat([ancestor0_rep1, e.rep, curNode.rep]);
+		// Add General Contact Symbols
+		// Sort of Create a tree - and assign at the same time
+		var ancestor0_rep1 = contactLevel0_singleSymbol;
+		for (var i=0; i<contactLevel1.length; i++) {
+			var e = contactLevel1[i];
+			for (var c=0; c<e.children.length; c++) {
+				var c1child_id = e.children[c];
+				// Brute force - don't have that much to iterate // If i was doing this properly; would've converted this to a tree structure (levels->tree function)
+				for (var t=0; t<contactLevel2.length; t++) {
+					var curNode = contactLevel2[t];
+					if (curNode.id == c1child_id) {
+						// set representation for all the leaf-children here
+						for (var l=0; l<curNode.children.length; l++) {
+							var leaf_fsw = curNode.children[l];
+							var leaf_u8 = findUnicode8SuttonSymbols(leaf_fsw)[0];
+							if (!swleaf_parents_lookup[leaf_u8]) { swleaf_parents_lookup[leaf_u8] = []; }
+							swleaf_parents_lookup[leaf_u8] = swleaf_parents_lookup[leaf_u8].concat([ancestor0_rep1, e.rep, curNode.rep]);
+						}
+						break;
 					}
-					break;
 				}
 			}
 		}
 	}
 
+	fill_swleaf_parents_lookup();
+	
+
 	// FUNCTION add tableTree_3L1 symbols to swleaf_parents
+	// REQUIRES: fill_swleaf_parents_lookup() to have already run.
 	function import_tableTree3L1Symbols_to_swleafParentsLookup(tableTree_3L1) {
 		var ancester0_rep = tableTree_3L1[0].rep; // ensure ancester0_rep is this one
 		for (var i=0; i<tableTree_3L1[0].children.length; i++) {
@@ -434,132 +441,136 @@
 	// Add Same-Words (from SignPuddleEntries data) into the Same-Meaning-Group
 	// there's going to be some erroneous overlap (e.g. see,look at, observe, watch, wristwatch, view) <- but that's ok for now.
 	var meanings = []; // e.g. [{hi,hello,wave}, {maximum,limit}, ...]
-	for (var i=0; i<signPuddleEntries.length; i++) {
-		var entry = signPuddleEntries[i];
-		if (entry.term != undefined) {
+	function determine_meaningGroups() {
+		for (var i=0; i<signPuddleEntries.length; i++) {
+			var entry = signPuddleEntries[i];
+			if (entry.term != undefined) {
 
-			var id = entry._id;
-			if (id == 1960 || id == 1911) { // catching outlier word: http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid=1960
-				continue;
-			}
-
-
-			var labels = [];
-			
-			if (entry.term.length > 1) {
-				// Get Labels
-				for (var j=1; j<entry.term.length; j++) {
-					var label = entry.term[j].__cdata;
-					labels.push(label);
-				}
-			
-				// Loop through Labels and Meanings
-					// For all meanings
-						// if any of the labels match a term in an existing meaning
-							// then add all labels to the terms of this meaning
-							// ~ can optionally increase a counter
-						// else 
-							// add a new meaning
-				var meaningId = -1;
-				var meaningMatch = false;
-				for (var m=0; m<meanings.length; m++) {
-					var meaning = meanings[m];	
-					for (var t=0; t<meaning.labels.length; t++) {
-						var mlabel = meaning.labels[t];
-						for (var k=0; k<labels.length; k++) {
-							var label = labels[k];
-							if (mlabel == label) {
-								meaningId = meaning.id;
-								meaningMatch = true;
-								break;
-							}
-						}
-						if (meaningMatch) { break; }
-					}
-					if (meaningMatch) {
-						// Up the sign-term-counter
-						meaning.count += 1;
-						// Add unique labels
-						for (k = 0; k<labels.length; k++) {
-							var label = labels[k];
-							if (meaning.labels.indexOf(label) == -1) {
-								meaning.labels.push(label);
-							}
-						}
-						break;
-					}
-				}
-				if (!meaningMatch) { // also applies to 1st case
-					meaningId = meanings.length;
-					meanings.push({'labels':labels, 'count':1, 'id':meaningId});
+				var id = entry._id;
+				if (id == 1960 || id == 1911) { // catching outlier word: http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid=1960
+					continue;
 				}
 
-				// Set SignPuddle-Entry-Link to Meaning-Group
-				entry['meaningId'] = meaningId;
-
-			}
-		}
-	}
-	console.log(meanings);
-
-	/////////////////////////////////////
-	// Add SearchTerm (Updateable) (To be solidified as a separate file in Production)
-	// var maxCount = 0;
-	for (var i=0; i<signPuddleEntries.length; i++) {
-		var entry = signPuddleEntries[i];
-		if (entry.term != undefined) {
-			var fsw = entry.term[0];
-			if (typeof fsw !== 'object') { // weirdly enough, some entry.term don't contain an FSW, but do contain a 'mainLabel'
-				// C. (adding parentLookup)
-				var usymbols = findUnicode8SuttonSymbols(fsw);
-				var parentSymbols = [];
-				for (var j=0; j<usymbols.length; j++) {
-					var s = usymbols[j];
-					var parents = swleaf_parents_lookup[s];
-					if (parents) {
-						parentSymbols = [].concat(parentSymbols, parents);
-					}
-				}
-				parentSymbols.sort();
-				usymbols.sort();
-				// C+. (~optional) (~adding mainLabel)
-				var mainLabel = ""; //~
 				var labels = [];
+				
 				if (entry.term.length > 1) {
-					// 0th term is first label
-					// 1st term is mainLabel
-					// remaining terms appear to be secondary terms
-					mainLabel = entry.term[1].__cdata; //~
-
+					// Get Labels
 					for (var j=1; j<entry.term.length; j++) {
 						var label = entry.term[j].__cdata;
 						labels.push(label);
 					}
+				
+					// Loop through Labels and Meanings
+						// For all meanings
+							// if any of the labels match a term in an existing meaning
+								// then add all labels to the terms of this meaning
+								// ~ can optionally increase a counter
+							// else 
+								// add a new meaning
+					var meaningId = -1;
+					var meaningMatch = false;
+					for (var m=0; m<meanings.length; m++) {
+						var meaning = meanings[m];	
+						for (var t=0; t<meaning.labels.length; t++) {
+							var mlabel = meaning.labels[t];
+							for (var k=0; k<labels.length; k++) {
+								var label = labels[k];
+								if (mlabel == label) {
+									meaningId = meaning.id;
+									meaningMatch = true;
+									break;
+								}
+							}
+							if (meaningMatch) { break; }
+						}
+						if (meaningMatch) {
+							// Up the sign-term-counter
+							meaning.count += 1;
+							// Add unique labels
+							for (k = 0; k<labels.length; k++) {
+								var label = labels[k];
+								if (meaning.labels.indexOf(label) == -1) {
+									meaning.labels.push(label);
+								}
+							}
+							break;
+						}
+					}
+					if (!meaningMatch) { // also applies to 1st case
+						meaningId = meanings.length;
+						meanings.push({'labels':labels, 'count':1, 'id':meaningId});
+					}
+
+					// Set SignPuddle-Entry-Link to Meaning-Group
+					entry['meaningId'] = meaningId;
+
 				}
-				entry['labels'] = labels;
-				entry['englishSearchTerms'] = labels.join(" ");
+			}
+		}
+		// console.log(meanings);
+	}
+	
 
-				// Add.
-				entry['unicode8searchTerms'] = usymbols.join("") + parentSymbols.join("");
-				entry['mainLabel'] = mainLabel;
+	/////////////////////////////////////
+	// Add SearchTerm (Updateable) (To be solidified as a separate file in Production)
+	// var maxCount = 0;
+	// REQUIRES: determine_meaningGroups() first
+	function add_searchTerms() {
+		for (var i=0; i<signPuddleEntries.length; i++) {
+			var entry = signPuddleEntries[i];
+			if (entry.term != undefined) {
+				var fsw = entry.term[0];
+				if (typeof fsw !== 'object') { // weirdly enough, some entry.term don't contain an FSW, but do contain a 'mainLabel'
+					// C. (adding parentLookup)
+					var usymbols = findUnicode8SuttonSymbols(fsw);
+					var parentSymbols = [];
+					for (var j=0; j<usymbols.length; j++) {
+						var s = usymbols[j];
+						var parents = swleaf_parents_lookup[s];
+						if (parents) {
+							parentSymbols = [].concat(parentSymbols, parents);
+						}
+					}
+					parentSymbols.sort();
+					usymbols.sort();
+					// C+. (~optional) (~adding mainLabel)
+					var mainLabel = ""; //~
+					var labels = [];
+					if (entry.term.length > 1) {
+						// 0th term is first label
+						// 1st term is mainLabel
+						// remaining terms appear to be secondary terms
+						mainLabel = entry.term[1].__cdata; //~
 
-				// Set MeaningScores/Rank/Frequency - based on the meaning's count.
-				var meaningCount = 0;
-				var meaningId = entry.meaningId;
-				if (meaningId) { meaningCount = meanings[meaningId].count; }
-				// if (meaningCount > maxCount) { maxCount = meaningCount; } //~
-				// if (!meaningId) { console.log(labels); }
-				meaningCount = padZeroes(meaningCount, 3);
-				meaningCount += " - " + meaningId + " - " + labels[0]; // ~ this helps separate words with the same meaning-count, but separate meanings. e.g. 7-cat,7-hello,7-cat,
-				// and helps cater for overfitting of the paired-meaning-terms
-				entry['meaningCount'] = meaningCount;
+						for (var j=1; j<entry.term.length; j++) {
+							var label = entry.term[j].__cdata;
+							labels.push(label);
+						}
+					}
+					entry['labels'] = labels;
+					entry['englishSearchTerms'] = labels.join(" ");
 
-				// Current format is something like this:
-				// 011 - 159 - meet (1. MeaningFrequency-in-SignPuddle-Entries, 2. Meaning-ID, 3. First-Term-of-this-Specific-Sign)
+					// Add.
+					entry['unicode8searchTerms'] = usymbols.join("") + parentSymbols.join("");
+					entry['mainLabel'] = mainLabel;
+
+					// Set MeaningScores/Rank/Frequency - based on the meaning's count.
+					var meaningCount = 0;
+					var meaningId = entry.meaningId;
+					if (meaningId) { meaningCount = meanings[meaningId].count; }
+					// if (meaningCount > maxCount) { maxCount = meaningCount; } //~
+					// if (!meaningId) { console.log(labels); }
+					meaningCount = padZeroes(meaningCount, 3);
+					meaningCount += " - " + meaningId + " - " + labels[0]; // ~ this helps separate words with the same meaning-count, but separate meanings. e.g. 7-cat,7-hello,7-cat,
+					// and helps cater for overfitting of the paired-meaning-terms
+					entry['meaningCount'] = meaningCount;
+
+					// Current format is something like this:
+					// 011 - 159 - meet (1. MeaningFrequency-in-SignPuddle-Entries, 2. Meaning-ID, 3. First-Term-of-this-Specific-Sign)
+				}
 			}
 		}
 	}
-	// console.log(maxCount); // <- hmm, it seems '9' is indeed the max-count.
 
 </script>
 
@@ -879,11 +890,15 @@
 	//
 
 	// ON Load
-	var sifter = new Sifter(signPuddleEntries); // Create Sifter
-	refreshSearchResults(); // On Load // ~temp
+	var sifter = null;
+	// ~ requires signPuddleEntries to be ready
+	function setSifter() {
+		sifter = new Sifter(signPuddleEntries); // Create Sifter
+		refreshSearchResults(); // On Load // ~temp
+	}
 
 	// Input Area
-	$('#inputArea').focus();
+	// $('#inputArea').focus();
 	$('#inputArea').on('input', function(e) {
 		e.preventDefault();
 		refreshSearchResults();
@@ -1109,9 +1124,9 @@
 			}
 			var signPuddleLink = "http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid="+id;
 
-			var descriptionHtml = '<div class="description" sortTerm="'+entry.meaningCount+'">'
+			var descriptionHtml = '<div class="description" sort-term="'+entry.meaningCount+'">'
 			descriptionHtml += '<span class="main-label">' + '<a href="'+signPuddleLink+'" target="_blank">' + labels.join(" • ") + '</a>' + '</span>';
-			descriptionHtml += entry.meaningCount;
+			// descriptionHtml += entry.meaningCount;
 			// divHtml += '<span class="usymbols">' + entry.unicode8searchTerms + '</span>';
 			descriptionHtml += '<span class="usymbols">' + symbolsString + '</span>'; // <- Weirdly enough, in Safari, this is the only config that really works. (xx.join(), xx.join('</span><span>') xx.join(' ') ) - it's the same even if it's changed to a <div> container // Assigning CSS Content:Before doesn't work either.
 			descriptionHtml += '</div>'
@@ -1260,6 +1275,22 @@
 		$('#upper-wrapper').height(upperHeight);	
 	}
 
+</script>
+
+<!-- DOCUMENT READY -->
+<script type="text/javascript">
+	$( document ).ready(function() {
+		// PRE-GENERATION FUNCTIONS
+		// Determine Meaning Groups
+		determine_meaningGroups();
+		// Add Search Terms - to SignPuddleEntries
+		// (Requires meaningGRoups)
+		add_searchTerms();
+
+		// DYNAMIC FUNCTIONS:
+		// Requires signPuddleEntries to be ready
+		setSifter();
+	});
 </script>
 
 </html>
