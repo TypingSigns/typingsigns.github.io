@@ -18,7 +18,7 @@ body {
 	height: 100%;
 }
 	#upper-wrapper {
-		background-color: #f5f5f5;
+		background-color: #dcdcdc;
 
 		/* height is set via js according to keyboard-area's height */
 		overflow: auto;
@@ -140,69 +140,93 @@ body {
 }
 
 .entry {
-	background-color: beige;
 	margin: 5px;
 	width: 120px;
 	display: inline-block;
 	word-wrap: break-word;
 	text-align: center;
 	vertical-align: top;
-	border: 1px solid #aaa;
+	/*border: 1px solid #aaa;*/
 }
-.svg-wrapper {
-	background: #eee; /* Shown briefly when new items are loaded */
-	text-align: center;
-	height: 70px;
-}
-.svg-wrapper.load-unsuccessful {
-	background: black;
-}
-.svg-wrapper.loaded-svg {
-	background: white;
-	position: relative;
-}
-	.entry .svg-wrapper img {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		transform: translateY(-50%) translateX(-50%);
-		
-		opacity: 0.2;
-
-		/* Optional. Add a shadow */
-		/*filter: blur(2px) opacity(0.75);*/
-	}
-
-	.entry .svg-wrapper img {
-		max-height: 70px;
-		max-width: 70px;
-	}
-	.entry .svg-wrapper svg {
+	.svg-wrapper {
+		background: #eee; /* Shown briefly when new items are loaded */
+		text-align: center;
 		height: 70px;
-		max-width: 70px;
+		padding: 10px 0;
+
+		border-top-left-radius: 25px;
+		border-top-right-radius: 5px;
 	}
+	.svg-wrapper.load-unsuccessful {
+		background: black;
+	}
+	.svg-wrapper.loaded-svg {
+		background: white;
+		position: relative;
+	}
+		.entry .svg-wrapper img {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translateY(-50%) translateX(-50%);
+			
+			opacity: 0.2;
+
+			/* Optional. Add a shadow */
+			/*filter: blur(2px) opacity(0.75);*/
+		}
+
+		.entry .svg-wrapper img {
+			max-height: 70px;
+			max-width: 70px;
+		}
+		.entry .svg-wrapper svg {
+			height: 70px;
+			max-width: 70px;
+		}
+
 	.entry .description {
-		background-color: beige;
+		background-color: #f3f3f3;
 		max-height: 95px;
 		overflow: scroll;
+
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
 
 		/* Optional */
 		height: 95px;
 	}
 span.main-label {
 	display: block;
-	margin: 10px 0;
+	/*margin: 10px 0;*/
+	font-size: 0.9em;
+	color: darkblue;
 }
 	span.main-label a {
 		text-decoration: none;
-		letter-spacing: 0.1em;
-		word-spacing: 0.3em;
+		letter-spacing: 0.05em;
+		word-spacing: 0.2em;
+		color: royalblue;
 
 		/* Optional */ /* Useful once we've grouped search-terms by (at least one) higher-level meaning */
 		text-transform: uppercase;
 	}
-	span.main-label a:hover {
-		border-bottom: 1px solid;
+		span.main-label a:hover {
+			/*color: orange;*/
+			/*text-decoration: line-through;*/
+			text-decoration: underline;
+			
+			border-bottom: 3px solid;
+			/*^ currently redundant*/
+		}
+	span.main-label span.label {
+		display: block;
+		background: #f1faff;
+		border-top: 1px solid lightblue;
+		padding: 3px 0;
+	}
+	span.main-label span.label:last-child {
+		border-bottom: 1px solid lightblue;
 	}
 /*.usymbols, .usymbols span {*/
 span.usymbols {
