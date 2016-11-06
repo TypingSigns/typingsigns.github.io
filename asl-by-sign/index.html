@@ -83,8 +83,11 @@
 				<!-- ^- toggle intro message -->
 			</div>
 			<div id="empty-search-input-message">
+				<p class="alert">
+					<span id="browser-warning-message" class="warning">⚠️ Works best in <a href="https://www.google.com/chrome/">Google Chrome</a> on Desktop.</span>
+				</p>
 				<p>
-					'ASL Sign Search' is an ongoing experimental (β) project to easily search the english glosses of ASL Signs. <span>It works best in Chrome.</span>
+					'ASL Sign Search' is an ongoing experimental (β) project to easily search the english glosses of ASL Signs.
 				</p>
 				<p>
 					Getting Started:
@@ -129,6 +132,29 @@
 </body>
 
 <script>
+	// BROWSER WARNING MESSAGE
+	$('#browser-warning-message').show();
+
+	// Chrome Check
+	// via http://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome
+	var isChromium = window.chrome,
+    winNav = window.navigator,
+    vendorName = winNav.vendor,
+    isOpera = winNav.userAgent.indexOf("OPR") > -1,
+    isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+    isIOSChrome = winNav.userAgent.match("CriOS");
+
+	if(isIOSChrome){
+		// is Google Chrome on IOS
+		$('#browser-warning-message').show();
+	} else if(isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false) {
+		// is Google Chrome
+		$('#browser-warning-message').hide();
+	} else { 
+		// not Google Chrome 
+		$('#browser-warning-message').show();
+	}
+
 	// QUICK INTRO MESSAGE FUNCTIONS
 	$('#intro-message-hide-btn-container a').click(function() {
 		$('#empty-search-input-message').slideUp();

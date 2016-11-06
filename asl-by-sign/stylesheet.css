@@ -77,6 +77,19 @@ body {
 			padding: 10px 20px;
 			border-radius: 10px;
 		}
+			#empty-search-input-message p.alert {
+				text-align: center;
+				margin: 30px;
+			}
+			#empty-search-input-message span#browser-warning-message {
+				padding: 8px;
+				border: 5px solid #ffd12b;
+				border-radius: 5px;
+
+				/* Default*/
+				display: none;
+			}
+
 			#empty-search-input-message a {
 				text-decoration: none;
 				border-bottom: 1px solid;
