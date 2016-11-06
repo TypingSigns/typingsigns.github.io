@@ -165,8 +165,8 @@
 			height: 39px !important;
 			position: relative;
 			margin-top: 30px;
-			-webkit-transition: 0.5s;
-			transition: 0.5s;
+			-webkit-transition: 0.2s;
+			transition: 0.2s;
 			top: 0.0px;
 		}
 		a.apple-button:hover {
@@ -216,15 +216,48 @@
 			padding: 10px;
 			text-decoration: none;
 			font-weight: normal;
+			position: relative;
+
+			border-bottom: 2px solid lightgray;
+			top: -1px;
+
+			transition: 0.2s;
+			-webkit-transition: 0.2s;
+			-webkit-transform: translateZ(0);
+    		transform: translateZ(0);
 		}
 		.project a:hover {
-			background-color: beige;
-			font-weight: bold;
+			
+			/*font-weight: bold;*/
+			border-bottom: 2px solid;
+			top: -3px;
+			/*transition: 0.2s;*/
+
+			transition: 0.2s;
+			-webkit-transition: 0.2s;
+
+
+			/*background-color: #eee;*/
+
+			background: rgba(255,255,255,1);
+			background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
+			background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
 		}
 		.project span.description {
 			font-size: 0.8em;
 			margin-top: 20px;
 			display: block;
+		}
+		.project img {
+			max-width: 100%;
+			border-radius: 6px;
+			margin-top: 10px;
+			border: 1px solid #ddd;
 		}
 
 	#feedback-wrapper {
@@ -247,8 +280,17 @@
 
 	/* General */
 	a {
-		border-bottom: 1px solid;
+		color: royalblue;
 		text-decoration: none;
+	}
+	a:hover {
+		border-bottom: 1px solid;
+	}
+	a:active {
+		color: orange;
+	}
+	a:visited {
+		color: #032fb7;
 	}
 	.screen-reader-transparent-text {
 		opacity: 0.5;
@@ -300,15 +342,24 @@
 <div id="other-projects-wrapper" class="content-block light-gradient-background">
 	<h2>Other Projects</h2>
 	<div class="project">
-		<a href="asl-by-sign/index.html" class="multilingual-container"><span class="emoji">👋→🔤</span><span class="english">ASL to English Dictionary (β)</span></a>
-		<span class="description">Look up the English meaning of ASL Signs. (Experimental. Requires Chrome.)</span>
-		<img src="signing.png" alt="SignWriting symbol for the gloss: SIGNING">
+		<a href="asl-by-sign/index.html" class="multilingual-container">
+			<span class="emoji">👋→🔤</span>
+			<span class="english">ASL to English Dictionary (β)</span>
+			<img src="images/screenshot-american-sign-language-search.png" alt="American Sign Language Search Tool">
+		</a>
+		<span class="description">Look up the English words of ASL Signs using Handshapes. (Experimental)</span>
+		<!-- <img src="images/signing.png" alt="SignWriting symbol for the gloss: SIGNING"> -->
 	</div>
 
 	<div class="project">
-		<a href="english-to-asl/index.html" class="multilingual-container"><span class="emoji">🔤→👋</span><span class="english">English to ASL Dictionary</span></a>
+		<a href="english-to-asl/index.html" class="multilingual-container">
+			<span class="emoji">🔤→👋</span>
+			<span class="english">English to ASL Dictionary</span>
+			<img src="images/screenshot-translate-english-to-asl.png" alt="Translate American Sign Language Words to English Tool">
+		</a>
 		<span class="description">Look up American Sign Language by their English Gloss - across multiple dictionaries.</span>
-		<img src="english.png" alt="SignWriting symbol for the gloss: ENGLISH">
+		
+		<!-- <img src="images/english.png" alt="SignWriting symbol for the gloss: ENGLISH"> -->
 	</div>
 </div>
 <div id="feedback-wrapper" class="content-block">
