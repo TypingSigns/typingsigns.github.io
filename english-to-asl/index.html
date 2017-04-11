@@ -22,24 +22,8 @@
 
 <style>
 	html {
-		/*overflow-y: scroll;*/
 	}
 	body {
-		/*max-width: 800px;*/
-		/*margin: auto;*/
-	}
-	.custom-scrollbar::-webkit-scrollbar {
-	    width: 1em;
-	    background-color: #ddd;
-	}
-	 
-	.custom-scrollbar::-webkit-scrollbar-track {
-	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	}
-	 
-	.custom-scrollbar::-webkit-scrollbar-thumb {
-	  background-color: darkgrey;
-	  outline: 1px solid slategrey;
 	}
 	header {
 		/*text-align: center;*/
@@ -64,26 +48,16 @@
 		overflow-x: hidden;
 		overflow-y: scroll;
 		height: 100%;
+		width: 100%;
 	}
 	#search-area {
-		/*margin: 0 20px;*/
-		background-color: #EEE;
-		width: 33%;
-
+		/*background-color: #EEE;*/
+		width: 100%;
+		max-width: 800px;
+		margin: auto;
 	}
 		.search-area-contents {
 			margin: 0 20px;
-			overflow: hidden;
-		}
-	#iframe-area {
-		width: 67%;
-		background: orange;
-		border: 10px solid black;
-	}
-		#iframe-area iframe {
-			width: 100%;
-			height: 100%;
-			border: none;
 		}
 
 	/* SEARCH AREA */
@@ -122,8 +96,8 @@
 		margin: 0 10px;
 	}
 	footer {
-		margin-top: 20px;
-		margin-bottom: 10px;
+		margin: 20px;
+		color: #666;
 	}
 
 	/* Buttons: http://www.bestcssbuttongenerator.com/ */
@@ -266,18 +240,13 @@
 </style>
 
 <body>
-	<!-- <header>English to ASL</header> -->
-	<div class="column-wrapper">
-		<div id="search-area" class="column search-area">
-			<div class="search-area-contents">
-				<input id="inputArea" type="text" name="gloss-entry" placeholder="Type here ... 👋">
-				<div id="results-header" class="subtext"></div>
-				<div id="results"></div>
-				<footer id="donation-links" class="subtext">If these resources have helped you, consider donating to <a href="http://www.lifeprint.com/">LifePrint</a>, <a href="http://www.handspeak.com/">HandSpeak</a>, or <a href="http://signwriting.org/">SignWriting.</a></footer>
-			</div>
-		</div>
-		<div id="iframe-area" class="column iframe-area">
-			<iframe id="ext-page-iframe" src="https://www.handspeak.com/word/list/index.php?abc=he&id=1015"></iframe>
+	<header>English to ASL</header>
+	<div id="search-area" class="column search-area">
+		<div class="search-area-contents">
+			<input id="inputArea" type="text" name="gloss-entry" placeholder="Type here ... 👋">
+			<div id="results-header" class="subtext"></div>
+			<div id="results"></div>
+			<footer id="donation-links" class="subtext">Definitions are sourced from <a href="http://www.lifeprint.com/">LifePrint</a>, <a href="http://www.handspeak.com/">HandSpeak</a>, and <a href="http://signwriting.org/">SignWriting.</a> If you find this page useful, please lend them your support</footer>
 		</div>
 	</div>
 </body>
@@ -348,7 +317,7 @@
 						if (linkText.indexOf('handspeak') >= 0) { linkText = 'HandSpeak'}
 					}
 				}
-				var linkHtml = '<a href="'+link+'" class=" search-result-ext-link '+linkText+'" data-url="'+link+'" >'+linkText+'</a>';
+				var linkHtml = '<a href="'+link+'" target="_blank" class=" search-result-ext-link '+linkText+'" data-url="'+link+'" >'+linkText+'</a>';
 				linksHtml += linkHtml;
 			}
 			linksHtml = '<div class="links">' + linksHtml + '</div>'
@@ -360,18 +329,17 @@
 		}
 		$('#results').html(resultsHtml);
 
-		$('#results a.search-result-ext-link').click(function(e) {
-			e.preventDefault();
+		// $('#results a.search-result-ext-link').click(function(e) {
+		// 	e.preventDefault();
 
-			var url = $(this).attr('data-url');
-			console.log(url);
+		// 	var url = $(this).attr('data-url');
+		// 	console.log(url);
 
-			var iframe = document.getElementById('ext-page-iframe');
-			iframe.src = '';
-			iframe.src = url;
-			// iframe.contentWindow.location.reload();
-
-		});
+		// 	// Disabled. iFrame is too big of a blockade. Better to rethink design with local content.
+		// 	var iframe = document.getElementById('ext-page-iframe');
+		// 	iframe.src = '';
+		// 	iframe.src = url;
+		// });
 	}
 	
 
