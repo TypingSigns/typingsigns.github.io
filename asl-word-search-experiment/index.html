@@ -55,12 +55,24 @@
 			vertical-align: top;
 			padding-right: 0.5em;
 		}
+
+		#results .item a.link-content {
+			padding: 20px;
+			display: inline-block;
+			background-color: peachpuff;
+		}
+		#results .item a.link-content.lifeprint {
+			background-color: lemonchiffon;
+		}
+		#results .item a.link-content.handspeak {
+			background-color: lightcyan;
+		}
 	</style>
 </head>
 
 <body>
 	<div class="searchbar-container">
-		<input id="searchbar" type="text">
+		<input id="searchbar" type="text" placeholder="Shortcuts: Use [ ` ] or [ / ] to focus here">
 	</div>
 	<div class="searchbar-container-tail"></div>
 	<pre id="STAT">Loading</pre>
@@ -75,6 +87,20 @@
 	}
 
 	$(document).ready(function() {
+
+		/////////////////////////////////////////////
+
+		// List for Keypress
+		$(window).keypress(function(e) {
+			var key = e.which;
+			console.log('key:',key);
+			if (key == 96 || key == 47) { // '`' or '/'
+				// $('#searchbar').focus(); // focuses without selecting all text
+				$('#searchbar').select(); // focuses and selects all text
+				e.preventDefault();
+			}
+		});
+		/////////////////////////////////////////////
 
 		var sifter;
 
@@ -380,10 +406,10 @@
 				
 				switch (item.type) {
 					case 'lifeprint':
-						html += ' - Lifeprint';
+						html += ' - ' + '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
 						break;
 					case 'handspeak':
-						html += ' - Handspeak';
+						html += ' - ' + '<a class="link-content handspeak" href="'+url+'">'+'Handspeak'+'</a>';
 						break;
 					case 'signbank':
 						if (item.fsw) {
