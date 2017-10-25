@@ -434,7 +434,8 @@
 				
 				switch (item.type) {
 					case 'sts':
-						html += item.videoid; //'<img src="data/images/signbank/pngs-by-sid/'+item.videoid+'.png">';
+						html += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
+						// html += '<img src="data/images/spreadthesign _private/gifs/'+item.videoid+'.gif">';
 						html += ' - ' + '<a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
 						break;
 					case 'lifeprint':
