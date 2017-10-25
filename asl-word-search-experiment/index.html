@@ -161,6 +161,34 @@
 					_STAT("	↳ Processed ASLLex Directory 😁")
 
 					// NEXT:
+					processSpreadTheSign()
+				}
+			});
+		}
+
+		function processSpreadTheSign() {
+			_STAT("Loading STS directory ⏳ ...")
+			$.ajax({
+				url : "data/spreadthesign-id-url-title-~videopageid.tsv",
+				dataType: "text",
+				success : function (data_sts) {
+					_STAT("	↳ Loaded STS Directory 😁")
+					_STAT("	↳ Processing STS Directory ⏳ ...")
+					// Add Data
+					var lines = data_sts.split("\n")
+					for (var i=0; i<lines.length; i++) {
+						var columns = lines[i].split("\t");
+						var entry = {}
+						entry["type"] = "sts"
+						entry["id"] = columns[0];
+						entry["url"] = columns[1];
+						entry["titles"] = columns[2];
+						entry["videoid"] = columns[3];
+						myDirectory.push(entry)
+					}
+					_STAT("	↳ Processed STS Directory 😁")
+
+					// NEXT:
 					processMSHWords()
 				}
 			});
@@ -405,6 +433,10 @@
 				html += '<a href="'+url+'">'+titles+'</a>';
 				
 				switch (item.type) {
+					case 'sts':
+						html += item.videoid; //'<img src="data/images/signbank/pngs-by-sid/'+item.videoid+'.png">';
+						html += ' - ' + '<a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
+						break;
 					case 'lifeprint':
 						html += ' - ' + '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
 						break;
