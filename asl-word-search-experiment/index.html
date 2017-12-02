@@ -79,37 +79,112 @@
 	<pre id="results">Results ...</pre>
 </body>
 
+<!-- ToDo: Should abstract the UI element names -->
+
+
+<!-- STAT CONVENIENCE FUNCTION -->
 <script>
 	function _STAT(text) {
 		$('#STAT').text(text);
-		text = "_STAT: " + text;
+		text = "STATUS: " + text;
 		console.log(text);
 	}
+</script>
 
-	$(document).ready(function() {
+<!-- AFTER ALL DATA LOADED -->
+<script>
+function lastDataProcessed() {
+	_STAT("Created Directory 😁")
 
-		/////////////////////////////////////////////
+	////////////////////////////////////////////////////
+	_STAT("Creating Sifter for Search ...")
+	sifter = new Sifter(myDirectory);
+	_STAT("	↳ Created Sifter for Search.")
 
-		// List for Keypress
-		$(window).keypress(function(e) {
-			var key = e.which;
-			console.log('key:',key);
-			if (key == 96 || key == 47) { // '`' or '/'
-				// $('#searchbar').focus(); // focuses without selecting all text
-				$('#searchbar').select(); // focuses and selects all text
-				e.preventDefault();
-			}
-		});
-		/////////////////////////////////////////////
+	////////////////////////////////////////////////////
+	_STAT("Initializing Search Bar.")
+	refreshResultsFromInput();
+	$('#searchbar').focus();
+	$('#searchbar').on('input', function(e) {
+		refreshResultsFromInput();
+	})
+}
 
-		var sifter;
+function refreshResultsFromInput() {
+	// Get Value
+	var searchvalue = $('#searchbar').val();
+	if (searchvalue == "") { _STAT("ALERT: Please enter some text."); }
 
-		_STAT("Creating Directory ⏳ ...")
-		var myDirectory = []
-		// entry = ["type"]["id"]["url"]["titles"]
+	window.scrollTo(0, 0); // Scroll to top
+
+	////////////////////////////////////////////////////
+	_STAT("Conducting Search ...")
+	var results = sifter.search(searchvalue, {
+		fields: ['titles'],
+		limit: 50
+	});
+	$('#results').html("")
+	for (var i=0; i<results.items.length; i++) {
+		var itemId = results.items[i].id;
+		var item = sifter.items[itemId];
+		var titles = item.titles;
+		var url = item.url;
+		var html = '<div class="item">';
+		html += '<a href="'+url+'">'+titles+'</a>';
 		
-		// SIGNBANK DATA: Load and Add
-		_STAT("Loading SignBank directory ⏳ ...")
+		switch (item.type) {
+			case 'sts':
+				html += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
+				// html += '<img src="data/images/spreadthesign _private/gifs/'+item.videoid+'.gif">';
+				html += ' - ' + '<a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
+				break;
+			case 'lifeprint':
+				html += ' - ' + '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
+				break;
+			case 'handspeak':
+				html += ' - ' + '<a class="link-content handspeak" href="'+url+'">'+'Handspeak'+'</a>';
+				break;
+			case 'signbank':
+				if (item.fsw) {
+					html += '<img src="data/images/signbank/pngs-by-sid/'+item.mediaandsignid+'.png">';
+				} else {
+					html += ' { no fsw }';
+				}
+				break;
+			case 'giphyswr':
+				html += '<img src="'+item.mediaurl+'">';
+				break;
+			case 'asllex':
+			case 'mshwords':
+			case 'mshanim':
+			case 'aslkids':
+			case 'nab':
+				// A. Simple Youtube Embed w/- suggested videos
+					// var embedurl = 'https://www.youtube.com/embed/'+item.youtubeid+'?rel=0'
+				// B.i. Looping Embed - No Autoplay
+					var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
+				// B.ii. Looping Autoplaying Embed, Muted.
+					// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
+				// Embed:
+				html += '<iframe width="420" height="315" src="'+embedurl+'"></iframe>';
+				break;
+
+		}
+		html += "</div>";
+
+		$('#results').append(html)
+	}
+	_STAT("	↳ Conducted Search")
+}
+</script>
+
+<!-- LOAD DIRECTORY SCRIPT -->
+<script>
+	var sifter;
+	var myDirectory = [] // entry = ["type"]["id"]["url"]["titles"]
+	
+	// SIGNBANK DATA: Load and Add
+	function loadSignbank() {
 		$.ajax({
 			// url : "https://raw.githubusercontent.com/TypingSigns/typingsigns.github.io/master/asl-word-search-experiment/data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
 			url : "data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
@@ -137,345 +212,281 @@
 				processASLLex()
 			}
 		});
+	}
 
-		function processASLLex() {
-			_STAT("Loading ASLLex directory ⏳ ...")
-			$.ajax({
-				url : "data/asllex-id-url-title-youtubeid.tsv",
-				dataType: "text",
-				success : function (data_asllex) {
-					_STAT("	↳ Loaded ASLLex Directory 😁")
-					_STAT("	↳ Processing ASLLex Directory ⏳ ...")
-					// Add Data
-					var lines = data_asllex.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "asllex"
-						entry["id"] = columns[0];
-						entry["url"] = columns[1];
-						entry["titles"] = columns[2];
-						entry["youtubeid"] = columns[3];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed ASLLex Directory 😁")
-
-					// NEXT:
-					processSpreadTheSign()
+	function processASLLex() {
+		_STAT("Loading ASLLex directory ⏳ ...")
+		$.ajax({
+			url : "data/asllex-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_asllex) {
+				_STAT("	↳ Loaded ASLLex Directory 😁")
+				_STAT("	↳ Processing ASLLex Directory ⏳ ...")
+				// Add Data
+				var lines = data_asllex.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "asllex"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
 				}
-			});
-		}
+				_STAT("	↳ Processed ASLLex Directory 😁")
 
-		function processSpreadTheSign() {
-			_STAT("Loading STS directory ⏳ ...")
-			$.ajax({
-				url : "data/spreadthesign-id-url-title-~videopageid.tsv",
-				dataType: "text",
-				success : function (data_sts) {
-					_STAT("	↳ Loaded STS Directory 😁")
-					_STAT("	↳ Processing STS Directory ⏳ ...")
-					// Add Data
-					var lines = data_sts.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "sts"
-						entry["id"] = columns[0];
-						entry["url"] = columns[1];
-						entry["titles"] = columns[2];
-						entry["videoid"] = columns[3];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed STS Directory 😁")
-
-					// NEXT:
-					processMSHWords()
-				}
-			});
-		}
-
-		function processMSHWords() {
-			_STAT("Loading MSHWords directory ⏳ ...")
-			$.ajax({
-				url : "data/yout-mshwords-id-url-title-youtubeid.tsv",
-				dataType: "text",
-				success : function (data_mshwords) {
-					_STAT("	↳ Loaded MSHWords Directory 😁")
-					_STAT("	↳ Processing MSHWords Directory ⏳ ...")
-					// Add Data
-					var lines = data_mshwords.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "mshwords"
-						entry["id"] = columns[0];
-						entry["url"] = columns[1];
-						entry["titles"] = columns[2];
-						entry["youtubeid"] = columns[3];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed MSHWords Directory 😁")
-
-					// NEXT:
-					processMSHAnim()
-				}
-			});
-		}
-
-		function processMSHAnim() {
-			_STAT("Loading MSHAnim directory ⏳ ...")
-			$.ajax({
-				url : "data/yout-mshanim-id-url-title-youtubeid.tsv",
-				dataType: "text",
-				success : function (data_mshanim) {
-					_STAT("	↳ Loaded MSHAnim Directory 😁")
-					_STAT("	↳ Processing MSHAnim Directory ⏳ ...")
-					// Add Data
-					var lines = data_mshanim.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "mshanim"
-						entry["id"] = columns[0];
-						entry["url"] = columns[1];
-						entry["titles"] = columns[2];
-						entry["youtubeid"] = columns[3];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed MSHAnim Directory 😁")
-
-					// NEXT:
-					processASLKids()
-				}
-			});
-		}
-
-		function processASLKids() {
-			_STAT("Loading ASLKids directory ⏳ ...")
-			$.ajax({
-				url : "data/yout-aslkids-id-url-title-youtubeid.tsv",
-				dataType: "text",
-				success : function (data_aslkids) {
-					_STAT("	↳ Loaded ASLKids Directory 😁")
-					_STAT("	↳ Processing ASLKids Directory ⏳ ...")
-					// Add Data
-					var lines = data_aslkids.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "aslkids"
-						entry["id"] = columns[0];
-						entry["url"] = columns[1];
-						entry["titles"] = columns[2];
-						entry["youtubeid"] = columns[3];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed ASLKids Directory 😁")
-
-					// NEXT:
-					processHandspeak()
-				}
-			});
-		}
-
-		function processHandspeak() {
-			_STAT("Loading Handspeak directory ⏳ ...")
-			$.ajax({
-				url : "data/handspeak-id-url-title.tsv",
-				dataType: "text",
-				success : function (data_handspeak) {
-					_STAT("	↳ Loaded Handspeak Directory 😁")
-					_STAT("	↳ Processing Handspeak Directory ⏳ ...")
-					// Add Data
-					var lines = data_handspeak.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "handspeak"
-						entry["id"] = columns[0];
-						entry["url"] = columns[1];
-						entry["titles"] = columns[2];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed Handspeak Directory 😁")
-
-					// NEXT:
-					processLifeprint()
-				}
-			});
-		}
-
-		function processLifeprint() {
-			_STAT("Loading Lifeprint directory ⏳ ...")
-			$.ajax({
-				url : "data/lifeprint-id-url-title.tsv",
-				dataType: "text",
-				success : function (data_lifeprint) {
-					_STAT("	↳ Loaded Lifeprint Directory 😁")
-					_STAT("	↳ Processing Lifeprint Directory ⏳ ...")
-					// Add Data
-					var lines = data_lifeprint.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "lifeprint"
-						entry["id"] = columns[0];
-						entry["url"] = columns[1];
-						entry["titles"] = columns[2];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed Lifeprint Directory 😁")
-
-					// NEXT:
-					processGiphySWR()
-				}
-			});
-		}
-
-		function processGiphySWR() {
-			_STAT("Loading GiphySWR directory ⏳ ...")
-			$.ajax({
-				url : "data/giphyswr-id-url-titles-mediaurl.tsv",
-				dataType: "text",
-				success : function (data_giphyswr) {
-					_STAT("	↳ Loaded GiphySWR Directory 😁")
-					_STAT("	↳ Processing GiphySWR Directory ⏳ ...")
-					// Add Data
-					var lines = data_giphyswr.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "giphyswr"
-						entry["id"] = columns[0];
-						entry["url"] = columns[1];
-						entry["titles"] = columns[2];
-						entry["mediaurl"] = columns[3];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed GiphySWR Directory 😁")
-
-					// NEXT:
-					processNab()
-				}
-			});
-		}
-
-		function processNab() {
-			_STAT("Loading Nab directory ⏳ ...")
-			$.ajax({
-				url : "data/yout-nabboudatuofa-id-url-title-youtubeid.tsv",
-				dataType: "text",
-				success : function (data_nab) {
-					_STAT("	↳ Loaded Nab Directory 😁")
-					_STAT("	↳ Processing Nab Directory ⏳ ...")
-					// Add Data
-					var lines = data_nab.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "nab"
-						entry["id"] = columns[0];
-						entry["url"] = columns[1];
-						entry["titles"] = columns[2];
-						entry["youtubeid"] = columns[3];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed Nab Directory 😁")
-
-					// NEXT:
-					lastDataProcessed()
-				}
-			});
-		}
-
-		////////////////////////////////////////////////////
-		////////////////////////////////////////////////////
-		////////////////////////////////////////////////////
-		// ALL DATA 	↳ LOADED
-
-		function lastDataProcessed() {
-			_STAT("Created Directory 😁")
-
-			////////////////////////////////////////////////////
-			_STAT("Creating Sifter for Search ...")
-			sifter = new Sifter(myDirectory);
-			_STAT("	↳ Created Sifter for Search.")
-
-			////////////////////////////////////////////////////
-			_STAT("Initializing Search Bar.")
-			refreshResultsFromInput();
-			$('#searchbar').focus();
-			$('#searchbar').on('input', function(e) {
-				refreshResultsFromInput();
-			})
-		}
-
-		function refreshResultsFromInput() {
-			// Get Value
-			var searchvalue = $('#searchbar').val();
-			if (searchvalue == "") { _STAT("ALERT: Please enter some text."); }
-
-			window.scrollTo(0, 0); // Scroll to top
-
-			////////////////////////////////////////////////////
-			_STAT("Conducting Search ...")
-			var results = sifter.search(searchvalue, {
-				fields: ['titles'],
-				limit: 50
-			});
-			$('#results').html("")
-			for (var i=0; i<results.items.length; i++) {
-				var itemId = results.items[i].id;
-				var item = sifter.items[itemId];
-				var titles = item.titles;
-				var url = item.url;
-				var html = '<div class="item">';
-				html += '<a href="'+url+'">'+titles+'</a>';
-				
-				switch (item.type) {
-					case 'sts':
-						html += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
-						// html += '<img src="data/images/spreadthesign _private/gifs/'+item.videoid+'.gif">';
-						html += ' - ' + '<a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
-						break;
-					case 'lifeprint':
-						html += ' - ' + '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
-						break;
-					case 'handspeak':
-						html += ' - ' + '<a class="link-content handspeak" href="'+url+'">'+'Handspeak'+'</a>';
-						break;
-					case 'signbank':
-						if (item.fsw) {
-							html += '<img src="data/images/signbank/pngs-by-sid/'+item.mediaandsignid+'.png">';
-						} else {
-							html += ' { no fsw }';
-						}
-						break;
-					case 'giphyswr':
-						html += '<img src="'+item.mediaurl+'">';
-						break;
-					case 'asllex':
-					case 'mshwords':
-					case 'mshanim':
-					case 'aslkids':
-					case 'nab':
-						// A. Simple Youtube Embed w/- suggested videos
-							// var embedurl = 'https://www.youtube.com/embed/'+item.youtubeid+'?rel=0'
-						// B.i. Looping Embed - No Autoplay
-							var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
-						// B.ii. Looping Autoplaying Embed, Muted.
-							// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
-						// Embed:
-						html += '<iframe width="420" height="315" src="'+embedurl+'"></iframe>';
-						break;
-
-				}
-				html += "</div>";
-
-				$('#results').append(html)
+				// NEXT:
+				processSpreadTheSign()
 			}
-			_STAT("	↳ Conducted Search")
-		}
+		});
+	}
+
+	function processSpreadTheSign() {
+		_STAT("Loading STS directory ⏳ ...")
+		$.ajax({
+			url : "data/spreadthesign-id-url-title-~videopageid.tsv",
+			dataType: "text",
+			success : function (data_sts) {
+				_STAT("	↳ Loaded STS Directory 😁")
+				_STAT("	↳ Processing STS Directory ⏳ ...")
+				// Add Data
+				var lines = data_sts.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "sts"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["videoid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed STS Directory 😁")
+
+				// NEXT:
+				processMSHWords()
+			}
+		});
+	}
+
+	function processMSHWords() {
+		_STAT("Loading MSHWords directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-mshwords-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_mshwords) {
+				_STAT("	↳ Loaded MSHWords Directory 😁")
+				_STAT("	↳ Processing MSHWords Directory ⏳ ...")
+				// Add Data
+				var lines = data_mshwords.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "mshwords"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed MSHWords Directory 😁")
+
+				// NEXT:
+				processMSHAnim()
+			}
+		});
+	}
+
+	function processMSHAnim() {
+		_STAT("Loading MSHAnim directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-mshanim-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_mshanim) {
+				_STAT("	↳ Loaded MSHAnim Directory 😁")
+				_STAT("	↳ Processing MSHAnim Directory ⏳ ...")
+				// Add Data
+				var lines = data_mshanim.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "mshanim"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed MSHAnim Directory 😁")
+
+				// NEXT:
+				processASLKids()
+			}
+		});
+	}
+
+	function processASLKids() {
+		_STAT("Loading ASLKids directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-aslkids-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_aslkids) {
+				_STAT("	↳ Loaded ASLKids Directory 😁")
+				_STAT("	↳ Processing ASLKids Directory ⏳ ...")
+				// Add Data
+				var lines = data_aslkids.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "aslkids"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed ASLKids Directory 😁")
+
+				// NEXT:
+				processHandspeak()
+			}
+		});
+	}
+
+	function processHandspeak() {
+		_STAT("Loading Handspeak directory ⏳ ...")
+		$.ajax({
+			url : "data/handspeak-id-url-title.tsv",
+			dataType: "text",
+			success : function (data_handspeak) {
+				_STAT("	↳ Loaded Handspeak Directory 😁")
+				_STAT("	↳ Processing Handspeak Directory ⏳ ...")
+				// Add Data
+				var lines = data_handspeak.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "handspeak"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Handspeak Directory 😁")
+
+				// NEXT:
+				processLifeprint()
+			}
+		});
+	}
+
+	function processLifeprint() {
+		_STAT("Loading Lifeprint directory ⏳ ...")
+		$.ajax({
+			url : "data/lifeprint-id-url-title.tsv",
+			dataType: "text",
+			success : function (data_lifeprint) {
+				_STAT("	↳ Loaded Lifeprint Directory 😁")
+				_STAT("	↳ Processing Lifeprint Directory ⏳ ...")
+				// Add Data
+				var lines = data_lifeprint.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "lifeprint"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Lifeprint Directory 😁")
+
+				// NEXT:
+				processGiphySWR()
+			}
+		});
+	}
+
+	function processGiphySWR() {
+		_STAT("Loading GiphySWR directory ⏳ ...")
+		$.ajax({
+			url : "data/giphyswr-id-url-titles-mediaurl.tsv",
+			dataType: "text",
+			success : function (data_giphyswr) {
+				_STAT("	↳ Loaded GiphySWR Directory 😁")
+				_STAT("	↳ Processing GiphySWR Directory ⏳ ...")
+				// Add Data
+				var lines = data_giphyswr.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "giphyswr"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["mediaurl"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed GiphySWR Directory 😁")
+
+				// NEXT:
+				processNab()
+			}
+		});
+	}
+
+	function processNab() {
+		_STAT("Loading Nab directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-nabboudatuofa-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_nab) {
+				_STAT("	↳ Loaded Nab Directory 😁")
+				_STAT("	↳ Processing Nab Directory ⏳ ...")
+				// Add Data
+				var lines = data_nab.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "nab"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Nab Directory 😁")
+
+				// NEXT:
+				lastDataProcessed()
+			}
+		});
+	}
+</script>
+
+<script>
+
+	$(document).ready(function() {
+
+		/////////////////////////////////////////////
+
+		// List for Keypress
+		$(window).keypress(function(e) {
+			var key = e.which;
+			console.log('key:',key);
+			if (key == 96 || key == 47) { // '`' or '/'
+				// $('#searchbar').focus(); // focuses without selecting all text
+				$('#searchbar').select(); // focuses and selects all text
+				e.preventDefault();
+			}
+		});
+		/////////////////////////////////////////////
+
+		_STAT("Creating Directory ⏳ ...")
+		_STAT("Loading SignBank directory ⏳ ...")
+		loadSignbank() // <- should add a callback here - and move 'all data loaded' logic here.
+		
 
 	});
 </script>
