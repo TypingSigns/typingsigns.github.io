@@ -379,76 +379,81 @@
 
 <!-- AFTER ALL DATA LOADED -->
 <script>
-function refreshResultsFromInput() {
-	// Get Value
-	var searchvalue = $('#searchbar').val();
-	if (searchvalue == "") { _STAT("ALERT: Please enter some text."); }
+	function updateResults(searchvalue) {
+		var resultsDomId = '#results'
 
-	window.scrollTo(0, 0); // Scroll to top
+		_STAT("Conducting Search ...")
+		var results = sifter.search(searchvalue, {
+			fields: ['titles'],
+			limit: 50
+		});
+		$(resultsDomId).html("")
+		for (var i=0; i<results.items.length; i++) {
+			var itemId = results.items[i].id;
+			var item = sifter.items[itemId];
+			var titles = item.titles;
+			var url = item.url;
+			var html = '<div class="item">';
+			html += '<a href="'+url+'">'+titles+'</a>';
+			
+			switch (item.type) {
+				case 'sts':
+					html += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
+					// html += '<img src="data/images/spreadthesign _private/gifs/'+item.videoid+'.gif">';
+					html += ' - ' + '<a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
+					break;
+				case 'lifeprint':
+					html += ' - ' + '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
+					break;
+				case 'handspeak':
+					html += ' - ' + '<a class="link-content handspeak" href="'+url+'">'+'Handspeak'+'</a>';
+					break;
+				case 'signbank':
+					if (item.fsw) {
+						html += '<img src="data/images/signbank/pngs-by-sid/'+item.mediaandsignid+'.png">';
+					} else {
+						html += ' { no fsw }';
+					}
+					break;
+				case 'giphyswr':
+					html += '<img src="'+item.mediaurl+'">';
+					break;
+				case 'asllex':
+				case 'mshwords':
+				case 'mshanim':
+				case 'aslkids':
+				case 'nab':
+					// A. Simple Youtube Embed w/- suggested videos
+						// var embedurl = 'https://www.youtube.com/embed/'+item.youtubeid+'?rel=0'
+					// B.i. Looping Embed - No Autoplay
+						var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
+					// B.ii. Looping Autoplaying Embed, Muted.
+						// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
+					// Embed:
+					html += '<iframe width="420" height="315" src="'+embedurl+'"></iframe>';
+					break;
 
-	var resultsDomId = '#results'
+			}
+			html += "</div>";
 
-	////////////////////////////////////////////////////
-	_STAT("Conducting Search ...")
-	var results = sifter.search(searchvalue, {
-		fields: ['titles'],
-		limit: 50
-	});
-	$(resultsDomId).html("")
-	for (var i=0; i<results.items.length; i++) {
-		var itemId = results.items[i].id;
-		var item = sifter.items[itemId];
-		var titles = item.titles;
-		var url = item.url;
-		var html = '<div class="item">';
-		html += '<a href="'+url+'">'+titles+'</a>';
-		
-		switch (item.type) {
-			case 'sts':
-				html += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
-				// html += '<img src="data/images/spreadthesign _private/gifs/'+item.videoid+'.gif">';
-				html += ' - ' + '<a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
-				break;
-			case 'lifeprint':
-				html += ' - ' + '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
-				break;
-			case 'handspeak':
-				html += ' - ' + '<a class="link-content handspeak" href="'+url+'">'+'Handspeak'+'</a>';
-				break;
-			case 'signbank':
-				if (item.fsw) {
-					html += '<img src="data/images/signbank/pngs-by-sid/'+item.mediaandsignid+'.png">';
-				} else {
-					html += ' { no fsw }';
-				}
-				break;
-			case 'giphyswr':
-				html += '<img src="'+item.mediaurl+'">';
-				break;
-			case 'asllex':
-			case 'mshwords':
-			case 'mshanim':
-			case 'aslkids':
-			case 'nab':
-				// A. Simple Youtube Embed w/- suggested videos
-					// var embedurl = 'https://www.youtube.com/embed/'+item.youtubeid+'?rel=0'
-				// B.i. Looping Embed - No Autoplay
-					var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
-				// B.ii. Looping Autoplaying Embed, Muted.
-					// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
-				// Embed:
-				html += '<iframe width="420" height="315" src="'+embedurl+'"></iframe>';
-				break;
-
+			$(resultsDomId).append(html)
 		}
-		html += "</div>";
-
-		$(resultsDomId).append(html)
+		_STAT("	↳ Conducted Search")
 	}
-	_STAT("	↳ Conducted Search")
-}
+
+	function refreshResultsFromInput() {
+		// Get Value
+		var searchvalue = $('#searchbar').val();
+		if (searchvalue == "") { _STAT("ALERT: Please enter some text."); }
+
+		window.scrollTo(0, 0); // Scroll to top
+
+		////////////////////////////////////////////////////
+		updateResults(searchvalue)
+	}
 </script>
 
+<!-- MAIN DOCUMENT READY FUNCTION -->
 <script>
 
 	$(document).ready(function() {
@@ -504,7 +509,7 @@ function refreshResultsFromInput() {
 					})
 				})
 			})
-		}) // <- should add a callback here - and move 'all data loaded' logic here.
+		})
 
 		
 
