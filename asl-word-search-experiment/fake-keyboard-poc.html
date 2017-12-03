@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Fake ASL Keyboard POC</title>
+
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="width=device-width">
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/sifter.js"></script>
+
+	<!-- <script src="/js/ga-track.js"></script> -->
+</head>
+
+<style>
+	html, body {
+		margin: 0;
+		padding: 0;
+		height: 100%;
+		background: gray;
+		
+	}
+	body > .container {
+		background: yellow;
+		padding-top: 5vh;
+		height: 95vh;
+		width: 80vw;
+		padding-left: 5vw;
+		padding-right: 5vw;
+		/*max-width: 800px;*/
+		margin: auto;
+		/*height: 100%;*/
+		/*margin: 2em;*/
+	}
+	#_STAT {
+		min-height: 1.5em;
+		background: orange;
+	}
+	#typing-area {
+		background: white;
+		width: 100%;
+		height: 50vh;
+		font-size: 1em;
+		overflow: scroll;
+	}
+		#typing-area img {
+			vertical-align: middle;
+			max-height: 50px;
+			border: 1px solid lightgray;
+			padding: 5px;
+			margin: 1px;
+		}
+	#search-results, #first-result-dummy {
+		width: 90%;
+		margin: auto;
+		background-color: lightgray;
+		border-radius: 1em;
+		padding: 0.5em;
+		position: relative;
+	}
+	#search-results {
+		height: 30vh;
+	}
+		#search-results .item,  #first-result-dummy .item {
+			height: 100px;
+			background-color: cyan;
+			border: 2px solid;
+			position: relative;
+		}
+		#search-results .item img {
+			max-height: 100%;
+			max-width: 100%;
+			background: yellow;
+			vertical-align: middle;
+		}
+</style>
+
+<!-- NEXT STEP: NOTE: NEED TO UPDATE THIS TO BE A FIELD THAT CAN HOLD IMAGES! -->
+
+<body>
+	<div class="container">
+		<div id="_STAT">Status: …</div>
+		<div id="typing-area" contentEditable="true">
+			<div>This is the typing area</div>
+			Hi <img src="http://t2.gstatic.com/images?q=tbn:ANd9GcQCze-mfukcuvzKk7Ilj2zQ0CS6PbOkq7ZhRInnNd1Yz3TQzU4e&t=1" /> An Image.
+			<div>The html is imperfect and inconsistent, that's ok. It works fine enough for copying pasting into others (Pages,Notes,GoogleDocs).</div>
+			<img src="http://t2.gstatic.com/images?q=tbn:ANd9GcQCze-mfukcuvzKk7Ilj2zQ0CS6PbOkq7ZhRInnNd1Yz3TQzU4e&t=1" />
+			<div>Yup!👋 Hi 🤔</div>
+		</div>
+
+		<!-- results -->
+		<div id="first-result-dummy"><div class="item">
+			<span class="numeral">1 - </span>
+			<span class="content">[]</span>
+		</div></div>
+		<div id="search-results">1. hi 2. etc.</div>
+	</div>
+</body>
+
+<!-- GLOBAL VARS + STAT CONVENIENCE FUNCTION -->
+<script>
+	var sifterResults = [];
+
+	function _STAT(text) {
+		$('#_STAT').text(text);
+		text = "STATUS: " + text;
+		console.log(text);
+	}
+</script>
+
+<!-- LOAD DIRECTORY FUNCTIONS -->
+<script>
+	var sifter;
+	var myDirectory = [] // entry = ["type"]["id"]["url"]["titles"]
+	
+	// SIGNBANK DATA: Load and Add
+	function loadSignbank(callback) {
+		$.ajax({
+			// url : "https://raw.githubusercontent.com/TypingSigns/typingsigns.github.io/master/asl-word-search-experiment/data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
+			url : "data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
+			dataType: "text",
+			success : function (data_signbank) {
+				_STAT("	↳ Loaded SignBank Directory 😁")
+				_STAT("	↳ Processing SignBank Directory ⏳ ...")
+				// Add Data
+				var lines = data_signbank.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "signbank"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["fsw"] = columns[3]; // only used for checking if an fsw-string existed, fsw itself is not used.
+					entry["mediaandsignid"] = columns[4];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed SignBank Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+	
+
+	function processASLLex(callback) {
+		_STAT("Loading ASLLex directory ⏳ ...")
+		$.ajax({
+			url : "data/asllex-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_asllex) {
+				_STAT("	↳ Loaded ASLLex Directory 😁")
+				_STAT("	↳ Processing ASLLex Directory ⏳ ...")
+				// Add Data
+				var lines = data_asllex.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "asllex"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed ASLLex Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processSpreadTheSign(callback) {
+		_STAT("Loading STS directory ⏳ ...")
+		$.ajax({
+			url : "data/spreadthesign-id-url-title-~videopageid.tsv",
+			dataType: "text",
+			success : function (data_sts) {
+				_STAT("	↳ Loaded STS Directory 😁")
+				_STAT("	↳ Processing STS Directory ⏳ ...")
+				// Add Data
+				var lines = data_sts.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "sts"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["videoid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed STS Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processMSHWords(callback) {
+		_STAT("Loading MSHWords directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-mshwords-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_mshwords) {
+				_STAT("	↳ Loaded MSHWords Directory 😁")
+				_STAT("	↳ Processing MSHWords Directory ⏳ ...")
+				// Add Data
+				var lines = data_mshwords.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "mshwords"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed MSHWords Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processMSHAnim(callback) {
+		_STAT("Loading MSHAnim directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-mshanim-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_mshanim) {
+				_STAT("	↳ Loaded MSHAnim Directory 😁")
+				_STAT("	↳ Processing MSHAnim Directory ⏳ ...")
+				// Add Data
+				var lines = data_mshanim.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "mshanim"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed MSHAnim Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processASLKids(callback) {
+		_STAT("Loading ASLKids directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-aslkids-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_aslkids) {
+				_STAT("	↳ Loaded ASLKids Directory 😁")
+				_STAT("	↳ Processing ASLKids Directory ⏳ ...")
+				// Add Data
+				var lines = data_aslkids.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "aslkids"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed ASLKids Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processHandspeak(callback) {
+		_STAT("Loading Handspeak directory ⏳ ...")
+		$.ajax({
+			url : "data/handspeak-id-url-title.tsv",
+			dataType: "text",
+			success : function (data_handspeak) {
+				_STAT("	↳ Loaded Handspeak Directory 😁")
+				_STAT("	↳ Processing Handspeak Directory ⏳ ...")
+				// Add Data
+				var lines = data_handspeak.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "handspeak"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Handspeak Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processLifeprint(callback) {
+		_STAT("Loading Lifeprint directory ⏳ ...")
+		$.ajax({
+			url : "data/lifeprint-id-url-title.tsv",
+			dataType: "text",
+			success : function (data_lifeprint) {
+				_STAT("	↳ Loaded Lifeprint Directory 😁")
+				_STAT("	↳ Processing Lifeprint Directory ⏳ ...")
+				// Add Data
+				var lines = data_lifeprint.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "lifeprint"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Lifeprint Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processGiphySWR(callback) {
+		_STAT("Loading GiphySWR directory ⏳ ...")
+		$.ajax({
+			url : "data/giphyswr-id-url-titles-mediaurl.tsv",
+			dataType: "text",
+			success : function (data_giphyswr) {
+				_STAT("	↳ Loaded GiphySWR Directory 😁")
+				_STAT("	↳ Processing GiphySWR Directory ⏳ ...")
+				// Add Data
+				var lines = data_giphyswr.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "giphyswr"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["mediaurl"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed GiphySWR Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processNab(callback) {
+		_STAT("Loading Nab directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-nabboudatuofa-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_nab) {
+				_STAT("	↳ Loaded Nab Directory 😁")
+				_STAT("	↳ Processing Nab Directory ⏳ ...")
+				// Add Data
+				var lines = data_nab.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "nab"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Nab Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+</script>
+
+<!-- UPDATE RESULTS -->
+<script>
+
+	function jsNodeFromSearchIndex(index) {
+		// var textNode = document.createTextNode("-•-");			
+		// range.insertNode( textNode );
+
+		// var imgNode = document.createElement("IMG");
+		// imgNode.setAttribute("src", "data/images/signbank/pngs-by-sid/6300.png")
+		// range.insertNode( imgNode );
+
+		var itemId = sifterResults.items[index].id;
+		var item = sifter.items[itemId];
+		var titles = item.titles;
+		var url = item.url;
+
+		switch (item.type) {
+			case 'sts':
+				var url = 'https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif';
+				var imgNode = document.createElement("IMG"); imgNode.setAttribute("src", url);
+				return imgNode;
+				break;
+			case 'lifeprint':
+				var aNode = document.createElement('a');
+				aNode.appendChild(document.createTextNode("Lifeprint"));
+				aNode.href = url;
+				return aNode;
+				break;
+			case 'handspeak':
+				var html = '<a href="'+url+'">'+'Handspeak'+'</a>';
+				var textNode = document.createTextNode("{ "+html+" }");
+				return textNode;
+				var aNode = document.createElement('a');
+				aNode.appendChild(document.createTextNode("Lifeprint"));
+				aNode.href = url;
+				return aNode;
+				break;
+			case 'signbank':
+				if (item.fsw) {
+					var url = "data/images/signbank/pngs-by-sid/"+item.mediaandsignid+".png";
+					var imgNode = document.createElement("IMG"); imgNode.setAttribute("src", url);
+					return imgNode;
+
+				} else {
+					var textNode = document.createTextNode("{NaN}");
+					return textNode;
+				}
+				break;
+			case 'giphyswr':
+				var imgNode = document.createElement("IMG"); imgNode.setAttribute("src", item.mediaurl);
+				return imgNode;
+				break;
+			case 'asllex':
+			case 'mshwords':
+			case 'mshanim':
+			case 'aslkids':
+			case 'nab':
+				var url = "https://www.youtube.com/watch?v="+item.youtubeid;
+				var textNode = document.createTextNode("{ "+url+" }");
+				return textNode;
+				break;
+		}
+		return null;
+	}
+
+	
+	function updateResults(searchvalue) {
+		var resultsDomId = '#search-results'
+
+		// _STAT("Conducting Search for: ["+searchvalue+"] ...")
+		sifterResults = sifter.search(searchvalue, {
+			fields: ['titles'],
+			limit: 50
+		});
+		$(resultsDomId).html("")
+		for (var i=0; i<sifterResults.items.length; i++) {
+			var itemId = sifterResults.items[i].id;
+			var item = sifter.items[itemId];
+			var titles = item.titles;
+			var url = item.url;
+			var html = '<div class="item">';
+			html += '<span class="numeral">'+(i+2)+' - </span>'
+			html += '<a href="'+url+'">'+titles+'</a>';
+			
+			switch (item.type) {
+				case 'sts':
+					html += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
+					// html += '<img src="data/images/spreadthesign _private/gifs/'+item.videoid+'.gif">';
+					html += ' - ' + '<a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
+					break;
+				case 'lifeprint':
+					html += ' - ' + '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
+					break;
+				case 'handspeak':
+					html += ' - ' + '<a class="link-content handspeak" href="'+url+'">'+'Handspeak'+'</a>';
+					break;
+				case 'signbank':
+					if (item.fsw) {
+						html += '<img src="data/images/signbank/pngs-by-sid/'+item.mediaandsignid+'.png">';
+					} else {
+						html += ' { no fsw }';
+					}
+					break;
+				case 'giphyswr':
+					html += '<img src="'+item.mediaurl+'">';
+					break;
+				case 'asllex':
+				case 'mshwords':
+				case 'mshanim':
+				case 'aslkids':
+				case 'nab':
+					// A. Simple Youtube Embed w/- suggested videos
+						// var embedurl = 'https://www.youtube.com/embed/'+item.youtubeid+'?rel=0'
+					// B.i. Looping Embed - No Autoplay
+						var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+"&showinfo=0"
+					// B.ii. Looping Autoplaying Embed, Muted.
+						// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
+					// Embed:
+					
+					// html += '<iframe width="420" height="315" src="'+embedurl+'"></iframe>';
+					html += '<iframe width="100" height="100" src="'+embedurl+'"></iframe>';
+					break;
+
+			}
+			html += "</div>";
+
+			$(resultsDomId).append(html)
+		}
+		_STAT("	↳ Conducted Search for: ["+searchvalue+"]")
+	}
+</script>
+
+<!-- MAIN DOCUMENT READY FUNCTION -->
+<script>
+	var typingAreaDomID = "#typing-area"
+
+	$(document).ready(function() {
+		_STAT("Creating Directory ⏳ ...")
+		_STAT("Loading SignBank directory ⏳ ...")
+		loadSignbank(function() {
+			processASLLex(function() {
+				processSpreadTheSign(function() {
+					processMSHWords(function() {
+						processMSHAnim(function() {
+							processASLKids(function() {
+								processHandspeak(function() {
+									processLifeprint(function() {
+										processGiphySWR(function() {
+											processNab(function() {
+
+	// LAST DATA PROCESSED!
+
+	// Create Sifter from Directory
+	_STAT("Created Directory 😁")
+	_STAT("Creating Sifter for Search ...")
+	sifter = new Sifter(myDirectory);
+	_STAT("	↳ Created Sifter for Search.")
+
+	// Dummy Update Results with Blank
+	updateResults("")
+
+	//
+	//
+	function processCharacterForAddition(event) {
+		// Get Key
+		var key = event.originalEvent.key;
+
+		// IGNORE Certain KEYS
+		var ignoreKeys = ["Shift", "Escape", "Meta"]
+		if ( $.inArray(key, ignoreKeys) !== -1) { return; }
+
+		// CLEAR Certain KEYS
+		var clearKeys = ["Enter", "Backspace", "ArrowUp", "ArrowDown","ArrowLeft", "ArrowRight", " ", "Tab"]
+		if ( $.inArray(key,clearKeys) !== -1) {
+			searchWord = "";
+		}
+
+		// Add character to searchWord
+		if ( $.inArray(key,clearKeys) == -1) {
+			searchWord += key;
+		}
+
+		// TEMP: Don't update search-results if empty // Design-wise; should hide overview when empty (though i though i kind of like being able to see as i type)
+		if (searchWord == "") { return; } // ~ temp
+
+		// Perform Search using searchWord
+		updateResults(searchWord);
+
+		// Update First Result Cell with SearWord
+		$('#first-result-dummy .item .content').text(searchWord);
+	}
+
+
+	//via https://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
+	function insertNodeAtCursor(node) {
+		var sel, range, html;
+		if (window.getSelection) {
+			sel = window.getSelection();
+			if (sel.getRangeAt && sel.rangeCount) {
+				range = sel.getRangeAt(0);
+				range.deleteContents();
+
+				range.insertNode( node );
+
+				// collapse range
+				range.collapse();
+			}
+		}
+	}
+
+	function simulateBackspace(element) {
+		var start = element.selectionStart, end = element.selectionEnd, event;
+
+		if (!element.setRangeText) { return; }
+		if (start >= end) {
+		if (start <= 0 || !element.setSelectionRange) { return; }
+		element.setSelectionRange(start - 1, start);
+		}
+
+		element.setRangeText("");
+		event = document.createEvent("HTMLEvents");
+		event.initEvent("input", true, false);
+		element.dispatchEvent(event);
+	}
+
+	$(typingAreaDomID).focus();
+	var searchWord = ""
+	$(typingAreaDomID).on('keydown', function(event) {
+		// Get Key
+		var key = event.originalEvent.key;
+		// IGNORE Certain KEYS
+		var ignoreKeys = ["Shift", "Escape", "Meta", "Alt", "Control"]
+		if ( $.inArray(key, ignoreKeys) !== -1) { return; }
+
+		
+		// HANDLE NUMBER PRESSES
+
+		// IF SEARCHWORD has a word in it (i.e. not empty, and not a number)
+		var popupNumberIsHit = false;
+		if ( searchWord.length > 0 && !$.isNumeric(searchWord) ) {
+
+			// CHECK IF NUMBER WAS TYPED
+			if ( $.isNumeric(key) ) {
+				var number = parseInt(key);
+				if (number >= 0 && number <= 9) {
+					if (number==0) { number = 10; }
+
+					
+
+					// Temp. do nothing for first number. // At some point will need to separate this numbering logic, to allow arrow navigation of other items.
+					if (number==1) { event.preventDefault(); return; } // Temp. do nothing 
+
+					var index = number-2;
+					var node = jsNodeFromSearchIndex(index);
+					
+					// DELETE WORD
+					// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
+					for (var i=0; i<searchWord.length; i++) { document.execCommand("delete"); }
+					
+
+					// INSERT NODE
+					insertNodeAtCursor(node);
+					
+					// Process Number
+					popupNumberIsHit = true;
+					// _STAT('number '+number);
+					
+					event.preventDefault();
+					searchWord = "";
+				}
+			}
+		}
+		if (popupNumberIsHit) {
+			return;
+		}
+
+		////////////////////////////////////////////////////////////////
+		// HANDLE CHARACTER ADDITION + PERFORM SEARCH ON UPDATED WORD
+		if (!popupNumberIsHit) {
+			processCharacterForAddition(event);
+		}
+
+	});
+
+
+
+
+
+											})
+										})
+									})
+								})
+							})
+						})
+					})
+				})
+			})
+		})
+	});
+</script>
+
+</html>
