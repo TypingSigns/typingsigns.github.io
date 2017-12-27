@@ -75,6 +75,14 @@
 
 		$(".header").text("Resize " + $.now() + " - " + window.innerHeight )
 	});
+
+	$("#typing-area").focus(function() {
+		console.log( "typing area focused" + $.now() + " - " + window.innerHeight  )
+	});
+
+	$("#typing-area").blur(function() {
+		console.log( "typing area blurred" + $.now() + " - " + window.innerHeight  )
+	});
 </script>
 
 </html>
