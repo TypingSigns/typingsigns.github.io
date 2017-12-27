@@ -23,7 +23,7 @@
 		
 	}
 	body > .container {
-		background: yellow;
+		background: wheat;
 		padding-top: 5vh;
 		height: 95vh;
 		width: 80vw;
@@ -548,11 +548,14 @@
 		}
 
 		// Add Listener for Button Presses:
-		$('a.insert').click(function(event) {
-			event.preventDefault();
+		$('a.insert').mousedown(function(event) {
 			var id = parseInt( $(this).attr("data-id") );
 			var node = jsNodeFromSearchIndex(id);
 			insertNodeAtCursor(node);
+
+			// prevent loss of focus from typing-area
+			event.preventDefault();
+			return false;
 		})
 
 		_STAT("	↳ Conducted Search for: ["+searchvalue+"]")
