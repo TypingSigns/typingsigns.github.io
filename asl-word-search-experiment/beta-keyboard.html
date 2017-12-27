@@ -32,6 +32,7 @@ NOTES:
 		background: gray;
 
 		overflow: hidden;
+		position: fixed;
 	}
 	.page-container {
 		background: orange;
@@ -42,7 +43,7 @@ NOTES:
 		height: 55%;
 	}
 	.header {
-		background-color: wheat;
+		background-color: pink;
 		height: 10%;
 	}
 	#typing-area {
@@ -93,6 +94,11 @@ NOTES:
 <script>
 
 	var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+
+	// Disable scrolling.
+	document.ontouchmove = function (e) {
+		e.preventDefault();
+	}
 
 	function iOSKeyboardToggled(toggledOn) {
 		if (toggledOn) {
