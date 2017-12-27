@@ -10,6 +10,8 @@
 	<!-- <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no"> -->
 
 	<script src="js/jquery.min.js"></script>
+
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
 </head>
 
 <!-- 
@@ -32,28 +34,31 @@ NOTES:
 		width: 100%;
 		background: gray;
 
-		overflow: hidden;
-		position: fixed;
+		font-family: 'Ubuntu', sans-serif;
 	}
 	.page-container {
 		background: orange;
 		height: 100%;
-		/*height: 55%;*/
-		position: fixed;
+		transition: height 500ms;
 	}
 	body.ios-keyboard-visible .page-container {
 		/* Note: This is Brute Force guestimate on iOS soft Keyboard Size*/
-		height: 55%;
+		height: 56%;
 	}
 	.header {
 		background-color: cyan;
-		height: 10%;
+		height: 5%;
 	}
 	#typing-area {
-		background-color: wheat;
+		background-color: #fff;
+
 		overflow-y: scroll;
-  		-webkit-overflow-scrolling: touch;
-		height: 70%;
+  		-webkit-overflow-scrolling: touch; /* Allow for smooth scrolling */
+		height: 75%;
+
+		line-height: 1.5em;
+
+		padding: 0 25px;
 	}
 	.suggestion-bar {
 		background: cyan;
@@ -96,7 +101,7 @@ NOTES:
 
 <script>
 
-	var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+	var iOS = true; //!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
 	function iOSKeyboardToggled(toggledOn) {
 		if (toggledOn) {
@@ -106,28 +111,11 @@ NOTES:
 		}
 	}
 
-	// via https://benfrain.com/preventing-body-scroll-for-modals-in-ios/
-	var freezeVp = function(e) {
-		e.preventDefault();
-	};
-	function stopBodyScrolling (bool) {
-		if (bool === true) {
-			document.body.addEventListener("touchmove", freezeVp, false);
-		} else {
-			document.body.removeEventListener("touchmove", freezeVp, false);
-		}
-	}
-
 	$("#typing-area").focus(function() {
-		stopBodyScrolling(true);
-
 		if (iOS) { iOSKeyboardToggled(true); }
-		window.scrollTo(0, 0);
-		setTimeout(function() { window.scrollTo(0, 0); }, 0);
-		setTimeout(function() { window.scrollTo(0, 0); }, 500);
 
-		setTimeout(function() { stopBodyScrolling(false); }, 500);
-		
+		setTimeout(function() { window.scrollTo(0, 0); }, 200);
+		setTimeout(function() { window.scrollTo(0, 0); }, 500);
 	});
 
 	$("#typing-area").blur(function() {
