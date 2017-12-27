@@ -397,6 +397,26 @@
 	}
 </script>
 
+<!-- HIGHER-LEVEL DOM FUNCTIONS -->
+<script>
+	//via https://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
+	function insertNodeAtCursor(node) {
+		var sel, range, html;
+		if (window.getSelection) {
+			sel = window.getSelection();
+			if (sel.getRangeAt && sel.rangeCount) {
+				range = sel.getRangeAt(0);
+				range.deleteContents();
+
+				range.insertNode( node );
+
+				// collapse range
+				range.collapse();
+			}
+		}
+	}
+</script>
+
 <!-- UPDATE RESULTS -->
 <script>
 
@@ -479,6 +499,7 @@
 			var url = item.url;
 			var html = '<div class="item">';
 			html += '<span class="numeral">'+(i+2)+' - </span>'
+			html += '<a href="#" class="insert" data-id="'+i+'">'+'➕'+'</a> - '
 			html += '<a href="'+url+'">'+titles+'</a>';
 			
 			switch (item.type) {
@@ -525,6 +546,14 @@
 
 			$(resultsDomId).append(html)
 		}
+
+		// Add Listener for Button Presses:
+		$('a.insert').click(function() {
+			var id = parseInt( $(this).attr("data-id") );
+			var node = jsNodeFromSearchIndex(id);
+			insertNodeAtCursor(node);
+		})
+
 		_STAT("	↳ Conducted Search for: ["+searchvalue+"]")
 	}
 </script>
@@ -589,24 +618,6 @@
 		$('#first-result-dummy .item .content').text(searchWord);
 	}
 
-
-	//via https://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
-	function insertNodeAtCursor(node) {
-		var sel, range, html;
-		if (window.getSelection) {
-			sel = window.getSelection();
-			if (sel.getRangeAt && sel.rangeCount) {
-				range = sel.getRangeAt(0);
-				range.deleteContents();
-
-				range.insertNode( node );
-
-				// collapse range
-				range.collapse();
-			}
-		}
-	}
-
 	function simulateBackspace(element) {
 		var start = element.selectionStart, end = element.selectionEnd, event;
 
@@ -643,8 +654,6 @@
 				var number = parseInt(key);
 				if (number >= 0 && number <= 9) {
 					if (number==0) { number = 10; }
-
-					
 
 					// Temp. do nothing for first number. // At some point will need to separate this numbering logic, to allow arrow navigation of other items.
 					if (number==1) { event.preventDefault(); return; } // Temp. do nothing 
