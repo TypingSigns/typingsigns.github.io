@@ -81,20 +81,31 @@
 		console.log( "typing area focused" + $.now() + " - " + window.innerHeight  );
 		
 
-		var sx = document.body.scrollLeft, sy = document.body.scrollTop;
-    	var naturalHeight = window.innerHeight;
-    	window.scrollTo(sx, document.body.scrollHeight);
-    	var keyboardHeight = naturalHeight - window.innerHeight;
-	    window.scrollTo(sx, sy);
+		setTimeout(function() {
+			var sx = document.body.scrollLeft, sy = document.body.scrollTop;
+			var naturalHeight = window.innerHeight;
+			window.scrollTo(sx, document.body.scrollHeight);
+			var keyboardHeight = naturalHeight - window.innerHeight;
+			window.scrollTo(sx, sy);
 
-	    $(".header").text( "typing area focused" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight );
+			$(".header").text( "typing area focused" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight );
+		}, 1500);
+		
 
 
 	});
 
 	$("#typing-area").blur(function() {
 		console.log( "typing area blurred" + $.now() + " - " + window.innerHeight  );
-		$(".header").text( "typing area blurred" + $.now() + " - " + window.innerHeight  );
+
+		var sx = document.body.scrollLeft, sy = document.body.scrollTop;
+		var naturalHeight = window.innerHeight;
+		window.scrollTo(sx, document.body.scrollHeight);
+		var keyboardHeight = naturalHeight - window.innerHeight;
+		window.scrollTo(sx, sy);
+
+		$(".header").text( "typing area blurred" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight );
+
 	});
 </script>
 
