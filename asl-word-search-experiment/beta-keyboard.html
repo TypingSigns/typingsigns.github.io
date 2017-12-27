@@ -6,8 +6,8 @@
 	<title>Beta ASL Keyboard</title>
 
 	<meta name="apple-mobile-web-app-capable" content="yes">
-	<!-- <meta name="viewport" content="width=device-width"> -->
-	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+	<meta name="viewport" content="width=device-width">
+	<!-- <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no"> -->
 
 	<script src="js/jquery.min.js"></script>
 </head>
@@ -30,12 +30,14 @@ NOTES:
 		padding: 0;
 		height: 100%;
 		background: gray;
+
+		overflow: hidden;
 	}
 	.page-container {
 		background: orange;
 		height: 100%;
 	}
-	.page-container.ios-keyboard-visible {
+	body.ios-keyboard-visible .page-container {
 		/* Note: This is Brute Force measurements - guessing at iOS Keyboard Occupancy*/
 		height: 55%;
 	}
@@ -47,12 +49,12 @@ NOTES:
 		background-color: white;
 		overflow-y: scroll;
   		-webkit-overflow-scrolling: touch;
-		height: 80%;
+		height: 70%;
 	}
 	.suggestion-bar {
 		background: cyan;
 		overflow: hidden;
-		height: 10%;
+		height: 20%;
 	}
 </style>
 
@@ -90,24 +92,24 @@ NOTES:
 
 <script>
 
+	var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+
 	function iOSKeyboardToggled(toggledOn) {
 		if (toggledOn) {
-			$('.page-container').addClass('ios-keyboard-visible');
+			$('body').addClass('ios-keyboard-visible');
 		} else {
-			$('.page-container').removeClass('ios-keyboard-visible');
+			$('body').removeClass('ios-keyboard-visible');
 		}
 	}
 
 	$("#typing-area").focus(function() {
-		iOSKeyboardToggled(true);
+		if (iOS) { iOSKeyboardToggled(true); }
+		window.scrollTo(0, 0);
 	});
 
 	$("#typing-area").blur(function() {
-		iOSKeyboardToggled(false);
+		if (iOS) { iOSKeyboardToggled(false); }
 	});
-
-
-
 	
 </script>
 
