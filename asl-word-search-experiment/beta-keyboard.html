@@ -28,7 +28,8 @@
 	}
 	#typing-area {
 		background-color: white;
-		overflow: scroll;
+		overflow-y: scroll;
+  		-webkit-overflow-scrolling: touch;
 		height: 80vh;
 	}
 	.suggestion-bar {
@@ -73,17 +74,27 @@
 <script>
 	$(window).resize(function () {
 
-		$(".header").text("Resize " + $.now() + " - " + window.innerHeight )
+		$(".header").text("Resize " + $.now() + " - " + window.innerHeight );
 	});
 
 	$("#typing-area").focus(function() {
-		console.log( "typing area focused" + $.now() + " - " + window.innerHeight  )
-		$(".header").text( "typing area focused" + $.now() + " - " + window.innerHeight  )
+		console.log( "typing area focused" + $.now() + " - " + window.innerHeight  );
+		
+
+		var sx = document.body.scrollLeft, sy = document.body.scrollTop;
+    	var naturalHeight = window.innerHeight;
+    	window.scrollTo(sx, document.body.scrollHeight);
+    	var keyboardHeight = naturalHeight - window.innerHeight;
+	    window.scrollTo(sx, sy);
+
+	    $(".header").text( "typing area focused" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight );
+
+
 	});
 
 	$("#typing-area").blur(function() {
-		console.log( "typing area blurred" + $.now() + " - " + window.innerHeight  )
-		$(".header").text( "typing area blurred" + $.now() + " - " + window.innerHeight  )
+		console.log( "typing area blurred" + $.now() + " - " + window.innerHeight  );
+		$(".header").text( "typing area blurred" + $.now() + " - " + window.innerHeight  );
 	});
 </script>
 
