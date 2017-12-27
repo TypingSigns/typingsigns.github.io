@@ -23,7 +23,7 @@
 		height: 100%;
 	}
 	.header {
-		background-color: yellow;
+		background-color: wheat;
 		height: 10vh;
 	}
 	#typing-area {
@@ -78,17 +78,18 @@
 	});
 
 	$("#typing-area").focus(function() {
-		console.log( "typing area focused" + $.now() + " - " + window.innerHeight  );
 		
 
+		var sx = document.body.scrollLeft, sy = document.body.scrollTop;
+		var naturalHeight = window.innerHeight;
+
 		setTimeout(function() {
-			var sx = document.body.scrollLeft, sy = document.body.scrollTop;
-			var naturalHeight = window.innerHeight;
+			
 			window.scrollTo(sx, document.body.scrollHeight);
 			var keyboardHeight = naturalHeight - window.innerHeight;
 			window.scrollTo(sx, sy);
 
-			$(".header").text( "typing area focused" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight );
+			$(".header").text( "typing area focused" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight + " - " + $(window).height() );
 		}, 1500);
 		
 
@@ -96,7 +97,6 @@
 	});
 
 	$("#typing-area").blur(function() {
-		console.log( "typing area blurred" + $.now() + " - " + window.innerHeight  );
 
 		var sx = document.body.scrollLeft, sy = document.body.scrollTop;
 		var naturalHeight = window.innerHeight;
@@ -104,7 +104,7 @@
 		var keyboardHeight = naturalHeight - window.innerHeight;
 		window.scrollTo(sx, sy);
 
-		$(".header").text( "typing area blurred" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight );
+		$(".header").text( "typing area blurred" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight + " - " + $(window).height() );
 
 	});
 </script>
