@@ -548,7 +548,8 @@
 		}
 
 		// Add Listener for Button Presses:
-		$('a.insert').click(function() {
+		$('a.insert').click(function(event) {
+			event.preventDefault();
 			var id = parseInt( $(this).attr("data-id") );
 			var node = jsNodeFromSearchIndex(id);
 			insertNodeAtCursor(node);
