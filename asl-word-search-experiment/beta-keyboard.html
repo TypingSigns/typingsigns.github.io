@@ -12,6 +12,18 @@
 	<script src="js/jquery.min.js"></script>
 </head>
 
+<!-- 
+NOTES:
+2017-12-27
+- After much research, it turns out that there is no way to detect the height of a keyboard on iOS-Safari. 
+	- Sources:
+		- https://developer.apple.com/library/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html
+		- https://stackoverflow.com/questions/39417778/iphone-safari-not-resizing-viewport-on-keyboard-open
+		- https://medium.com/samsung-internet-dev/toolbars-keyboards-and-the-viewports-10abcc6c3769
+		- (Also tried this to no avail: https://questionfocus.com/ipad-web-app-detect-virtual-keyboard-using-javascript-in-safari.html )
+- The best alternative, for now, will be to do it manually.
+ -->
+
 <style>
 	html, body {
 		margin: 0;
@@ -23,20 +35,24 @@
 		background: orange;
 		height: 100%;
 	}
+	.page-container.ios-keyboard-visible {
+		/* Note: This is Brute Force measurements - guessing at iOS Keyboard Occupancy*/
+		height: 55%;
+	}
 	.header {
 		background-color: wheat;
-		height: 10vh;
+		height: 10%;
 	}
 	#typing-area {
 		background-color: white;
 		overflow-y: scroll;
   		-webkit-overflow-scrolling: touch;
-		height: 80vh;
+		height: 80%;
 	}
 	.suggestion-bar {
 		background: cyan;
 		overflow: hidden;
-		height: 10vh;
+		height: 10%;
 	}
 </style>
 
@@ -73,41 +89,26 @@
 </body>
 
 <script>
-	$(window).resize(function () {
 
-		$(".header").text("Resize " + $.now() + " - " + window.innerHeight );
-	});
+	function iOSKeyboardToggled(toggledOn) {
+		if (toggledOn) {
+			$('.page-container').addClass('ios-keyboard-visible');
+		} else {
+			$('.page-container').removeClass('ios-keyboard-visible');
+		}
+	}
 
 	$("#typing-area").focus(function() {
-		
-
-		var sx = document.body.scrollLeft, sy = document.body.scrollTop;
-		var naturalHeight = window.innerHeight;
-
-		setTimeout(function() {
-			
-			window.scrollTo(sx, document.body.scrollHeight);
-			var keyboardHeight = naturalHeight - window.innerHeight;
-			window.scrollTo(sx, sy);
-
-			$(".header").text( "typing area focused" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight + " - " + $(window).height() );
-		}, 1500);
-		
-
-
+		iOSKeyboardToggled(true);
 	});
 
 	$("#typing-area").blur(function() {
-
-		var sx = document.body.scrollLeft, sy = document.body.scrollTop;
-		var naturalHeight = window.innerHeight;
-		window.scrollTo(sx, document.body.scrollHeight);
-		var keyboardHeight = naturalHeight - window.innerHeight;
-		window.scrollTo(sx, sy);
-
-		$(".header").text( "typing area blurred" + $.now() + " - " + window.innerHeight + " keyboardHeight: " + keyboardHeight + " - " + $(window).height() );
-
+		iOSKeyboardToggled(false);
 	});
+
+
+
+	
 </script>
 
 </html>
