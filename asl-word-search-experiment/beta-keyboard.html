@@ -29,6 +29,7 @@ NOTES:
 		margin: 0;
 		padding: 0;
 		height: 100%;
+		width: 100%;
 		background: gray;
 
 		overflow: hidden;
@@ -39,7 +40,7 @@ NOTES:
 		height: 100%;
 	}
 	body.ios-keyboard-visible .page-container {
-		/* Note: This is Brute Force measurements - guessing at iOS Keyboard Occupancy*/
+		/* Note: This is Brute Force guestimate on iOS soft Keyboard Size*/
 		height: 55%;
 	}
 	.header {
@@ -103,11 +104,28 @@ NOTES:
 		}
 	}
 
+	// via https://benfrain.com/preventing-body-scroll-for-modals-in-ios/
+	var freezeVp = function(e) {
+		e.preventDefault();
+	};
+	function stopBodyScrolling (bool) {
+		if (bool === true) {
+			document.body.addEventListener("touchmove", freezeVp, false);
+		} else {
+			document.body.removeEventListener("touchmove", freezeVp, false);
+		}
+	}
+
 	$("#typing-area").focus(function() {
 		if (iOS) { iOSKeyboardToggled(true); }
 		window.scrollTo(0, 0);
 		setTimeout(function() { window.scrollTo(0, 0); }, 0);
 		setTimeout(function() { window.scrollTo(0, 0); }, 2000);
+
+		stopBodyScrolling(true);
+
+		setTimeout(function() { stopBodyScrolling(false); }, 2000);
+		
 	});
 
 	$("#typing-area").blur(function() {
