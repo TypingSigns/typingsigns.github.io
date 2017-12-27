@@ -119,14 +119,14 @@ NOTES:
 	}
 
 	$("#typing-area").focus(function() {
+		stopBodyScrolling(true);
+
 		if (iOS) { iOSKeyboardToggled(true); }
 		window.scrollTo(0, 0);
 		setTimeout(function() { window.scrollTo(0, 0); }, 0);
-		setTimeout(function() { window.scrollTo(0, 0); }, 2000);
+		setTimeout(function() { window.scrollTo(0, 0); }, 500);
 
-		stopBodyScrolling(true);
-
-		setTimeout(function() { stopBodyScrolling(false); }, 2000);
+		setTimeout(function() { stopBodyScrolling(false); }, 500);
 		
 	});
 
