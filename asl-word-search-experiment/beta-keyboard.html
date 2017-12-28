@@ -180,7 +180,9 @@ NOTES:
 	var _TYPING_AREA_DOM_ID_NAME = "typing-area";
 	
 	var typingAreaDomID = "#typing-area";
-	var searchWord = "";
+	var searchWord = ""; // <~ can be removed from global
+
+	var lastWordTextLengthPrecedingCursor = 0;
 
 	var sifterResults = [];
 
@@ -526,6 +528,7 @@ NOTES:
 
 <!-- HIGHER-LEVEL DOM FUNCTIONS -->
 <script>
+
 	//via https://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
 	function insertNodeAtCursor(node) {
 
@@ -555,6 +558,23 @@ NOTES:
 			}
 		}
 	}
+
+
+	function insertASLcharacter(id, numCharactersToDelete) {
+		// CREATE NODE
+		var node = jsNodeFromSearchIndex(id);
+		
+		// DELETE WORD
+		// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
+		for (var i=0; i<numCharactersToDelete; i++) { document.execCommand("delete"); }
+
+		// INSERT NODE
+		insertNodeAtCursor(node);
+
+		// Reset Search Word
+		searchWord = "";
+	}
+
 </script>
 
 <!-- UPDATE RESULTS : (DOM SPECIFIC) -->
@@ -658,17 +678,8 @@ NOTES:
 		// Add Listener for Button Presses:
 		$('a.insert').mousedown(function(event) {
 			var id = parseInt( $(this).attr("data-sifter-id") );
-			var node = jsNodeFromSearchIndex(id);
 			
-			// DELETE WORD
-			// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
-			for (var i=0; i<searchWord.length; i++) { document.execCommand("delete"); }
-			
-			// INSERT NODE
-			insertNodeAtCursor(node);
-			
-			// Reset Search Word
-			searchWord = "";
+			insertASLcharacter(id, lastWordTextLengthPrecedingCursor);
 
 			// prevent loss of focus from typing-area
 			event.preventDefault();
@@ -680,6 +691,7 @@ NOTES:
 
 <!-- MAIN DOCUMENT READY FUNCTION -->
 <script>
+
 
 	// TYPING, and UPDATING SEARCH
 	function processCharacterForAddition(event) {
@@ -713,14 +725,14 @@ NOTES:
 		// Add Date to typing-area
 		var d = new Date();
 		var dPrint = d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate() + " "+ d.getHours()+":"+(d.getMinutes()<10?'0':'')+d.getMinutes();
-		$(typingAreaDomID).append("<div>"+dPrint+"</div>")
-		$(typingAreaDomID).append("<br>")
-		$(typingAreaDomID).append("<br>")
+		$(typingAreaDomID).append("<div>"+dPrint+"</div>");
+		$(typingAreaDomID).append("<br>");
+		$(typingAreaDomID).append("<br>");
 
 		//////////////////////////////////////////////////
 		// Prepare Text-Editor
-		_STAT("Creating Directory ⏳ ...")
-		_STAT("Loading SignBank directory ⏳ ...")
+		_STAT("Creating Directory ⏳ ...");
+		_STAT("Loading SignBank directory ⏳ ...");
 		loadSignbank(function() {
 			processSpreadTheSign(function() {
 				processGiphySWR(function() {
@@ -746,100 +758,99 @@ NOTES:
 		// FOCUS on Typing-Area
 		if (!iOS) { $(typingAreaDomID).focus(); } // Only done if isn't iOS - as iOS doesn't do it properly anyway.
 
-		// START LISTENING to Key Input:
-
+		// START LISTENING to Key Input (which fires on iOS autocomplete-suggestions):
 		$(typingAreaDomID).on('input', function(event) {
-			// _STAT("TYPING-AREA: INPUT");
-			console.log(event);
+
+			////////////////////////////////////////
+			// CHECK ASSUMPTIONS:
+
+			// ~ Temp Block for accidental insertions when text isn't selected. //~Temp
+			if ( ! $("#"+_TYPING_AREA_DOM_ID_NAME).is(":focus") ) { return; }
+			if ( !window.getSelection) {  return; } // all browsers, except IE before version 9 - support window.getSelection
 
 			var inputType = event.originalEvent.inputType;
 			if (inputType == "insertParagraph") { return; } // 'Enters'
+			// ~ Assumes: inputType is "insertText" or "insertReplacementText" (which occurs during autocomplete)
 
-			// Assumes: event.originalEvent.eventType == "insertText", rather than "insertReplacementText" (which occurs with autocomplete)
-			// var key = event.originalEvent.data;
-			// console.log(key);
-
-			// Note: Making Assumptions that things are available… (see original sel function)
+			////////////////////////////////////////
+			// Get Current Selection
 			var sel = window.getSelection();
 			var focusNodeData = sel.focusNode.data;
 			var focusOffset = sel.focusOffset;
+			if (!!!focusNodeData) { return; } // ~
 
-			// get String up to Current cursor.
+			// Get Word Precedibng Cursor
 			var textPrecedingCursor = focusNodeData.slice(0, focusOffset);
-
-			var lastWord = textPrecedingCursor.trim().split(" ").pop();
-			_STAT(lastWord);
+			var wordPrecedingCursor = textPrecedingCursor.trim().split(" ").pop(); // Spaces trimmed off.
 
 			// Data for Deletion
-			var lastWordOffset = textPrecedingCursor.lastIndexOf(lastWord);
-			
+			lastWordTextLengthPrecedingCursor = focusOffset - textPrecedingCursor.lastIndexOf(wordPrecedingCursor); // (inclusive of the whitespaces)
+
+			////////////////////////////////////////
+			// UPDATE SUGGESTIONS
+			searchWord = wordPrecedingCursor;
+			updateResults(searchWord);
+
+			// NOTE: Need to re-add NUMBERS support for typing.
 		});
 
-		// $(typingAreaDomID).on('keyup', function(event) {
-		// 	_STAT("TYPING-AREA: KEYUP");
+		// $(typingAreaDomID).on('keydown', function(event) {
+		// 	// _STAT("TYPING-AREA: KEY DOWN");
+
+		// 	// Get Key
+		// 	var key = event.originalEvent.key;
+
+		// 	// IGNORE Certain KEYS
+		// 	var ignoreKeys = ["Shift", "Escape", "Meta", "Alt", "Control"]
+		// 	if ( $.inArray(key, ignoreKeys) !== -1) { return; }
+
+		// 	// Note: Should probably re-think how this is handled. (Though i am weary i have tried previously, the pure-dom-reading approach - bit of an uphill)
+
+
+		// 	// IF SEARCHWORD has a word in it (i.e. not empty, and not a number)
+		// 	var popupNumberIsHit = false;
+		// 	if ( searchWord.length > 0 && !$.isNumeric(searchWord) ) {
+
+		// 		// CHECK IF NUMBER WAS TYPED
+		// 		if ( $.isNumeric(key) ) {
+		// 			var number = parseInt(key);
+		// 			if (number >= 0 && number <= 9) {
+		// 				if (number==0) { number = 10; }
+
+		// 				// Temp. do nothing for first number. // At some point will need to separate this numbering logic, to allow arrow navigation of other items.
+		// 				if (number==1) { event.preventDefault(); return; } // Temp. do nothing 
+
+		// 				var index = number-2;
+		// 				var node = jsNodeFromSearchIndex(index);
+						
+		// 				// DELETE WORD
+		// 				// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
+		// 				for (var i=0; i<searchWord.length; i++) { document.execCommand("delete"); }
+						
+		// 				// INSERT NODE
+		// 				insertNodeAtCursor(node);
+						
+		// 				// Reset Search Word
+		// 				searchWord = "";
+
+		// 				// Process Number
+		// 				popupNumberIsHit = true;
+		// 				// _STAT('number '+number);
+						
+		// 				event.preventDefault();
+		// 			}
+		// 		}
+		// 	}
+		// 	if (popupNumberIsHit) { return; }
+
+		// 	////////////////////////////////////////////////////////////////
+		// 	// HANDLE CHARACTER ADDITION + PERFORM SEARCH ON UPDATED WORD
+		// 	if (!popupNumberIsHit) {
+		// 		processCharacterForAddition(event);
+		// 	}
+
+
 		// });
-
-		// $(typingAreaDomID).on('change', function(event) {
-		// 	_STAT("TYPING-AREA: CHANGE");
-		// });
-
-		$(typingAreaDomID).on('keydown', function(event) {
-			// _STAT("TYPING-AREA: KEY DOWN");
-
-			// Get Key
-			var key = event.originalEvent.key;
-
-			// IGNORE Certain KEYS
-			var ignoreKeys = ["Shift", "Escape", "Meta", "Alt", "Control"]
-			if ( $.inArray(key, ignoreKeys) !== -1) { return; }
-
-			// Note: Should probably re-think how this is handled. (Though i am weary i have tried previously, the pure-dom-reading approach - bit of an uphill)
-
-
-			// IF SEARCHWORD has a word in it (i.e. not empty, and not a number)
-			var popupNumberIsHit = false;
-			if ( searchWord.length > 0 && !$.isNumeric(searchWord) ) {
-
-				// CHECK IF NUMBER WAS TYPED
-				if ( $.isNumeric(key) ) {
-					var number = parseInt(key);
-					if (number >= 0 && number <= 9) {
-						if (number==0) { number = 10; }
-
-						// Temp. do nothing for first number. // At some point will need to separate this numbering logic, to allow arrow navigation of other items.
-						if (number==1) { event.preventDefault(); return; } // Temp. do nothing 
-
-						var index = number-2;
-						var node = jsNodeFromSearchIndex(index);
-						
-						// DELETE WORD
-						// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
-						for (var i=0; i<searchWord.length; i++) { document.execCommand("delete"); }
-						
-						// INSERT NODE
-						insertNodeAtCursor(node);
-						
-						// Reset Search Word
-						searchWord = "";
-
-						// Process Number
-						popupNumberIsHit = true;
-						// _STAT('number '+number);
-						
-						event.preventDefault();
-					}
-				}
-			}
-			if (popupNumberIsHit) { return; }
-
-			////////////////////////////////////////////////////////////////
-			// HANDLE CHARACTER ADDITION + PERFORM SEARCH ON UPDATED WORD
-			if (!popupNumberIsHit) {
-				processCharacterForAddition(event);
-			}
-
-
-		});
 
 
 			// 								})
