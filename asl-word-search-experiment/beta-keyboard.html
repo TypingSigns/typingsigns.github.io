@@ -786,71 +786,26 @@ NOTES:
 			// Data for Deletion
 			lastWordTextLengthPrecedingCursor = focusOffset - textPrecedingCursor.lastIndexOf(wordPrecedingCursor); // (inclusive of the whitespaces)
 
+			// Update SearchWord
+			searchWord = wordPrecedingCursor;
+
+			////////////////////////////////////////
+			// DETECT IF A NUMBER WAS INSERTED FOLLOWING A WORD, IF SO, THEN INSERT-ASL-CHARACTER.
+			// Check if number is present following the last (non-zero-length) word.
+			var lastChar = wordPrecedingCursor.slice(-1);
+			if ( (wordPrecedingCursor.length > 1) && (!!parseInt(lastChar)) ) {
+				// Insert ASL Character
+				var index = parseInt(lastChar)-2;
+				insertASLcharacter(index, lastWordTextLengthPrecedingCursor);
+
+				// Update SearchWord
+				searchWord = "";
+			}
+
 			////////////////////////////////////////
 			// UPDATE SUGGESTIONS
-			searchWord = wordPrecedingCursor;
 			updateResults(searchWord);
-
-			// NOTE: Need to re-add NUMBERS support for typing.
 		});
-
-		// $(typingAreaDomID).on('keydown', function(event) {
-		// 	// _STAT("TYPING-AREA: KEY DOWN");
-
-		// 	// Get Key
-		// 	var key = event.originalEvent.key;
-
-		// 	// IGNORE Certain KEYS
-		// 	var ignoreKeys = ["Shift", "Escape", "Meta", "Alt", "Control"]
-		// 	if ( $.inArray(key, ignoreKeys) !== -1) { return; }
-
-		// 	// Note: Should probably re-think how this is handled. (Though i am weary i have tried previously, the pure-dom-reading approach - bit of an uphill)
-
-
-		// 	// IF SEARCHWORD has a word in it (i.e. not empty, and not a number)
-		// 	var popupNumberIsHit = false;
-		// 	if ( searchWord.length > 0 && !$.isNumeric(searchWord) ) {
-
-		// 		// CHECK IF NUMBER WAS TYPED
-		// 		if ( $.isNumeric(key) ) {
-		// 			var number = parseInt(key);
-		// 			if (number >= 0 && number <= 9) {
-		// 				if (number==0) { number = 10; }
-
-		// 				// Temp. do nothing for first number. // At some point will need to separate this numbering logic, to allow arrow navigation of other items.
-		// 				if (number==1) { event.preventDefault(); return; } // Temp. do nothing 
-
-		// 				var index = number-2;
-		// 				var node = jsNodeFromSearchIndex(index);
-						
-		// 				// DELETE WORD
-		// 				// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
-		// 				for (var i=0; i<searchWord.length; i++) { document.execCommand("delete"); }
-						
-		// 				// INSERT NODE
-		// 				insertNodeAtCursor(node);
-						
-		// 				// Reset Search Word
-		// 				searchWord = "";
-
-		// 				// Process Number
-		// 				popupNumberIsHit = true;
-		// 				// _STAT('number '+number);
-						
-		// 				event.preventDefault();
-		// 			}
-		// 		}
-		// 	}
-		// 	if (popupNumberIsHit) { return; }
-
-		// 	////////////////////////////////////////////////////////////////
-		// 	// HANDLE CHARACTER ADDITION + PERFORM SEARCH ON UPDATED WORD
-		// 	if (!popupNumberIsHit) {
-		// 		processCharacterForAddition(event);
-		// 	}
-
-
-		// });
 
 
 			// 								})
