@@ -746,7 +746,22 @@ NOTES:
 		if (!iOS) { $(typingAreaDomID).focus(); } // Only done if isn't iOS - as iOS doesn't do it properly anyway.
 
 		// START LISTENING to Key Input:
+
+		$(typingAreaDomID).on('input', function(event) {
+			_STAT("TYPING-AREA: INPUT");
+		});
+
+		$(typingAreaDomID).on('keyup', function(event) {
+			_STAT("TYPING-AREA: KEYUP");
+		});
+
+		$(typingAreaDomID).on('change', function(event) {
+			_STAT("TYPING-AREA: CHANGE");
+		});
+
 		$(typingAreaDomID).on('keydown', function(event) {
+			_STAT("TYPING-AREA: KEY DOWN");
+
 			// Get Key
 			var key = event.originalEvent.key;
 
