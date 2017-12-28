@@ -710,13 +710,15 @@ NOTES:
 	}
 
 	$(document).ready(function() {
+		//////////////////////////////////////////////////
 		// Add Date to typing-area
 		var d = new Date();
-		var dPrint = d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate() + " "+ d.getHours()+":"+d.getMinutes();
+		var dPrint = d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate() + " "+ d.getHours()+":"+(d.getMinutes()<10?'0':'')+d.getMinutes();
 		$(typingAreaDomID).append("<div>"+dPrint+"</div>")
 		$(typingAreaDomID).append("<br>")
 		$(typingAreaDomID).append("<br>")
 
+		//////////////////////////////////////////////////
 		// Prepare Text-Editor
 		_STAT("Creating Directory ⏳ ...")
 		_STAT("Loading SignBank directory ⏳ ...")
@@ -749,18 +751,21 @@ NOTES:
 
 		$(typingAreaDomID).on('input', function(event) {
 			_STAT("TYPING-AREA: INPUT");
+			console.log(event);
+			var key = event.originalEvent.data;
+			console.log(key);
 		});
 
-		$(typingAreaDomID).on('keyup', function(event) {
-			_STAT("TYPING-AREA: KEYUP");
-		});
+		// $(typingAreaDomID).on('keyup', function(event) {
+		// 	_STAT("TYPING-AREA: KEYUP");
+		// });
 
-		$(typingAreaDomID).on('change', function(event) {
-			_STAT("TYPING-AREA: CHANGE");
-		});
+		// $(typingAreaDomID).on('change', function(event) {
+		// 	_STAT("TYPING-AREA: CHANGE");
+		// });
 
 		$(typingAreaDomID).on('keydown', function(event) {
-			_STAT("TYPING-AREA: KEY DOWN");
+			// _STAT("TYPING-AREA: KEY DOWN");
 
 			// Get Key
 			var key = event.originalEvent.key;
