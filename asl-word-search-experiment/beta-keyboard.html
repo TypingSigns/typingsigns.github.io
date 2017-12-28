@@ -68,7 +68,7 @@ NOTES:
 		padding: 0 25px;
 	}
 	#typing-area img {
-		max-width: 200px;
+		max-width: 100px;
 	}
 	.suggestion-bar {
 		background: #bbb;
@@ -127,8 +127,8 @@ NOTES:
 	<div class="page-container">
 
 		<div class="header">
-			<div id="_STAT">Status: …</div>
-			<a href="#" class="button-copy-all">Copy All</a>
+			<span id="_STAT">Status: …</span>
+			<span><a href="#" class="button-copy-all">Copy All</a></span>
 		</div>
 		
 		<div id="typing-area" contentEditable="true">
@@ -186,6 +186,9 @@ NOTES:
 <script>
 
 	var _TYPING_AREA_DOM_ID_NAME = "typing-area";
+	
+	var typingAreaDomID = "#typing-area";
+	var searchWord = "";
 
 	var sifterResults = [];
 
@@ -534,7 +537,7 @@ NOTES:
 	//via https://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
 	function insertNodeAtCursor(node) {
 
-		// ~ Temp Block for accidental insertions when text isn't selected.
+		// ~ Temp Block for accidental insertions when text isn't selected. //~Temp
 		if ( ! $("#"+_TYPING_AREA_DOM_ID_NAME).is(":focus") ) {
 			return;
 		}
@@ -666,6 +669,10 @@ NOTES:
 			var id = parseInt( $(this).attr("data-sifter-id") );
 			var node = jsNodeFromSearchIndex(id);
 			
+			// DELETE WORD
+			// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
+			for (var i=0; i<searchWord.length; i++) { document.execCommand("delete"); }
+
 			insertNodeAtCursor(node);
 
 			// prevent loss of focus from typing-area
@@ -678,7 +685,33 @@ NOTES:
 
 <!-- MAIN DOCUMENT READY FUNCTION -->
 <script>
-	var typingAreaDomID = "#typing-area"
+
+	// TYPING, and UPDATING SEARCH
+	function processCharacterForAddition(event) {
+		// Get Key
+		var key = event.originalEvent.key;
+
+		// IGNORE Certain KEYS
+		var ignoreKeys = ["Shift", "Escape", "Meta"]
+		if ( $.inArray(key, ignoreKeys) !== -1) { return; }
+
+		// CLEAR Certain KEYS
+		var clearKeys = ["Enter", "Backspace", "ArrowUp", "ArrowDown","ArrowLeft", "ArrowRight", " ", "Tab"]
+		if ( $.inArray(key,clearKeys) !== -1) {
+			searchWord = "";
+		}
+
+		// Add character to searchWord
+		if ( $.inArray(key,clearKeys) == -1) {
+			searchWord += key;
+		}
+
+		// TEMP: Don't update search-results if empty // Design-wise; should hide overview when empty (though i though i kind of like being able to see as i type)
+		if (searchWord == "") { return; } // ~ temp
+
+		// Perform Search using searchWord
+		updateResults(searchWord);
+	}
 
 	$(document).ready(function() {
 		_STAT("Creating Directory ⏳ ...")
@@ -705,6 +738,65 @@ NOTES:
 		// Dummy Update Results with Blank
 		// updateResults("");
 		updateResults("dog");
+
+		// FOCUS on Typing-Area
+		$(typingAreaDomID).focus();
+
+		// START LISTENING to Key Input:
+		$(typingAreaDomID).on('keydown', function(event) {
+			// Get Key
+			var key = event.originalEvent.key;
+
+			// IGNORE Certain KEYS
+			var ignoreKeys = ["Shift", "Escape", "Meta", "Alt", "Control"]
+			if ( $.inArray(key, ignoreKeys) !== -1) { return; }
+
+			// Note: Should probably re-think how this is handled. (Though i am weary i have tried previously, the pure-dom-reading approach - bit of an uphill)
+
+
+			// IF SEARCHWORD has a word in it (i.e. not empty, and not a number)
+			var popupNumberIsHit = false;
+			if ( searchWord.length > 0 && !$.isNumeric(searchWord) ) {
+
+				// CHECK IF NUMBER WAS TYPED
+				if ( $.isNumeric(key) ) {
+					var number = parseInt(key);
+					if (number >= 0 && number <= 9) {
+						if (number==0) { number = 10; }
+
+						// Temp. do nothing for first number. // At some point will need to separate this numbering logic, to allow arrow navigation of other items.
+						if (number==1) { event.preventDefault(); return; } // Temp. do nothing 
+
+						var index = number-2;
+						var node = jsNodeFromSearchIndex(index);
+						
+						// DELETE WORD
+						// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
+						for (var i=0; i<searchWord.length; i++) { document.execCommand("delete"); }
+						
+
+						// INSERT NODE
+						insertNodeAtCursor(node);
+						
+						// Process Number
+						popupNumberIsHit = true;
+						// _STAT('number '+number);
+						
+						event.preventDefault();
+						searchWord = "";
+					}
+				}
+			}
+			if (popupNumberIsHit) { return; }
+
+			////////////////////////////////////////////////////////////////
+			// HANDLE CHARACTER ADDITION + PERFORM SEARCH ON UPDATED WORD
+			if (!popupNumberIsHit) {
+				processCharacterForAddition(event);
+			}
+
+
+		});
 
 
 			// 								})
