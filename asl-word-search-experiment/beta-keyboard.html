@@ -48,7 +48,7 @@ NOTES:
 		height: 56%;
 	}
 	.header {
-		background-color: cyan;
+		background-color: #eee;
 		height: 10%;
 		padding: 0 25px;
 		line-height: 2em;
@@ -66,7 +66,7 @@ NOTES:
 		padding: 0 25px;
 	}
 	.suggestion-bar {
-		background: pink;
+		background: #bbb;
 		overflow: hidden;
 		height: 20%;
 		position: relative;
@@ -76,13 +76,16 @@ NOTES:
 		-webkit-overflow-scrolling: touch;
 	}
 	.suggestion-bar table {
-		background-color: cyan;
+		background-color: #bbb;
 		height: 100%;
 		position: relative;
 		table-layout: fixed;
 	}
+	.suggestion-bar table tr {}
 	.suggestion-bar table td {
-		background-color: yellow;
+		border-left: 3px solid #bbb;
+		border-right: 3px solid #bbb;
+		background-color: #ddd;
 		max-width: 80px;
 		min-width: 80px;
 		position: relative;
@@ -100,12 +103,14 @@ NOTES:
 		height: 100%;
 	}
 	.suggestion-bar tr.images td {
+		/*border: 10px solid transparent;*/
+		/*background-color: transparent;*/
+
 		background-repeat: no-repeat;
 		background-position: center center;
 		background-size: contain;
 	}
 	.suggestion-bar tr.images td a {
-		/*background-color: cyan;*/
 		width: 100%;
 		height: 100%;
 		display: block;
