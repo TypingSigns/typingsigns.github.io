@@ -66,6 +66,9 @@ NOTES:
 		line-height: 1.5em;
 
 		padding: 0 25px;
+
+		background-color: #ffffff;
+		background-image: url("sandpaper.png");
 	}
 	#typing-area img {
 		max-width: 100px;
@@ -584,7 +587,7 @@ NOTES:
 		
 		var imgNode = document.createElement("IMG");
 		imgNode.setAttribute("src", imgUrl);
-		imgNode.setAttribute("alt", imgUrl);
+		imgNode.setAttribute("alt", titles);
 		return imgNode;
 	}
 
@@ -672,8 +675,12 @@ NOTES:
 			// DELETE WORD
 			// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
 			for (var i=0; i<searchWord.length; i++) { document.execCommand("delete"); }
-
+			
+			// INSERT NODE
 			insertNodeAtCursor(node);
+			
+			// Reset Search Word
+			searchWord = "";
 
 			// prevent loss of focus from typing-area
 			event.preventDefault();
@@ -736,11 +743,10 @@ NOTES:
 		_STAT("	↳ Created Sifter for Search.");
 
 		// Dummy Update Results with Blank
-		// updateResults("");
-		updateResults("dog");
+		updateResults("");
 
 		// FOCUS on Typing-Area
-		$(typingAreaDomID).focus();
+		if (!iOS) { $(typingAreaDomID).focus(); } // Only done if isn't iOS - as iOS doesn't do it properly anyway.
 
 		// START LISTENING to Key Input:
 		$(typingAreaDomID).on('keydown', function(event) {
@@ -774,16 +780,17 @@ NOTES:
 						// via https://stackoverflow.com/questions/12039135/simulate-backspace-key-on-text-input-field
 						for (var i=0; i<searchWord.length; i++) { document.execCommand("delete"); }
 						
-
 						// INSERT NODE
 						insertNodeAtCursor(node);
 						
+						// Reset Search Word
+						searchWord = "";
+
 						// Process Number
 						popupNumberIsHit = true;
 						// _STAT('number '+number);
 						
 						event.preventDefault();
-						searchWord = "";
 					}
 				}
 			}
