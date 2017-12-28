@@ -50,6 +50,9 @@ NOTES:
 	.header {
 		background-color: cyan;
 		height: 10%;
+		padding: 0 25px;
+		line-height: 2em;
+		text-align: right;
 	}
 	#typing-area {
 		background-color: #fff;
@@ -68,8 +71,8 @@ NOTES:
 		height: 20%;
 		position: relative;
 
-		overflow-x: hidden;
-		overflow-y: scroll;
+		overflow-y: hidden;
+		overflow-x: scroll;
 		-webkit-overflow-scrolling: touch;
 	}
 	.suggestion-bar table {
@@ -113,7 +116,7 @@ NOTES:
 <body>
 	<div class="page-container">
 
-		<div class="header">Header <a href="#" class="button-copy-all">Copy All</a></div>
+		<div class="header"><a href="#" class="button-copy-all">Copy All</a></div>
 		
 		<div id="typing-area" contentEditable="true">
 			<div>This is the typing area</div>
