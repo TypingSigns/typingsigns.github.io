@@ -20,7 +20,6 @@
 		padding: 0;
 		height: 100%;
 		background: gray;
-		
 	}
 	body > .container {
 		background: wheat;
@@ -406,13 +405,9 @@
 
 <!-- HIGHER-LEVEL DOM FUNCTIONS -->
 <script>
-
 	//via https://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
 	function insertNodeAtCursor(node) {
 		var sel, range, html;
-
-		// http://joemaller.com/503/getselection-workaround/
-
 		if (window.getSelection) {
 			sel = window.getSelection();
 			sel = document.getSelection();
@@ -436,7 +431,7 @@
 	}
 </script>
 
-<!-- UPDATE RESULTS -->
+<!-- UPDATE RESULTS : (DOM SPECIFIC) -->
 <script>
 
 	function jsNodeFromSearchIndex(index) {

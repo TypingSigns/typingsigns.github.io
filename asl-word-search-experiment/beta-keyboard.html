@@ -5,11 +5,13 @@
 	<meta charset="UTF-8">
 	<title>Beta ASL Keyboard</title>
 
-	<meta name="apple-mobile-web-app-capable" content="yes">
+	
 	<meta name="viewport" content="width=device-width">
-	<!-- <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no"> -->
+	<!-- Note: Temporarily disabled web-app mode, as it will automatically refresh this each time. -->
+	<!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
 
 	<script src="js/jquery.min.js"></script>
+	<script src="js/sifter.js"></script>
 
 	<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
 </head>
@@ -124,7 +126,10 @@ NOTES:
 <body>
 	<div class="page-container">
 
-		<div class="header"><a href="#" class="button-copy-all">Copy All</a></div>
+		<div class="header">
+			<div id="_STAT">Status: …</div>
+			<a href="#" class="button-copy-all">Copy All</a>
+		</div>
 		
 		<div id="typing-area" contentEditable="true">
 			<div>This is the typing area</div>
@@ -150,7 +155,7 @@ NOTES:
 		<!-- The following may be easier as a table actually. -->
 
 		<div class="suggestion-bar">
-			<table>
+			<table id="results-table">
 				<tbody>
 				<tr class="descriptions">
 					<td><span>1. test zero</span></td>
@@ -177,17 +182,27 @@ NOTES:
 	</div>
 </body>
 
+<!-- GLOBAL VARS + STAT CONVENIENCE FUNCTION -->
 <script>
+
+	var _TYPING_AREA_DOM_ID_NAME = "typing-area";
+
+	var sifterResults = [];
+
+	function _STAT(text) {
+		$('#_STAT').text(text);
+		text = "STATUS: " + text;
+		console.log(text);
+	}
 
 	var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
-	$(document).ready(function() {
 
-		$('.button-copy-all').mousedown(function(event) {
-			selectAndCopyAll();
-		});
-	});
+</script>
 
+
+<!-- iOS Keyboard Handling -->
+<script>
 	function iOSKeyboardToggled(toggledOn) {
 		if (toggledOn) {
 			$('body').addClass('ios-keyboard-visible');
@@ -206,16 +221,504 @@ NOTES:
 	$("#typing-area").blur(function() {
 		if (iOS) { iOSKeyboardToggled(false); }
 	});
+</script>
+
+<!-- COPY-ALL BUTTON -->
+<script>
+	$(document).ready(function() {
+
+		$('.button-copy-all').mousedown(function(event) {
+			selectAndCopyAll();
+		});
+	});
 
 	function selectAndCopyAll() {
 		// focus on typing-area
 		$("#typing-area").focus();
-		// var selector = document.querySelector('#typing-area');
-  		// selector.select();
 		document.execCommand('selectAll',false,null);
 		document.execCommand('copy');
 	}
-	
 </script>
+
+
+
+<!-- LOAD DIRECTORY FUNCTIONS -->
+<script>
+	var sifter;
+	var myDirectory = [] // entry = ["type"]["id"]["url"]["titles"]
+	
+	// SIGNBANK DATA: Load and Add
+	function loadSignbank(callback) {
+		$.ajax({
+			// url : "https://raw.githubusercontent.com/TypingSigns/typingsigns.github.io/master/asl-word-search-experiment/data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
+			url : "data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
+			dataType: "text",
+			success : function (data_signbank) {
+				_STAT("	↳ Loaded SignBank Directory 😁")
+				_STAT("	↳ Processing SignBank Directory ⏳ ...")
+				// Add Data
+				var lines = data_signbank.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "signbank"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["fsw"] = columns[3]; // only used for checking if an fsw-string existed, fsw itself is not used.
+					entry["mediaandsignid"] = columns[4];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed SignBank Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+	
+
+	function processASLLex(callback) {
+		_STAT("Loading ASLLex directory ⏳ ...")
+		$.ajax({
+			url : "data/asllex-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_asllex) {
+				_STAT("	↳ Loaded ASLLex Directory 😁")
+				_STAT("	↳ Processing ASLLex Directory ⏳ ...")
+				// Add Data
+				var lines = data_asllex.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "asllex"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed ASLLex Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processSpreadTheSign(callback) {
+		_STAT("Loading STS directory ⏳ ...")
+		$.ajax({
+			url : "data/spreadthesign-id-url-title-~videopageid.tsv",
+			dataType: "text",
+			success : function (data_sts) {
+				_STAT("	↳ Loaded STS Directory 😁")
+				_STAT("	↳ Processing STS Directory ⏳ ...")
+				// Add Data
+				var lines = data_sts.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "sts"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["videoid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed STS Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processMSHWords(callback) {
+		_STAT("Loading MSHWords directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-mshwords-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_mshwords) {
+				_STAT("	↳ Loaded MSHWords Directory 😁")
+				_STAT("	↳ Processing MSHWords Directory ⏳ ...")
+				// Add Data
+				var lines = data_mshwords.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "mshwords"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed MSHWords Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processMSHAnim(callback) {
+		_STAT("Loading MSHAnim directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-mshanim-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_mshanim) {
+				_STAT("	↳ Loaded MSHAnim Directory 😁")
+				_STAT("	↳ Processing MSHAnim Directory ⏳ ...")
+				// Add Data
+				var lines = data_mshanim.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "mshanim"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed MSHAnim Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processASLKids(callback) {
+		_STAT("Loading ASLKids directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-aslkids-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_aslkids) {
+				_STAT("	↳ Loaded ASLKids Directory 😁")
+				_STAT("	↳ Processing ASLKids Directory ⏳ ...")
+				// Add Data
+				var lines = data_aslkids.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "aslkids"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed ASLKids Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processHandspeak(callback) {
+		_STAT("Loading Handspeak directory ⏳ ...")
+		$.ajax({
+			url : "data/handspeak-id-url-title.tsv",
+			dataType: "text",
+			success : function (data_handspeak) {
+				_STAT("	↳ Loaded Handspeak Directory 😁")
+				_STAT("	↳ Processing Handspeak Directory ⏳ ...")
+				// Add Data
+				var lines = data_handspeak.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "handspeak"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Handspeak Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processLifeprint(callback) {
+		_STAT("Loading Lifeprint directory ⏳ ...")
+		$.ajax({
+			url : "data/lifeprint-id-url-title.tsv",
+			dataType: "text",
+			success : function (data_lifeprint) {
+				_STAT("	↳ Loaded Lifeprint Directory 😁")
+				_STAT("	↳ Processing Lifeprint Directory ⏳ ...")
+				// Add Data
+				var lines = data_lifeprint.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "lifeprint"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Lifeprint Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processGiphySWR(callback) {
+		_STAT("Loading GiphySWR directory ⏳ ...")
+		$.ajax({
+			url : "data/giphyswr-id-url-titles-mediaurl.tsv",
+			dataType: "text",
+			success : function (data_giphyswr) {
+				_STAT("	↳ Loaded GiphySWR Directory 😁")
+				_STAT("	↳ Processing GiphySWR Directory ⏳ ...")
+				// Add Data
+				var lines = data_giphyswr.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "giphyswr"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["mediaurl"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed GiphySWR Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processNab(callback) {
+		_STAT("Loading Nab directory ⏳ ...")
+		$.ajax({
+			url : "data/yout-nabboudatuofa-id-url-title-youtubeid.tsv",
+			dataType: "text",
+			success : function (data_nab) {
+				_STAT("	↳ Loaded Nab Directory 😁")
+				_STAT("	↳ Processing Nab Directory ⏳ ...")
+				// Add Data
+				var lines = data_nab.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "nab"
+					entry["id"] = columns[0];
+					entry["url"] = columns[1];
+					entry["titles"] = columns[2];
+					entry["youtubeid"] = columns[3];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Nab Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+</script>
+
+<!-- HIGHER-LEVEL DOM FUNCTIONS -->
+<script>
+	//via https://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
+	function insertNodeAtCursor(node) {
+
+		// ~ Temp Block for accidental insertions when text isn't selected.
+		if ( ! $("#"+_TYPING_AREA_DOM_ID_NAME).is(":focus") ) {
+			return;
+		}
+
+		var sel, range, html;
+		if (window.getSelection) {
+			sel = window.getSelection();
+			sel = document.getSelection();
+			if (sel.getRangeAt && sel.rangeCount) {
+				range = sel.getRangeAt(0);
+				range.deleteContents();
+				
+				range.insertNode( node );
+
+				// COLLAPSE selection
+				// Note: The following only works in chrome, firefox - not safari:
+				// range.collapse(false);
+
+				// Updated to work in Safari as well
+				range.setStartAfter( node );
+				range.setEndAfter( node );
+				sel.removeAllRanges();
+				sel.addRange(range);
+			}
+		}
+	}
+</script>
+
+<!-- UPDATE RESULTS : (DOM SPECIFIC) -->
+<script>
+	
+	function jsNodeFromSearchIndex(index) {
+		// var textNode = document.createTextNode("-•-");			
+		// range.insertNode( textNode );
+
+		// var imgNode = document.createElement("IMG");
+		// imgNode.setAttribute("src", "data/images/signbank/pngs-by-sid/6300.png")
+		// range.insertNode( imgNode );
+
+		var itemId = sifterResults.items[index].id;
+		var item = sifter.items[itemId];
+		var titles = item.titles;
+		var imgUrl = getDisplayImageUrl(item);
+		
+		var imgNode = document.createElement("IMG");
+		imgNode.setAttribute("src", imgUrl);
+		imgNode.setAttribute("alt", imgUrl);
+		return imgNode;
+	}
+
+	function getDisplayImageUrl(sifterItem) {
+		var item = sifterItem;
+
+		var displayImageUrl = null;
+
+		switch (item.type) {
+			case 'sts':
+				displayImageUrl = 'https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif';
+				break;
+			case 'signbank':
+				if (item.fsw) {
+					displayImageUrl = 'data/images/signbank/pngs-by-sid/'+item.mediaandsignid+'.png';
+				} else {
+					displayImageUrl = null;  //' { no fsw }';
+				}
+				break;
+			case 'giphyswr':
+				displayImageUrl = item.mediaurl;
+				break;
+			case 'lifeprint':
+			case 'handspeak':
+				break;
+			case 'asllex':
+			case 'mshwords':
+			case 'mshanim':
+			case 'aslkids':
+			case 'nab':
+				break;
+		}
+
+		return displayImageUrl;
+	}
+
+	function updateResults(searchValue) {
+
+		// _STAT("Conducting Search for: ["+searchvalue+"] ...")
+		sifterResults = sifter.search(searchValue, {
+			fields: ['titles'],
+			limit: 50
+		});
+
+		// ITERATE THROUGH ITEMS and GENERATE HTML
+		var htmlTr0_inner = "";
+		var htmlTr1_inner = "";
+
+		// Add First Item
+		htmlTr0_inner += "<td>"+"_. "+searchValue+"</td>";
+		htmlTr1_inner += "<td></td>"
+
+		// Add All Items
+		for (var i=0; i<sifterResults.items.length; i++) {
+			var itemId = sifterResults.items[i].id;
+			var item = sifter.items[itemId];
+			var titles = item.titles;
+			var url = item.url;
+
+			var displayNumber = (i+2);
+			var displayTitle = titles;
+			var displaySourceUrl = url;
+			var displayImageUrl = getDisplayImageUrl(item);
+
+			// Set HTML
+			var tr0td = "<td>" + "<span>" + displayNumber+ ". " + displayTitle + "</span>" + "</td>";
+			var backgroundHtml = (displayImageUrl!=null)?(' background="'+displayImageUrl+'"'):""
+			var tr1td = '<td'+backgroundHtml+'>' + '<a href="#" data-sifter-id="'+i+'" class="insert"></a>' + '</td>';
+			htmlTr0_inner += tr0td;
+			htmlTr1_inner += tr1td;
+
+		} // end for loop
+
+		// Update Html
+		$('#results-table tr.descriptions').html(htmlTr0_inner);
+		$('#results-table tr.images').html(htmlTr1_inner);
+
+		var resultsDomId = '#search-results';
+
+		// Add Listener for Button Presses:
+		$('a.insert').mousedown(function(event) {
+			var id = parseInt( $(this).attr("data-sifter-id") );
+			var node = jsNodeFromSearchIndex(id);
+			
+			insertNodeAtCursor(node);
+
+			// prevent loss of focus from typing-area
+			event.preventDefault();
+			return false;
+		})
+	}
+</script>
+
+
+<!-- MAIN DOCUMENT READY FUNCTION -->
+<script>
+	var typingAreaDomID = "#typing-area"
+
+	$(document).ready(function() {
+		_STAT("Creating Directory ⏳ ...")
+		_STAT("Loading SignBank directory ⏳ ...")
+		loadSignbank(function() {
+			processSpreadTheSign(function() {
+				processGiphySWR(function() {
+				// processASLLex(function() {
+						// processMSHWords(function() {
+							// processMSHAnim(function() {
+								// processASLKids(function() {
+									// processHandspeak(function() {
+										// processLifeprint(function() {
+												// processNab(function() {
+
+		// LAST DATA PROCESSED!
+
+		// Create Sifter from Directory
+		_STAT("Created Directory 😁");
+		_STAT("Creating Sifter for Search ...");
+		sifter = new Sifter(myDirectory);
+		_STAT("	↳ Created Sifter for Search.");
+
+		// Dummy Update Results with Blank
+		// updateResults("");
+		updateResults("dog");
+
+
+			// 								})
+			// 							})
+			// 						})
+			// 					})
+			// 				})
+			// 			})
+			// 		})
+				})
+			})
+		})
+	});
+</script>
+
 
 </html>
