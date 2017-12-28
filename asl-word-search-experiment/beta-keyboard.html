@@ -71,6 +71,7 @@ NOTES:
 		background-image: url("sandpaper.png");
 	}
 	#typing-area img {
+		/* NOTE: This border is a temporary measure. SignWriting images should eventually have their own borders. */
 		border: 1px solid #ccc;
 		padding: 5px;
 		margin: 5px;
@@ -139,7 +140,8 @@ NOTES:
 		</div>
 		
 		<div id="typing-area" contentEditable="true">
-			<div>…</div>
+			<div>–––</div>
+
 		</div>
 
 		<!-- The following may be easier as a table actually. -->
@@ -708,6 +710,14 @@ NOTES:
 	}
 
 	$(document).ready(function() {
+		// Add Date to typing-area
+		var d = new Date();
+		var dPrint = d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate() + " "+ d.getHours()+":"+d.getMinutes();
+		$(typingAreaDomID).append("<div>"+dPrint+"</div>")
+		$(typingAreaDomID).append("<br>")
+		$(typingAreaDomID).append("<br>")
+
+		// Prepare Text-Editor
 		_STAT("Creating Directory ⏳ ...")
 		_STAT("Loading SignBank directory ⏳ ...")
 		loadSignbank(function() {
