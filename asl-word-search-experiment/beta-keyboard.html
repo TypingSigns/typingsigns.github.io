@@ -537,7 +537,6 @@ NOTES:
 		var sel, range, html;
 		if (window.getSelection) {
 			sel = window.getSelection();
-			sel = document.getSelection();
 			if (sel.getRangeAt && sel.rangeCount) {
 				range = sel.getRangeAt(0);
 				range.deleteContents();
@@ -750,10 +749,30 @@ NOTES:
 		// START LISTENING to Key Input:
 
 		$(typingAreaDomID).on('input', function(event) {
-			_STAT("TYPING-AREA: INPUT");
+			// _STAT("TYPING-AREA: INPUT");
 			console.log(event);
-			var key = event.originalEvent.data;
-			console.log(key);
+
+			var inputType = event.originalEvent.inputType;
+			if (inputType == "insertParagraph") { return; } // 'Enters'
+
+			// Assumes: event.originalEvent.eventType == "insertText", rather than "insertReplacementText" (which occurs with autocomplete)
+			// var key = event.originalEvent.data;
+			// console.log(key);
+
+			// Note: Making Assumptions that things are available… (see original sel function)
+			var sel = window.getSelection();
+			var focusNodeData = sel.focusNode.data;
+			var focusOffset = sel.focusOffset;
+
+			// get String up to Current cursor.
+			var textPrecedingCursor = focusNodeData.slice(0, focusOffset);
+
+			var lastWord = textPrecedingCursor.trim().split(" ").pop();
+			_STAT(lastWord);
+
+			// Data for Deletion
+			var lastWordOffset = textPrecedingCursor.lastIndexOf(lastWord);
+			
 		});
 
 		// $(typingAreaDomID).on('keyup', function(event) {
