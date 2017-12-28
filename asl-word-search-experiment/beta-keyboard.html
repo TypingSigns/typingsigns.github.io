@@ -40,6 +40,8 @@ NOTES:
 		background: orange;
 		height: 100%;
 		transition: height 500ms;
+
+		height: 56%;
 	}
 	body.ios-keyboard-visible .page-container {
 		/* Note: This is Brute Force guestimate on iOS soft Keyboard Size*/
@@ -47,23 +49,65 @@ NOTES:
 	}
 	.header {
 		background-color: cyan;
-		height: 5%;
+		height: 10%;
 	}
 	#typing-area {
 		background-color: #fff;
 
 		overflow-y: scroll;
   		-webkit-overflow-scrolling: touch; /* Allow for smooth scrolling */
-		height: 75%;
+		height: 70%;
 
 		line-height: 1.5em;
 
 		padding: 0 25px;
 	}
 	.suggestion-bar {
-		background: cyan;
+		background: pink;
 		overflow: hidden;
 		height: 20%;
+		position: relative;
+
+		overflow: scroll;
+	}
+	.suggestion-bar table {
+		background-color: cyan;
+		height: 100%;
+		position: relative;
+		table-layout: fixed;
+	}
+	.suggestion-bar table td {
+		background-color: yellow;
+		width: 100px;
+		max-width: 100px;
+		min-width: 100px;
+		position: relative;
+	}
+	.suggestion-bar tr.descriptions td {
+		font-size: 0.5em;
+		overflow: scroll;
+	}
+	.suggestion-bar tr.descriptions td span {
+		white-space: nowrap;
+		overflow: scroll;
+	}
+	.suggestion-bar tr.images {
+		height: 100%;
+	}
+	.suggestion-bar tr.images td {
+		overflow: scroll;
+		height: 100%;
+
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-size: contain;
+	}
+	.suggestion-bar tr.images td a {
+		/*background-color: cyan;*/
+		width: 100%;
+		height: 100%;
+		display: block;
+		text-decoration: none;
 	}
 </style>
 
@@ -92,8 +136,27 @@ NOTES:
 
 		</div>
 
+		<!-- The following may be easier as a table actually. -->
+
 		<div class="suggestion-bar">
-			Suggestion Bar
+			<table>
+				<tbody>
+				<tr class="descriptions">
+					<td><span>1. test zero</span></td>
+					<td><span>2. infirmity</span></td>
+					<td><span>3. DELAY | otherwise | name-sign-B</span></td>
+					<td><span>4. otherwise</span></td>
+					<td><span>7. Number Seventh Item</span></td>
+				</tr>
+				<tr class="images">
+					<td background="data/images/signbank/pngs-by-sid/1.png"><a href="#"></a></td>
+					<td background="data/images/signbank/pngs-by-sid/2.png"><a href="#"></a></td>
+					<td background="data/images/signbank/pngs-by-sid/3.png"><a href="#"></a></td>
+					<td background="data/images/signbank/pngs-by-sid/4.png"><a href="#"></a></td>
+					<td background="data/images/signbank/pngs-by-sid/7.png"><a href="#"></a></td>
+				</tr>
+				<tbody>
+			</table>
 		</div>
 
 	</div>
