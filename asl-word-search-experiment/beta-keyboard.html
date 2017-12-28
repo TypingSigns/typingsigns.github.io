@@ -41,7 +41,7 @@ NOTES:
 		height: 100%;
 		transition: height 500ms;
 
-		height: 56%;
+		/*height: 56%;*/
 	}
 	body.ios-keyboard-visible .page-container {
 		/* Note: This is Brute Force guestimate on iOS soft Keyboard Size*/
@@ -68,7 +68,9 @@ NOTES:
 		height: 20%;
 		position: relative;
 
-		overflow: scroll;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
 	}
 	.suggestion-bar table {
 		background-color: cyan;
@@ -78,26 +80,23 @@ NOTES:
 	}
 	.suggestion-bar table td {
 		background-color: yellow;
-		width: 100px;
-		max-width: 100px;
-		min-width: 100px;
+		max-width: 80px;
+		min-width: 80px;
 		position: relative;
+
+		-webkit-overflow-scrolling: touch;
+		overflow: scroll;
 	}
 	.suggestion-bar tr.descriptions td {
 		font-size: 0.5em;
-		overflow: scroll;
 	}
 	.suggestion-bar tr.descriptions td span {
 		white-space: nowrap;
-		overflow: scroll;
 	}
 	.suggestion-bar tr.images {
 		height: 100%;
 	}
 	.suggestion-bar tr.images td {
-		overflow: scroll;
-		height: 100%;
-
 		background-repeat: no-repeat;
 		background-position: center center;
 		background-size: contain;
@@ -114,7 +113,7 @@ NOTES:
 <body>
 	<div class="page-container">
 
-		<div class="header">Header</div>
+		<div class="header">Header <a href="#" class="button-copy-all">Copy All</a></div>
 		
 		<div id="typing-area" contentEditable="true">
 			<div>This is the typing area</div>
@@ -166,6 +165,13 @@ NOTES:
 
 	var iOS = true; //!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
+	$(document).ready(function() {
+
+		$('.button-copy-all').mousedown(function(event) {
+			selectAndCopyAll();
+		});
+	});
+
 	function iOSKeyboardToggled(toggledOn) {
 		if (toggledOn) {
 			$('body').addClass('ios-keyboard-visible');
@@ -184,6 +190,15 @@ NOTES:
 	$("#typing-area").blur(function() {
 		if (iOS) { iOSKeyboardToggled(false); }
 	});
+
+	function selectAndCopyAll() {
+		// focus on typing-area
+		$("#typing-area").focus();
+		// var selector = document.querySelector('#typing-area');
+  		// selector.select();
+		document.execCommand('selectAll',false,null);
+		document.execCommand('copy');
+	}
 	
 </script>
 
