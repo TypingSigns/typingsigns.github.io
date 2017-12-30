@@ -796,10 +796,12 @@ NOTES:
 			var lastChar = wordPrecedingCursor.slice(-1);
 			if ( (wordPrecedingCursor.length > 1) && (!!parseInt(lastChar)) ) {
 				// Insert ASL Character
+				if (lastChar == "0") { lastChar = "10"; }
 				var index = parseInt(lastChar)-2;
 				insertASLcharacter(index, lastWordTextLengthPrecedingCursor);
 
 				// Update SearchWord
+				lastWordTextLengthPrecedingCursor = 0;
 				searchWord = "";
 			}
 
