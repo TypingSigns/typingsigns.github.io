@@ -72,9 +72,9 @@ NOTES:
 	}
 	#typing-area img {
 		/* NOTE: This border is a temporary measure. SignWriting images should eventually have their own borders. */
-		border: 1px solid #ccc;
-		padding: 5px;
-		margin: 5px;
+		/*border: 1px solid #ccc;*/
+		/*padding: 5px;*/
+		/*margin: 5px;*/
 		vertical-align: middle;
 		max-width: 100px;
 	}
@@ -610,7 +610,8 @@ NOTES:
 				break;
 			case 'signbank':
 				if (item.fsw) {
-					displayImageUrl = 'data/images/signbank/pngs-by-sid/'+item.mediaandsignid+'.png';
+					// displayImageUrl = 'data/images/signbank/pngs-by-sid/'+item.mediaandsignid+'.png';
+					displayImageUrl = 'https://s3.amazonaws.com/awss3-typingsigns-201710/sw-10600-128sq/'+item.mediaandsignid+'.png';
 				} else {
 					displayImageUrl = null;  //' { no fsw }';
 				}
