@@ -795,14 +795,21 @@ NOTES:
 			// Check if number is present following the last (non-zero-length) word.
 			var lastChar = wordPrecedingCursor.slice(-1);
 			if ( (wordPrecedingCursor.length > 1) && (!!parseInt(lastChar)) ) {
-				// Insert ASL Character
-				if (lastChar == "0") { lastChar = "10"; }
-				var index = parseInt(lastChar)-2;
-				insertASLcharacter(index, lastWordTextLengthPrecedingCursor);
+				// Only a 'word' if it doesn't end with a Number.
+				var priorLastChar = wordPrecedingCursor.slice(-2,-1);
+				if ( isNaN(priorLastChar) ) {
 
-				// Update SearchWord
-				lastWordTextLengthPrecedingCursor = 0;
-				searchWord = "";
+					// Insert ASL Character
+					if (lastChar == "0") { lastChar = "10"; }
+					var index = parseInt(lastChar)-2;
+					insertASLcharacter(index, lastWordTextLengthPrecedingCursor);
+
+					// Update SearchWord
+					lastWordTextLengthPrecedingCursor = 0;
+					searchWord = "";
+
+				}
+				
 			}
 
 			////////////////////////////////////////
