@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="html5-boilerplate_v5.3.0-main.css" type="text/css">
+	<link rel="stylesheet" href="html5-boilerplate_v5.3.0-normalize.css" type="text/css">
+	
+	<title>ASL Text</title>
+	<meta property="og:site_name" content="ASL Text">
+	<meta property="og:title" content="ASL Text">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="http://www.typingsigns.com/asl-text-ios/">
+	<meta itemprop="name" content="ASL Text">
+	<meta itemprop="url" content="http://www.typingsigns.com/asl-text-ios/">
+	<meta name="twitter:title" content="ASL Text">
+	<meta name="twitter:url" content="http://www.typingsigns.com/asl-text-ios/">
+	<meta name="twitter:card" content="summary">
+
+	<meta name="description" content="Type American Sign Language (ASL) signs using SignWriting on iPhone and iPad. Look up ASL signs through their english gloss. Share and save sentences as images.">
+	<meta name="keywords" content="Write,Type,Typing,American,Sign,Language,ASL,Dictionary,Sentence,Phrase,Text">
+	<meta name="author" content="Typing Signs">
+
+	<!-- Switch to root reference after tests that ga-track works -->
+	<script src="/js/ga-track.js"></script>
+
+	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+
+	<!-- iOS Viewport -->
+	<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+
+	<!-- 2018-06-04: NOTE: If enough users, this website should be COMPLETELY redone. From ground up. -->
+	 
+
+</head>
+
+<style>
+	html, body {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		background: gray;
+	}
+	body {
+		text-align: center;
+		position: relative;
+		font-family: Avenir, Helvetica, sans-serif;
+	}
+	h2 {
+		font-weight: normal;
+	}
+	
+
+	#body-header {
+		background: gray;
+		color: white;
+		text-align: left;
+		z-index: 10;
+		/*position: fixed;*/
+		width: 100%;
+	}
+		#body-header a {
+			color: white;
+			text-decoration: none;
+			padding:0 20px;
+			display: inline-block;
+			padding: 5px;
+			font-size: 0.8em;
+			border: none;
+		}
+		#body-header a:hover {
+			color: lightgray;
+		}
+
+	body .content-block {
+		background-color: #f5f5f5;
+		border-bottom: 2px solid white;
+		padding: 0 20px;
+		padding-top: 30px;
+		padding-bottom: 40px;
+	}
+
+	#ts-wrapper{
+		margin-top: 0;
+		padding: 0;
+		/*color: white;*/
+
+		/* TO REPLACE */
+		/*background: url(../dawn-nature-sunset-people-light1-blur2.jpg) no-repeat center center;*/
+
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+		position: relative;
+
+		/*background-color: #eee;*/
+		background-color: white;
+		/*min-height: 75%;*/
+		position: relative;
+	}
+		.centre-wrapper {
+			/*padding-top: 50px;*/
+			/*padding-bottom: 30px;*/
+			/*position: relative;*/
+
+			/*position: absolute;
+			height: 100%;
+			width: 100%;*/
+			/*background-color: orange;*/
+			/*opacity: 0.5;*/
+			position: relative;
+		}
+
+		.columns-2 {
+/*			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 100%;*/
+			position: relative;
+		}
+			.columns-2 > div {
+				display: inline-block;
+				/*vertical-align: top;*/
+				padding: 0 20px;
+				position: relative;
+			}
+			.columns-2 > div:first-child {
+				/*max-width: 400px;*/
+				max-width: 25%;
+				min-width: 280px;
+
+				text-align: left;
+				vertical-align: middle;
+				padding-top: 20px;
+			}
+
+		#ts-wrapper h1 {
+			margin-top: 0;
+		}
+		#ts-wrapper .multilingual-container .emoji {
+			display: none;
+		}
+		.faq {}
+		.faq span {
+			display: block;
+		}
+		.faq span.question {
+			font-weight: bold;
+		}
+		.faq .contact {}
+		a.apple-button {
+			display: block;
+			width: 135px !important;
+			border-radius: 5px;
+			height: 39px !important;
+			position: relative;
+			margin-top: 30px;
+			-webkit-transition: 0.2s;
+			transition: 0.2s;
+			top: 0.0px;
+		}
+		a.apple-button:hover {
+			-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 2px;
+			-moz-box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 2px;
+			box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 2px;
+			/*top:-2.0px;*/
+			transform: translateY(-2px);
+		}
+		a.apple-button:active {
+			-webkit-box-shadow: inherit;
+			-moz-box-shadow: inherit;
+			box-shadow: inherit;
+			-webkit-transition: 0.2s;
+			transition: 0.2s;
+			transform: translateY(2px);
+		}
+		#ts-wrapper img {
+			border: 1px solid white;
+			max-height: 500px;
+			border-radius: 5px;
+			max-width: 100%;
+
+			height: 200px;
+
+			margin: 30px 0;
+		}
+
+	#other-projects-wrapper {}
+		h2 {
+			margin-top: 10px;
+			margin-bottom: 0;
+		}
+		.project {
+			max-width: 250px;
+			display: inline-block;
+			padding: 20px;
+			border-radius: 10px;
+			border: 1px solid white;
+			margin: 20px;
+			vertical-align: top;
+			/*background: white;*/
+		}
+		.project a {
+			border: 1px solid lightgray;
+			border-radius: 10px;
+			background-color: white;
+			display: block;
+			padding: 10px;
+			text-decoration: none;
+			font-weight: normal;
+			position: relative;
+
+			border-bottom: 2px solid lightgray;
+			top: -1px;
+
+			transition: 0.2s;
+			-webkit-transition: 0.2s;
+			-webkit-transform: translateZ(0);
+    		transform: translateZ(0);
+		}
+		.project a:hover {
+			
+			/*font-weight: bold;*/
+			border-bottom: 2px solid;
+			top: -3px;
+			/*transition: 0.2s;*/
+
+			transition: 0.2s;
+			-webkit-transition: 0.2s;
+
+
+			/*background-color: #eee;*/
+
+			background: rgba(255,255,255,1);
+			background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
+			background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
+		}
+		.project span.description {
+			font-size: 0.8em;
+			margin-top: 20px;
+			display: block;
+		}
+		.project img {
+			max-width: 100%;
+			border-radius: 6px;
+			margin-top: 10px;
+			border: 1px solid #ddd;
+		}
+
+	#feedback-wrapper {
+		background-color: gainsboro;
+	}
+
+	#about-wrapper p.quote {
+		font-style: italic;
+	}
+		#about-wrapper p.quote span {
+			display: block;
+		}
+		#about-wrapper p.quote span.sw-phrase span {
+			display: inline-block;
+		} 
+		#about-wrapper p.quote span.sw-phrase img {
+			max-width: 100px;
+			max-height: 100px;
+		}
+
+	#about-wrapper img {
+		width: 200px;
+	}
+
+	/* General */
+	a {
+		color: royalblue;
+		text-decoration: none;
+	}
+	a:hover {
+		border-bottom: 1px solid;
+	}
+	a:active {
+		color: orange;
+	}
+	a:visited {
+		color: #032fb7;
+	}
+	.screen-reader-transparent-text {
+		opacity: 0.5;
+		font-size: 0em;
+	}
+	
+	.multilingual-container span {
+		display: block;
+	}
+	.multilingual-container .emoji {
+		font-size: 2em;
+	}
+	.light-gradient-background {
+		background: #f5f5f5; /* For browsers that do not support gradients */
+		background: -webkit-linear-gradient(white, #f5f5f5); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient(white, #f5f5f5); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient(white, #f5f5f5); /* For Firefox 3.6 to 15 */
+		background: linear-gradient(white, #f5f5f5); /* Standard syntax */
+	}
+
+</style>
+
+<body>
+
+<div id="ts-wrapper" class="content-block">
+	<div class="centre-wrapper">
+		<div class="columns-2">
+			<div>
+				<h1 class="multilingual-container"><span class="emoji">⌨👋</span><span class="english">ASL Text (β)</span></h1>
+				<p>Type out ASL signs on your iPhone using SignWriting. <br>(Experimental)</p>
+
+				<p><a class="apple-button" href="https://itunes.apple.com/us/app/typing-signs/id1153271467?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/images/badges/en-us/badge_appstore-lrg.svg) no-repeat;width:165px;height:40px;"><span class="screen-reader-transparent-text">Download Typing Signs</span></a></p>
+
+			</div>
+			<div>
+				<a href="https://itunes.apple.com/us/app/typing-signs/id1153271467?mt=8"><img src="images/app-Icon-1024.png" alt="Image of 'Typing Signs' on iPhone, with stickers of common signs, and fingerspelled messages in the Gallaudet font."></a>
+			</div>
+		</div>		
+	</div>
+
+	
+</div>
+<div id="about-wrapper" class="content-block">
+	<h2>About</h2>
+	<p>ASL Text is an experimental app to share short ASL phrases using SignWriting. Signs are typed out with Gloss. (This is an <strong>experimental</strong> app. 👩‍🔬👨‍🔬)</p>
+	<img class="asl" src="images/SSW-American-Sign-Language.png">
+	
+	<hr>
+
+	<a name="help"></a>
+	<h2>FAQ</h2>
+	<div class="faq">
+		<p>
+			<span class="question">Q: What is SignWriting?</span>
+		</p>
+		<p class="answer">SignWriting is read as if you're facing yourself in front of a mirror.</p>
+				<p>For more information, check out these links:</p>
+		<ul>
+			<li><a href="http://www.signwriting.org/lessons/books/index.html">SignWriting Books</a></li>
+			<li><a href="https://drive.google.com/open?id=102pMZiXLEbUv0U2JhLusltMPzV834-kj">SignWriting Basics Instruction Manual (PDF)</a></li>
+		</ul>
+		<p class="contact">Having trouble with the app? <a href="mailto:typingsigns+asltext@gmail.com?Subject=Help!">Let us know! 📧</a></p>
+	</div>
+</div>
+<div id="feedback-wrapper" class="content-block">
+	Would ♥︎ reading your thoughts at: <a href="mailto:typingsigns+asltext@gmail.com?Subject=Hello" itemprop="email">typingsigns+asltext@gmail.com</a>. 
+</div>
+</body>
+</html>
