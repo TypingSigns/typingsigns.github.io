@@ -29,7 +29,9 @@
 	<!-- iOS Viewport -->
 	<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 
-	<!-- 2018-06-04: NOTE: If enough users, this website should be COMPLETELY redone. From ground up. -->
+	<!-- 2018-06-04: NOTE: If enough users, this website should be COMPLETELY redone. From ground up.
+	2018-08-19: Indeed - this was a very quick copy-paste hack-job just to get something up.
+	 -->
 	 
 
 </head>
@@ -43,6 +45,8 @@
 	}
 	body {
 		text-align: center;
+		margin: auto;
+		max-width: 800px;
 		position: relative;
 		font-family: Avenir, Helvetica, sans-serif;
 	}
@@ -254,9 +258,16 @@
 		}
 
 	#feedback-wrapper {
-		background-color: gainsboro;
+		background-color: #EEE;
+	}
+	#feedback-wrapper-2 {
+		background-color: #EEE;
 	}
 
+	#about-wrapper {
+		text-align: left;
+		padding: 5% 17%;
+	}
 	#about-wrapper p.quote {
 		font-style: italic;
 	}
@@ -327,9 +338,14 @@
 			</div>
 		</div>		
 	</div>
-
 	
 </div>
+
+<div id="feedback-wrapper" class="content-block">
+	<p>Would ❤️ love reading your thoughts at ✉️:</p> 
+	<p><strong><a href="mailto:typingsigns+ASLtext@gmail.com?Subject=Hello" itemprop="email">typingsigns+ASLtext@gmail.com</a></strong></p>
+</div>
+
 <div id="about-wrapper" class="content-block">
 	<h2>About</h2>
 	<p>ASL Text is an experimental app to share short ASL phrases using SignWriting. Signs are typed out with Gloss. (This is an <strong>experimental</strong> app. 👩‍🔬👨‍🔬)</p>
@@ -352,8 +368,11 @@
 		<p class="contact">Having trouble with the app? <a href="mailto:typingsigns+asltext@gmail.com?Subject=Help!">Let us know! 📧</a></p>
 	</div>
 </div>
-<div id="feedback-wrapper" class="content-block">
-	Would ♥︎ reading your thoughts at: <a href="mailto:typingsigns+asltext@gmail.com?Subject=Hello" itemprop="email">typingsigns+asltext@gmail.com</a>. 
+
+<div id="feedback-wrapper-2" class="content-block">
+	<p>Need help? 👍 Email:</p> 
+	<p><strong><a href="mailto:typingsigns+ASLtext@gmail.com?Subject=Hello" itemprop="email">typingsigns+ASLtext@gmail.com</a></strong></p>
 </div>
+
 </body>
 </html>
