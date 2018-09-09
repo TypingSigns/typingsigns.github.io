@@ -10,7 +10,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>ASL Word Search Experiment</title>
-	<meta name="description" content="Director of ASL signs. Searchable by GLOSS.">
+	<meta name="description" content="Dictionary of ASL signs. Search American Sign Language signs using English.">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="viewport" content="width=device-width">
 
@@ -72,8 +72,14 @@
 		#STAT {
 			margin: 1em 5%;
 		}
-		body.data-loaded #STAT {
-			display: none;
+			body.data-loaded #STAT {
+				display: none;
+			}
+		#about {
+			margin: 0 5%;
+			font-family: sans-serif;
+			/*font-size: 1.2em;*/
+			line-height: 1.5em;
 		}
 		#results {
 			margin: 0 5%;
@@ -112,6 +118,7 @@
 		}		
 		#results .item .content img {
 			max-height: 200px;
+			max-width: 100%;
 		}
 		#results .item a {
 			vertical-align: top;
@@ -151,7 +158,13 @@
 	<div class="searchbar-container-spacing"></div>
 	<div id="page">
 		<pre id="STAT">Loading</pre>
-		<div id="results">Loading ... ⏳</div>
+		<div id="results"></div>
+		<div id="about">
+			<h2>About</h2>
+			<p>Search over 30,000 representations of ASL signs.</p>
+			<p>Sources: <a href="http://asl-lex.org/">ASL Lex</a>, <a href="https://www.spreadthesign.com/us/">Spread the Sign</a>, <a href="https://www.youtube.com/channel/UC2a61_fpDR-lcZQX342ho2w">My Smart Hands</a>, <a href="https://www.youtube.com/channel/UCUh28RKjZ31rN8UsZb4wPqg">ASL Kids</a>, <a href="https://www.handspeak.com/">Hand Speak</a>, <a href="http://www.lifeprint.com/">LifePrint</a>, <a href="https://giphy.com/signwithrobert">Giphy: SignWithRobert</a>, <a href="https://www.youtube.com/channel/UCLaV1_xTpy5Pi0Q6Hts2iSg">nabboudATuofa</a>.</p>
+			<p><em>Tip: You can tap ( ` ) or ( / ) to focus on the searchbar.</em></p>
+		</div>
 	</div>
 </body>
 
@@ -457,6 +470,12 @@
 <script>
 	function updateResults(searchvalue) {
 		var resultsDomId = '#results'
+
+		// Don't search if no searchValue
+		if (searchvalue.length == 0) {
+			$(resultsDomId).html("");
+			return;
+		}
 
 		_STAT("Conducting Search ...")
 		var results = sifter.search(searchvalue, {
