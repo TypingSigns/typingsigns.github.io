@@ -75,11 +75,15 @@
 			body.data-loaded #STAT {
 				display: none;
 			}
-		#about {
+		#about, #results-message {
 			margin: 0 5%;
 			font-family: sans-serif;
 			/*font-size: 1.2em;*/
 			line-height: 1.5em;
+		}
+		#results-message {
+			text-align: center;
+			font-style: italic;
 		}
 		#results {
 			margin: 0 5%;
@@ -159,6 +163,7 @@
 	<div id="page">
 		<pre id="STAT">Loading</pre>
 		<div id="results"></div>
+		<div id="results-message"></div>
 		<div id="about">
 			<h2>About</h2>
 			<p>Search over 30,000 representations of ASL signs.</p>
@@ -503,14 +508,27 @@
 		// Don't search if no searchValue
 		if (searchvalue.length == 0) {
 			$(resultsDomId).html("");
+			$("#results-message").html("");
 			return;
 		}
 
 		_STAT("Conducting Search ...")
+		var resultsCap = 50;
 		var results = sifter.search(searchvalue, {
 			fields: ['titles'],
-			limit: 50
+			limit: resultsCap
 		});
+		console.log(results);
+		var resultsMessage = 'Showing the top '+resultsCap+' of '+results.total+' results for "'+searchvalue+ '.';
+		if (results.items.length < resultsCap) {
+			resultsMessage = 'Found ' +results.items.length+' entries for "'+searchvalue+'".';
+		}
+		if (results.items.length == 1) {
+			resultsMessage = 'Found 1 entry for "'+searchvalue+'".';
+		}
+		if (results.items.length == 0) {
+			resultsMessage = 'Sorry, 0 entries were found for "'+searchvalue+'".';	
+		}
 		$(resultsDomId).html("")
 		var table_html = "" //~
 		var table_html_contents = ""
@@ -580,6 +598,9 @@
 		}
 		// table_html = '<table>' + table_html_contents + '<table>';
 		// $(resultsDomId).append(table_html)
+
+		$("#results-message").html(resultsMessage);
+		$("#results-message").append('<hr>')
 
 		_STAT("	↳ Conducted Search")
 	}
