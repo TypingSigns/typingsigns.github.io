@@ -52,11 +52,24 @@
 			padding: 0.5em;
 		}
 		#results .item > div {
-			/*display: table-cell; */
-			display: inline; 
+			display: table-cell; 
+			/*display: inline; */
 		}
 		#results .item .label {
 			background-color: cyan;
+			width: 70px;
+			max-width: 70px;
+			vertical-align: top;
+
+			white-space: pre-wrap;
+			
+
+/*			-ms-hyphens: auto;
+			-moz-hyphens: auto;
+			-webkit-hyphens: auto;
+			hyphens: auto;*/
+
+			/*vertical-align: middle;*/
 		}
 		#results .item .content {
 			background-color: orange;
@@ -64,6 +77,7 @@
 		#results .item a {
 			vertical-align: top;
 			padding-right: 0.5em;
+			background-color: yellow;
 		}
 
 		#results .item a.link-content {
@@ -398,6 +412,8 @@
 			limit: 50
 		});
 		$(resultsDomId).html("")
+		var table_html = "" //~
+		var table_html_contents = ""
 		for (var i=0; i<results.items.length; i++) {
 			var itemId = results.items[i].id;
 			var item = sifter.items[itemId];
@@ -405,7 +421,7 @@
 			var url = item.url;
 			var html = "";
 			var html_content = "";
-			var html_label = '<a href="'+url+'">'+titles+'</a>';
+			var html_label = '<span><a href="'+url+'">'+titles+'</a></span>';
 			
 			switch (item.type) {
 				case 'sts':
@@ -441,7 +457,7 @@
 					// B.ii. Looping Autoplaying Embed, Muted.
 						// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
 					// Embed:
-					html_content += '<iframe width="420" height="315" src="'+embedurl+'"></iframe>';
+					html_content += '<iframe width="267" height="200" src="'+embedurl+'"></iframe>';
 					break;
 			}
 
@@ -449,9 +465,17 @@
 						'<div class="label">'+html_label+'</div>' + 
 						'<div class="content">'+html_content+'</div>' + 
 					'</div>';
-
 			$(resultsDomId).append(html)
+
+			// var row_html = '<tr>' +
+			// 				'<td>'+html_label+'</td>' +
+			// 				'<td>'+html_content+'</td>' +
+			// 			'</tr>'
+			// table_html_contents += row_html;
 		}
+		// table_html = '<table>' + table_html_contents + '<table>';
+		// $(resultsDomId).append(table_html)
+
 		_STAT("	↳ Conducted Search")
 	}
 
