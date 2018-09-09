@@ -162,7 +162,7 @@
 		<div id="about">
 			<h2>About</h2>
 			<p>Search over 30,000 representations of ASL signs.</p>
-			<p>Sources: <a href="http://asl-lex.org/">ASL Lex</a>, <a href="https://www.spreadthesign.com/us/">Spread the Sign</a>, <a href="https://www.youtube.com/channel/UC2a61_fpDR-lcZQX342ho2w">My Smart Hands</a>, <a href="https://www.youtube.com/channel/UCUh28RKjZ31rN8UsZb4wPqg">ASL Kids</a>, <a href="https://www.handspeak.com/">Hand Speak</a>, <a href="http://www.lifeprint.com/">LifePrint</a>, <a href="https://giphy.com/signwithrobert">Giphy: SignWithRobert</a>, <a href="https://www.youtube.com/channel/UCLaV1_xTpy5Pi0Q6Hts2iSg">nabboudATuofa</a>.</p>
+			<p>Sources: <a href="http://asl-lex.org/">ASL Lex</a>, <a href="https://www.spreadthesign.com/us/">Spread the Sign</a>, <a href="https://www.youtube.com/channel/UC2a61_fpDR-lcZQX342ho2w">My Smart Hands</a>, <a href="https://www.youtube.com/channel/UCUh28RKjZ31rN8UsZb4wPqg">ASL Kids</a>, <a href="https://www.handspeak.com/">Hand Speak</a>, <a href="http://www.lifeprint.com/">LifePrint</a>, <a href="https://giphy.com/signwithrobert">Giphy: SignWithRobert</a>, <a href="http://aslpro.com/">ASLPro</a>, <a href="https://www.youtube.com/channel/UCLaV1_xTpy5Pi0Q6Hts2iSg">nabboudATuofa</a>.</p>
 			<p><em>Tip: You can tap ( ` ) or ( / ) to focus on the searchbar.</em></p>
 		</div>
 	</div>
@@ -183,7 +183,8 @@
 	var myDirectory = [] // entry = ["type"]["id"]["url"]["titles"]
 	
 	// SIGNBANK DATA: Load and Add
-	function loadSignbank(callback) {
+	function processSignbank(callback) {
+		_STAT("Loading SignBank directory ⏳ ...")
 		$.ajax({
 			// url : "https://raw.githubusercontent.com/TypingSigns/typingsigns.github.io/master/asl-word-search-experiment/data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
 			url : "data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
@@ -205,6 +206,34 @@
 					myDirectory.push(entry)
 				}
 				_STAT("	↳ Processed SignBank Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+
+	function processASLPRO(callback) {
+		_STAT("Loading ASLPRO directory ⏳ ...")
+		$.ajax({
+			url : "data/aslpro-fileid-title.tsv",
+			dataType: "text",
+			success : function (data_aslpro) {
+				_STAT("	↳ Loaded ASLPRO Directory 😁")
+				_STAT("	↳ Processing ASLPRO Directory ⏳ ...")
+				// Add Data
+				var lines = data_aslpro.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "aslpro"
+					entry["id"] = columns[0];
+					entry["titles"] = columns[1];
+					entry["url"] = "http://aslpro.com/";
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed ASLPRO Directory 😁")
 
 				// NEXT:
 				callback()
@@ -497,7 +526,6 @@
 			switch (item.type) {
 				case 'sts':
 					html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
-					// html += '<img src="data/images/spreadthesign _private/gifs/'+item.videoid+'.gif">';
 					html_content += ' <a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
 					break;
 				case 'lifeprint':
@@ -508,10 +536,16 @@
 					break;
 				case 'signbank':
 					if (item.fsw) {
-						html_content += '<img src="data/images/signbank/pngs-by-sid/'+item.mediaandsignid+'.png">';
+						html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sw-10600-128sq-v2/'+item.mediaandsignid+'.png">';
 					} else {
 						html_content += ' { no fsw }';
 					}
+					break;
+				case 'aslpro':
+					html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/aslpro-gifs-2/'+item.id+'.gif">';
+
+					// var src = "data/images/aslpro_temp_private/"+item.id+'.mp4';
+					// html_content += '<video control muted autoplay loop><source src="'+src+'" type="video/mp4"></video>';
 					break;
 				case 'giphyswr':
 					html_content += '<img src="'+item.mediaurl+'">';
@@ -580,9 +614,8 @@
 		});
 		/////////////////////////////////////////////
 
-		_STAT("Creating Directory ⏳ ...")
-		_STAT("Loading SignBank directory ⏳ ...")
-		loadSignbank(function() {
+		_STAT("Creating Directory ⏳ ...");
+		processSignbank(function() {
 			processASLLex(function() {
 				processSpreadTheSign(function() {
 					processMSHWords(function() {
@@ -592,6 +625,7 @@
 									processLifeprint(function() {
 										processGiphySWR(function() {
 											processNab(function() {
+												processASLPRO(function() {
 
 													// LAST DATA PROCESSED!
 
@@ -611,6 +645,8 @@
 
 													// Tell Body, all data has loaded.
 													$('body').addClass('data-loaded');
+
+												})
 
 											})
 										})
