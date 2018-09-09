@@ -23,6 +23,7 @@
 		html, body {
 			margin: 0;
 			padding: 0;
+			background-color: #EEE;
 		}
 		.searchbar-container {
 			background: lightgray;
@@ -30,60 +31,76 @@
 			/*height: 3em;*/
 			position: fixed;
 			top: 0;
-
+			z-index: 20;
 		}
 			#searchbar {
 				width: 90%;
 				margin: 0.5em 5%;
 				font-size: 1.1em;
 			}
-		.searchbar-container-tail {
+		.searchbar-container-spacing {
 			height: 3em;
 		}
+		#page {
+			max-width: 800px;
+			margin: auto;
+		}
+		/*⬇*/
 		#STAT {
 			margin: 1em 5%;
 		}
 		#results {
 			margin: 0 5%;
 			margin-bottom: 2em;
+			font-family: sans-serif;
+			font-size: 1.2em;
 		}
 		#results .item {
-			border: 1px solid lightgray;
+			/*border: 1px solid lightgray;*/
+			border-radius: 5px;
 			padding: 0.5em;
+			background-color: white;
+			margin: 10px 0;
+			box-shadow: 1px 1px 1px grey;
 		}
 		#results .item > div {
 			display: table-cell; 
+			position: relative;
 			/*display: inline; */
 		}
 		#results .item .label {
-			background-color: cyan;
-			width: 70px;
-			max-width: 70px;
-			vertical-align: top;
-
+			/*background-color: cyan;*/
+			width: 80px;
+			max-width: 80px;
+			padding-left: 10px;
+			vertical-align: middle;
 			white-space: pre-wrap;
-			
-
-/*			-ms-hyphens: auto;
-			-moz-hyphens: auto;
-			-webkit-hyphens: auto;
-			hyphens: auto;*/
-
-			/*vertical-align: middle;*/
+			z-index: 10;
 		}
 		#results .item .content {
-			background-color: orange;
+			padding-left: 20px;
+			/*background-color: orange;*/
+			padding-top: 5px;
+			padding-bottom: 5px;
+			z-index: 1;
 		}		
+		#results .item .content img {
+			max-height: 200px;
+		}
 		#results .item a {
 			vertical-align: top;
 			padding-right: 0.5em;
-			background-color: yellow;
+			/*background-color: yellow;*/
+			text-decoration: none;
+			z-index: 10;
 		}
 
 		#results .item a.link-content {
 			padding: 20px;
 			display: inline-block;
 			background-color: peachpuff;
+			border-radius: 5px;
+			box-shadow: 1px 1px 5px black;
 		}
 		#results .item a.link-content.lifeprint {
 			background-color: lemonchiffon;
@@ -96,11 +113,14 @@
 
 <body>
 	<div class="searchbar-container">
-		<input id="searchbar" type="text" placeholder="Shortcuts: Use [ ` ] or [ / ] to focus here">
+		<!-- <input id="searchbar" type="text" placeholder="Shortcuts: Use [ ` ] or [ / ] to focus here"> -->
+		<input id="searchbar" type="text" placeholder="Search ASL signs">
 	</div>
-	<div class="searchbar-container-tail"></div>
-	<pre id="STAT">Loading</pre>
-	<pre id="results">Results ...</pre>
+	<div class="searchbar-container-spacing"></div>
+	<div id="page">
+		<pre id="STAT">Loading</pre>
+		<div id="results">Results ...</div>
+	</div>
 </body>
 
 <!-- STAT CONVENIENCE FUNCTION -->
@@ -421,19 +441,19 @@
 			var url = item.url;
 			var html = "";
 			var html_content = "";
-			var html_label = '<span><a href="'+url+'">'+titles+'</a></span>';
+			var html_label = '<a href="'+url+'">'+titles+'</a>';
 			
 			switch (item.type) {
 				case 'sts':
 					html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
 					// html += '<img src="data/images/spreadthesign _private/gifs/'+item.videoid+'.gif">';
-					html_content += ' - ' + '<a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
+					html_content += ' <a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
 					break;
 				case 'lifeprint':
-					html_content += ' - ' + '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
+					html_content += '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
 					break;
 				case 'handspeak':
-					html_content += ' - ' + '<a class="link-content handspeak" href="'+url+'">'+'Handspeak'+'</a>';
+					html_content += '<a class="link-content handspeak" href="'+url+'">'+'Handspeak'+'</a>';
 					break;
 				case 'signbank':
 					if (item.fsw) {
