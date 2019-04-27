@@ -9,8 +9,8 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>ASL Word Search Experiment</title>
-	<meta name="description" content="Dictionary of ASL signs. Search American Sign Language signs using English.">
+	<title>ASL How do I sign …</title>
+	<meta name="description" content="Dictionary of ASL signs. Search American Sign Language signs.">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="viewport" content="width=device-width">
 
@@ -19,138 +19,12 @@
 
 	<script src="/js/ga-track.js"></script>
 
-	<style>
-		html, body {
-			margin: 0;
-			padding: 0;
-			background-color: #EEE;
-		}
-		.searchbar-container {
-			/* manual hacky placements - could be ∑ly redone */
-			background-color: #EEE;
-			width: 100%;
-			/*height: 3em;*/
-			position: fixed;
-			top: 0;
-			z-index: 20;
-			text-align: center;
-			box-shadow: 0px 1px 10px #999;
-		}
-			.search-icon {
-				position: relative;
-				height: 0;
-				font-size: 1.8em;
-				top: -2em;
-				left: -354px;
-				/*left: -406px;*/
-				color: #BBB;
-			}
-			#searchbar {
-				/*width: 90%;*/
-				/*margin: 0.5em 5%;*/
-				width: 720px;
-				margin: 1em;
-
-				font-size: 1.2em;
-				box-sizing: border-box;
-				padding-left: 35px;
-				padding-top: 10px;
-				padding-bottom: 10px;
-				
-				border-radius: 5px;
-				border-color: transparent;
-				box-shadow: 1px 1px 10px #999;
-			}
-		.searchbar-container-spacing {
-			height: 6em;
-		}
-		#page {
-			max-width: 800px;
-			margin: auto;
-		}
-		/*⬇*/
-		#STAT {
-			margin: 1em 5%;
-		}
-			body.data-loaded #STAT {
-				display: none;
-			}
-		#about, #results-message {
-			margin: 0 5%;
-			font-family: sans-serif;
-			/*font-size: 1.2em;*/
-			line-height: 1.5em;
-		}
-		#results-message {
-			text-align: center;
-			font-style: italic;
-		}
-		#results {
-			margin: 0 5%;
-			margin-bottom: 2em;
-			font-family: sans-serif;
-			font-size: 1.2em;
-		}
-		#results .item {
-			/*border: 1px solid lightgray;*/
-			border-radius: 5px;
-			padding: 0.5em;
-			background-color: white;
-			margin: 10px 0;
-			box-shadow: 1px 1px 1px grey;
-		}
-		#results .item > div {
-			display: table-cell; 
-			position: relative;
-			/*display: inline; */
-		}
-		#results .item .label {
-			/*background-color: cyan;*/
-			width: 80px;
-			max-width: 80px;
-			padding-left: 10px;
-			vertical-align: middle;
-			white-space: pre-wrap;
-			z-index: 10;
-		}
-		#results .item .content {
-			padding-left: 20px;
-			/*background-color: orange;*/
-			padding-top: 5px;
-			padding-bottom: 5px;
-			z-index: 1;
-		}		
-		#results .item .content img {
-			max-height: 200px;
-			max-width: 100%;
-		}
-		#results .item a {
-			vertical-align: top;
-			padding-right: 0.5em;
-			/*background-color: yellow;*/
-			text-decoration: none;
-			z-index: 10;
-		}
-
-		#results .item a.link-content {
-			padding: 20px;
-			display: inline-block;
-			background-color: peachpuff;
-			border-radius: 5px;
-			box-shadow: 1px 1px 5px black;
-		}
-		#results .item a.link-content.lifeprint {
-			background-color: lemonchiffon;
-		}
-		#results .item a.link-content.handspeak {
-			background-color: lightcyan;
-		}
-	</style>
+	<!-- TODO: Place Style in own tab -->
+	<link rel="stylesheet" href="style.css" type="text/css">
 </head>
 
 <body>
 	<div class="searchbar-container">
-		<!-- <input id="searchbar" type="text" placeholder="Shortcuts: Use [ ` ] or [ / ] to focus here"> -->
 		
 		<input id="searchbar" type="text" placeholder="Search ASL signs">
 		<div class="search-icon" style="-webkit-transform: rotate(-45deg); 
@@ -164,12 +38,6 @@
 		<pre id="STAT">Loading</pre>
 		<div id="results"></div>
 		<div id="results-message"></div>
-		<div id="about">
-			<h2>About</h2>
-			<p>Search over 30,000 representations of ASL signs.</p>
-			<p>Sources: <a href="http://asl-lex.org/">ASL Lex</a>, <a href="https://www.spreadthesign.com/us/">Spread the Sign</a>, <a href="https://www.youtube.com/channel/UC2a61_fpDR-lcZQX342ho2w">My Smart Hands</a>, <a href="https://www.youtube.com/channel/UCUh28RKjZ31rN8UsZb4wPqg">ASL Kids</a>, <a href="https://www.handspeak.com/">Hand Speak</a>, <a href="http://www.lifeprint.com/">LifePrint</a>, <a href="https://giphy.com/signwithrobert">Giphy: SignWithRobert</a>, <a href="http://aslpro.com/">ASLPro</a>, <a href="https://www.youtube.com/channel/UCLaV1_xTpy5Pi0Q6Hts2iSg">nabboudATuofa</a>.</p>
-			<p><em>Tip: You can tap ( ` ) or ( / ) to focus on the searchbar.</em></p>
-		</div>
 	</div>
 </body>
 
@@ -500,7 +368,7 @@
 	}
 </script>
 
-<!-- AFTER ALL DATA LOADED -->
+<!-- AFTER ALL DATA LOADED + SEARCH FUNCTION -->
 <script>
 	function updateResults(searchvalue) {
 		var resultsDomId = '#results'
@@ -512,7 +380,7 @@
 			return;
 		}
 
-		_STAT("Conducting Search ...")
+		_STAT("Conducting Search for '"+searchvalue+"' …");
 		var resultsCap = 50;
 		var results = sifter.search(searchvalue, {
 			fields: ['titles'],
@@ -529,80 +397,168 @@
 		if (results.items.length == 0) {
 			resultsMessage = 'Sorry, 0 entries were found for "'+searchvalue+'".';	
 		}
+
+		// FILTER RESULTING ITEMS
+		// var remainingMatches = results.items.slice();
+		// var exactMatches = [];
+		// for (var i=0; i<remainingMatches.length; i++) {
+		// 	// Assumption: Results will have Exact Matches at the beggining of array. So we can end exact matches when there's a mismatch. (Otherwise would need to consider how things are incremented)
+		// 	var itemId = results.items[i].id;
+		// 	var item = sifter.items[itemId];
+		// 	var titles = item.titles;
+		// 	if (searchvalue.toUpperCase().trim() == titles.toUpperCase().trim()) {
+		// 		exactMatches = remainingMatches.splice(0);
+		// 	} else {
+		// 		break;
+		// 	}
+		// }
+
+		// SHOW RESULTING ITEMS
 		$(resultsDomId).html("")
-		var table_html = "" //~
-		var table_html_contents = ""
+		var prvExactMatch = true;
 		for (var i=0; i<results.items.length; i++) {
 			var itemId = results.items[i].id;
 			var item = sifter.items[itemId];
-			var titles = item.titles;
-			var url = item.url;
-			var html = "";
-			var html_content = "";
-			var html_label = '<a href="'+url+'">'+titles+'</a>';
-			
-			switch (item.type) {
-				case 'sts':
-					html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
-					html_content += ' <a class="link-content sts" href="'+url+'">'+'STS'+'</a>';
-					break;
-				case 'lifeprint':
-					html_content += '<a class="link-content lifeprint" href="'+url+'">'+'Lifeprint'+'</a>';
-					break;
-				case 'handspeak':
-					html_content += '<a class="link-content handspeak" href="'+url+'">'+'Handspeak'+'</a>';
-					break;
-				case 'signbank':
-					if (item.fsw) {
-						html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sw-10600-128sq-v2/'+item.mediaandsignid+'.png">';
-					} else {
-						html_content += ' { no fsw }';
-					}
-					break;
-				case 'aslpro':
-					html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/aslpro-gifs-2/'+item.id+'.gif">';
 
-					// var src = "data/images/aslpro_temp_private/"+item.id+'.mp4';
-					// html_content += '<video control muted autoplay loop><source src="'+src+'" type="video/mp4"></video>';
-					break;
-				case 'giphyswr':
-					html_content += '<img src="'+item.mediaurl+'">';
-					break;
-				case 'asllex':
-				case 'mshwords':
-				case 'mshanim':
-				case 'aslkids':
-				case 'nab':
-					// A. Simple Youtube Embed w/- suggested videos
-						// var embedurl = 'https://www.youtube.com/embed/'+item.youtubeid+'?rel=0'
-					// B.i. Looping Embed - No Autoplay
-						var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
-					// B.ii. Looping Autoplaying Embed, Muted.
-						// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
-					// Embed:
-					html_content += '<iframe width="267" height="200" src="'+embedurl+'"></iframe>';
-					break;
+			// Determine if Exact Match
+			var titles = item.titles;
+			var exactMatch = (searchvalue.toUpperCase().trim() == titles.toUpperCase().trim()); // Assumption: Results will have Exact Matches at the beggining of array.
+			console.log(exactMatch);
+
+			////////////////////////////////////////
+			// RENDER HTML
+
+			// ADD DIVIDER - Listing Exact Matches
+			if (i==0) {
+				if (exactMatch) {
+					var divider = "EXACT MATCHES:";
+					$(resultsDomId).append(divider);
+				}
 			}
 
-			html = '<div class="item">' + 
-						'<div class="label">'+html_label+'</div>' + 
-						'<div class="content">'+html_content+'</div>' + 
-					'</div>';
-			$(resultsDomId).append(html)
+			// Add HTML For EXACT Matches
+			if (exactMatch) {
+				// Generate HTML for Item
+				var html = generateHtmlForItem(item);
+				// Add HTML
+				$(resultsDomId).append(html);
+			}
 
-			// var row_html = '<tr>' +
-			// 				'<td>'+html_label+'</td>' +
-			// 				'<td>'+html_content+'</td>' +
-			// 			'</tr>'
-			// table_html_contents += row_html;
+			// ADD DIVIDER - Listing Approximate Matches
+			if (!exactMatch && prvExactMatch) {
+				var divider = "APPROXIMATE MATCHES:";
+				$(resultsDomId).append(divider);
+				prvExactMatch = false;
+			}
+
+			// Add HTML for APPROXIMATE Matches
+			if (!exactMatch) {
+				var html = generateHtmlForItem(item);
+				$(resultsDomId).append(html);
+			}
+
 		}
-		// table_html = '<table>' + table_html_contents + '<table>';
-		// $(resultsDomId).append(table_html)
 
+		// Small Results-Message Tagline. (Number of Results Found)
 		$("#results-message").html(resultsMessage);
 		$("#results-message").append('<hr>')
 
 		_STAT("	↳ Conducted Search")
+	}
+
+	function generateHtmlForItem(item) {
+		var titles = item.titles;
+		var url = item.url;
+
+		var html_label = '<a href="'+url+'">'+titles+'</a>';
+		var html_content = "";
+		var html_source = '';
+
+		var isYoutubeEmbed = false;
+		
+		switch (item.type) {
+			case 'sts':
+				html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
+				html_source = ' <a class="link-content" href="'+url+'">'+'SpreadTheSign'+'</a>';
+				break;
+			case 'lifeprint':
+				html_content += '<p>No Preview</p>';
+				html_source = ' <a class="link-content" href="'+url+'">'+'LifePrint'+'</a>';
+				break;
+			case 'handspeak':
+				html_content += '<p>No Preview</p>';
+				html_source = ' <a class="link-content" href="'+url+'">'+'Handspeak'+'</a>';
+				break;
+			case 'signbank':
+				if (item.fsw) {
+					html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sw-10600-128sq-v2/'+item.mediaandsignid+'.png">';
+				} else {
+					html_content += ' { no fsw }';
+				}
+				html_source = ' <a class="link-content" href="'+url+'">'+'SignWriting'+'</a>';
+				break;
+			case 'aslpro':
+				html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/aslpro-gifs-2/'+item.id+'.gif">';
+				html_source = ' <a class="link-content" href="'+url+'">'+'ASL Pro'+'</a>';
+				// var src = "data/images/aslpro_temp_private/"+item.id+'.mp4';
+				// html_content += '<video control muted autoplay loop><source src="'+src+'" type="video/mp4"></video>';
+				break;
+			case 'giphyswr':
+				html_content += '<img src="'+item.mediaurl+'">';
+				html_source = ' <a class="link-content" href="'+url+'">'+'SignWithRobert'+'</a>';
+				break;
+			case 'asllex':
+				// . Youtube Cases:
+				html_source = ' <a class="link-content" href="'+url+'">'+'ASL Lex'+'</a>';
+			case 'mshwords':
+				html_source = ' <a class="link-content" href="'+url+'">'+'MSH Words'+'</a>';
+			case 'mshanim':
+				html_source = ' <a class="link-content" href="'+url+'">'+'MSH Anim'+'</a>';
+			case 'aslkids':
+				html_source = ' <a class="link-content" href="'+url+'">'+'ASL Kids'+'</a>';
+			case 'nab':
+				html_source = ' <a class="link-content" href="'+url+'">'+'nabboudATuofa'+'</a>';
+				break;
+		}
+
+		// . Youtube Cases:
+		if (isYoutubeEmbed) {
+			// A. Simple Youtube Embed w/- suggested videos
+				// var embedurl = 'https://www.youtube.com/embed/'+item.youtubeid+'?rel=0'
+			// B.i. Looping Embed - No Autoplay
+				var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
+			// B.ii. Looping Autoplaying Embed, Muted.
+				// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
+			// Embed:
+			html_content += '<iframe width="267" height="200" src="'+embedurl+'"></iframe>';
+
+			switch (item.type) {
+				case 'asllex':
+					html_source = ' <a class="link-content" href="'+url+'">'+'ASL Lex'+'</a>';
+					break;
+				case 'mshwords':
+					html_source = ' <a class="link-content" href="'+url+'">'+'MSH Words'+'</a>';
+					break;
+				case 'mshanim':
+					html_source = ' <a class="link-content" href="'+url+'">'+'MSH Anim'+'</a>';
+					break;
+				case 'aslkids':
+					html_source = ' <a class="link-content" href="'+url+'">'+'ASL Kids'+'</a>';
+					break;
+				case 'nab':
+					html_source = ' <a class="link-content" href="'+url+'">'+'nabboudATuofa'+'</a>';
+					break;
+			}
+		}
+
+		// Compile HTML for Result
+		var html = '<div class="item">' + 
+					'<div class="content">'+html_content+'</div>' +
+					'<div class="label">'+html_label+'</div>' + 
+					'<div class="source">'+html_source+'</div>' + 
+				'</div>';
+
+		return html;
 	}
 
 	function refreshResultsFromInput() {
@@ -626,7 +582,7 @@
 		// Listen for Keypress
 		$(window).keypress(function(e) {
 			var key = e.which;
-			console.log('key:',key);
+			// console.log('key:',key);
 			if (key == 96 || key == 47) { // '`' or '/'
 				// $('#searchbar').focus(); // focuses without selecting all text
 				$('#searchbar').select(); // focuses and selects all text
