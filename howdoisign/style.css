@@ -11,8 +11,26 @@ h2 {
 	color: #534800;
 	opacity: 0.55;
 }
-
-
+/*Note: Fingerspelling font only displays on Safari. Can't be converted to woff. So removing FingerSpelling showcase for now.*/
+@font-face {
+	font-family: 'Fingerspell';
+	/*src: url('fonts/ASL-FS-201812A-x100-Regular.ttf');*/
+	/*src: url('fonts/ASL-FS-201812A-x100-Regular.otf');*/
+	/*src: url('fonts/ASL-FS-201812A-x100-Regular_TTF.woff');*/
+	/*src: url('fonts/ASL-FS-201812A-x100-Regular_OTF.woff');*/
+	src: url('fonts/asl-fs-201812a-x100-regular-webfont.woff');
+	
+		/* woff - Pretty Modern Browsers */
+		/* ttf - Safari, Android, iOS */
+	font-weight: normal !important;
+	font-style: normal !important;
+}
+p.fingerspell {
+	font-family: 'Fingerspell', serif;
+	/*color: white;*/
+	font-size: 3em;
+	margin: 0.5em 0;
+}
 #STAT {
 	display: none;
 }
