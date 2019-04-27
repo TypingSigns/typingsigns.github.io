@@ -24,17 +24,13 @@
 </head>
 
 <body>
-	<div class="searchbar-container">
-		
-		<input id="searchbar" type="text" placeholder="Search ASL signs">
-		<div class="search-icon" style="-webkit-transform: rotate(-45deg); 
-               -moz-transform: rotate(-45deg); 
-                 -o-transform: rotate(-45deg);
-                    transform: rotate(-45deg);">&#9906;
-                </div>
+	<div id="nav">
+		<h2>How do I sign</h2>
+		<input id="searchbar" type="text" placeholder="Type any word">
 	</div>
 	<div class="searchbar-container-spacing"></div>
 	<div id="page">
+		<p class="fingerspell">Font Test</p>
 		<pre id="STAT">Loading</pre>
 		<div id="results"></div>
 		<div id="results-message"></div>
@@ -431,7 +427,7 @@
 			// ADD DIVIDER - Listing Exact Matches
 			if (i==0) {
 				if (exactMatch) {
-					var divider = "EXACT MATCHES:";
+					var divider = '<h2>X Results Matching "'+searchvalue.trim()+'"</h2>';
 					$(resultsDomId).append(divider);
 				}
 			}
@@ -446,7 +442,7 @@
 
 			// ADD DIVIDER - Listing Approximate Matches
 			if (!exactMatch && prvExactMatch) {
-				var divider = "APPROXIMATE MATCHES:";
+				var divider = '<h2>X Results Containing "'+searchvalue.trim()+'"</h2>';
 				$(resultsDomId).append(divider);
 				prvExactMatch = false;
 			}
@@ -508,16 +504,11 @@
 				html_source = ' <a class="link-content" href="'+url+'">'+'SignWithRobert'+'</a>';
 				break;
 			case 'asllex':
-				// . Youtube Cases:
-				html_source = ' <a class="link-content" href="'+url+'">'+'ASL Lex'+'</a>';
 			case 'mshwords':
-				html_source = ' <a class="link-content" href="'+url+'">'+'MSH Words'+'</a>';
 			case 'mshanim':
-				html_source = ' <a class="link-content" href="'+url+'">'+'MSH Anim'+'</a>';
 			case 'aslkids':
-				html_source = ' <a class="link-content" href="'+url+'">'+'ASL Kids'+'</a>';
 			case 'nab':
-				html_source = ' <a class="link-content" href="'+url+'">'+'nabboudATuofa'+'</a>';
+				isYoutubeEmbed = true;
 				break;
 		}
 
