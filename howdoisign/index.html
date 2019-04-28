@@ -23,7 +23,7 @@
 	<link rel="stylesheet" href="style.css" type="text/css">
 </head>
 
-<body>
+<body class="loading">
 	<div id="nav">
 		<div class="container">
 			<div class="tagline">
@@ -31,6 +31,11 @@
 				<h2>How do I sign</h2>
 			</div>
 			<input id="searchbar" type="text" placeholder="Type any word">
+			<div class="loading-container">
+				<h2>Loading</h2>
+				<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+				<!-- via https://loading.io/css/ -->
+			</div>
 		</div>
 	</div>
 	<div class="searchbar-container-spacing"></div>
@@ -615,6 +620,7 @@
 													});
 
 													// Tell Body, all data has loaded.
+													$('body').removeClass('loading');
 													$('body').addClass('data-loaded');
 
 												})
