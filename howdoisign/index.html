@@ -19,8 +19,9 @@
 
 	<script src="/js/ga-track.js"></script>
 
-	<!-- TODO: Place Style in own tab -->
 	<link rel="stylesheet" href="style.css" type="text/css">
+
+	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
 </head>
 
 <body class="loading">
@@ -42,6 +43,35 @@
 	<div id="page">
 		<pre id="STAT">Loading</pre>
 		<div id="results"></div>
+		<div id="intro">
+			<h2>Example Searches</h2>
+			<div class="example-search-list">
+				<a href="#" class="example-search" onclick="triggerManualSearch('hello')">Hello</a>
+				<a href="#" class="example-search" onclick = "triggerManualSearch('Love')">Love</a>
+				<a href="#" class="example-search" onclick = "triggerManualSearch('Food')">Food</a>
+				<a href="#" class="example-search" onclick = "triggerManualSearch('Work')">Work</a>
+				<a href="#" class="example-search" onclick = "triggerManualSearch('Meet')">Meet</a>
+				<a href="#" class="example-search" onclick = "triggerManualSearch('Animal')">Animal</a>
+			</div>
+
+			<h2>ASL Word of the Day</h2>
+			<!-- <div class="item type-sts"><div class="content"><img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/73391.gif"></div><div class="label"><p>tree</p></div><div class="source"> <a class="link-content" href="https://www.spreadthesign.com/us/73391/">SpreadTheSign</a></div></div> -->
+			<!-- <div class="item type-giphyswr"><div class="content"><img src="http://media.giphy.com/media/l0HlNRE6HWecN7tzW/giphy.gif"></div><div class="label"><p>cat</p></div><div class="source"> <a class="link-content" href="http://giphy.com/gifs/signwithrobert-sign-with-robert-l0HlNRE6HWecN7tzW">SignWithRobert</a></div></div> -->
+			<div class="item type-giphyswr"><div class="content"><img src="http://media.giphy.com/media/3o7TKFpahYpUp4g0N2/giphy.gif"></div><div class="label"><p>happy</p></div><div class="source"> <a class="link-content" href="http://giphy.com/gifs/signwithrobert-sign-with-robert-3o7TKFpahYpUp4g0N2" data-unsp-sanitized="clean">SignWithRobert</a></div></div>
+			
+			<h2>Sources</h2>
+			<div class="source-list">
+				<a href="http://www.lifeprint.com/">LifePrint</a>
+				<a href="https://www.handspeak.com/">Hand Speak</a>
+				<a href="https://www.spreadthesign.com/us/">Spread the Sign</a>
+				<a href="https://giphy.com/signwithrobert">Giphy: SignWithRobert</a>
+				<a href="http://asl-lex.org/">ASL Lex</a>
+				<a href="http://aslpro.com/">ASLPro</a>
+				<a href="https://www.youtube.com/channel/UCLaV1_xTpy5Pi0Q6Hts2iSg">Youtube: nabboudATuofa</a>
+				<a href="https://www.youtube.com/channel/UC2a61_fpDR-lcZQX342ho2w">Youtube: My Smart Hands</a>
+				<a href="https://www.youtube.com/channel/UCUh28RKjZ31rN8UsZb4wPqg">Youtube: ASL Kids</a>
+			</div>
+		</div>
 	</div>
 </body>
 
@@ -380,8 +410,11 @@
 		// Don't search if no searchValue
 		if (searchvalue.length == 0) {
 			$(resultsDomId).html("");
+			$('body').removeClass('showing-results');
 			return;
 		}
+
+		$('body').addClass('showing-results');
 
 		_STAT("Conducting Search for '"+searchvalue+"' …");
 		var resultsCap = 50;
@@ -465,6 +498,11 @@
 				$(resultsDomId).append(html);
 			}
 
+			// END OF CONTENT
+			if (i == results.items.length-1) {
+				// $(resultsDomId).append('<hr class="results-divider">');
+			}
+
 		}
 
 		_STAT("	↳ Conducted Search")
@@ -525,27 +563,30 @@
 			// A. Simple Youtube Embed w/- suggested videos
 				// var embedurl = 'https://www.youtube.com/embed/'+item.youtubeid+'?rel=0'
 			// B.i. Looping Embed - No Autoplay
-				var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+"&showinfo=0"
+			var embedurl_soundButNoAutoplay = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+"&showinfo=0"
 			// B.ii. Looping Embed - AUTOPLAY. Muted.
-				// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
-			// Embed:
-			html_content += '<iframe width="267" height="200" src="'+embedurl+'"></iframe>';
+			var embedurl_mutedWithAutoplay = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
 
 			switch (item.type) {
 				case 'asllex':
 					html_source = ' <a class="link-content" href="'+url+'">'+'ASL Lex'+'</a>';
-					break;
-				case 'mshwords':
-					html_source = ' <a class="link-content" href="'+url+'">'+'MSH Words'+'</a>';
-					break;
-				case 'mshanim':
-					html_source = ' <a class="link-content" href="'+url+'">'+'MSH Anim'+'</a>';
-					break;
-				case 'aslkids':
-					html_source = ' <a class="link-content" href="'+url+'">'+'ASL Kids'+'</a>';
+					html_content = '<iframe width="267" height="200" src="'+embedurl_mutedWithAutoplay+'"></iframe>';
 					break;
 				case 'nab':
 					html_source = ' <a class="link-content" href="'+url+'">'+'nabboudATuofa'+'</a>';
+					html_content = '<iframe width="267" height="200" src="'+embedurl_mutedWithAutoplay+'"></iframe>';
+					break;
+				case 'mshwords':
+					html_source = ' <a class="link-content" href="'+url+'">'+'MSH Words'+'</a>';
+					html_content = '<iframe width="267" height="200" src="'+embedurl_soundButNoAutoplay+'"></iframe>';
+					break;
+				case 'mshanim':
+					html_source = ' <a class="link-content" href="'+url+'">'+'MSH Anim'+'</a>';
+					html_content = '<iframe width="267" height="200" src="'+embedurl_soundButNoAutoplay+'"></iframe>';
+					break;
+				case 'aslkids':
+					html_source = ' <a class="link-content" href="'+url+'">'+'ASL Kids'+'</a>';
+					html_content = '<iframe width="267" height="200" src="'+embedurl_soundButNoAutoplay+'"></iframe>';
 					break;
 			}
 		}
@@ -569,6 +610,11 @@
 
 		////////////////////////////////////////////////////
 		updateResults(searchvalue)
+	}
+
+	function triggerManualSearch(customSearchValue)  {
+		$('#searchbar').val(customSearchValue);
+		refreshResultsFromInput();
 	}
 </script>
 

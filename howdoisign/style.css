@@ -149,10 +149,10 @@ input#searchbar::placeholder {
 #page h2 {
 	margin-top: 3em;
 }
-#results {
+#page #results {
 	margin: 1.7em;
 }
-#results .item {
+.item {
 	background: #333;/*#272727;*/
 	display: inline-block;
 	margin-right: 1em;
@@ -167,7 +167,7 @@ hr.results-divider {
 	margin-top: 3em;
 }
 /* ITEM CARD DIMENSIONS */
-#results .item {
+.item {
 	/*width: 115px;*/
 	/*width: 200px;*/
 	width: 170px;
@@ -215,9 +215,12 @@ hr.results-divider {
 	position:absolute;
 	top: 50%;
 	left: 50%;
-	transform: translateY(-50%) translateX(-50%);
+	/*transform: translateY(-50%) translateX(-50%);
 	max-width: 100%;
-	max-height: 100%;
+	max-height: 100%;*/
+	transform: translateY(-50%) translateX(-50%) scale(3);
+	max-width: 33.3%;
+	max-height: 33.3%;
 }
 .item .content iframe {
 	width: 100%;
@@ -252,4 +255,46 @@ hr.results-divider {
 .item a {
 	margin: 0;
 	padding: 0;
+}
+
+/* INTRO/HOMEPAGE*/
+#page #intro {
+	margin: 1.7em;	
+}
+	body.showing-results #intro {
+		display: none;
+	}
+#intro .item {
+	width: 400px;
+	max-width: 100%;
+}
+	#intro .item .content {
+		height: 300px;
+	}
+	#intro .item .content img {
+	}
+
+#intro div.example-search-list a {
+	color: #7E00DB;
+	margin-right: 0.2em;
+	margin-bottom: 0.5em;
+	padding: 0.75em 1.25em;
+	min-width: 4.8em;
+	text-align: center;
+	display: inline-block;
+	border-radius: 0.5em;
+	border: 0px;
+	background-color: white;
+	box-shadow: 0 0.2em 0.4em 0 hsla(360, 0%, 0%, 0.33);
+	font-weight: 600;
+}
+
+#intro div.source-list a {
+	color: #7E00DB;
+	margin: 0.5em 0;
+	display: block;
+}
+#intro div.source-list a::before {
+	content: "↗ ";
+
 }
