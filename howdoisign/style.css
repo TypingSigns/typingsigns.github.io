@@ -177,6 +177,16 @@ hr.results-divider {
 	/*height: 150px;*/
 	height: 127.5px;
 }
+@media only screen and (max-width: 798px) {
+	#results .item { width: 30%;}
+}
+@media only screen and (max-width: 612px) {
+	/*#results .item { width: 150px;}*/
+	#results .item { width: 43%;}
+}
+@media only screen and (max-width: 318px) {
+	#results .item { width: 100%;}
+}
 
 .item .content {
 	background: black;
