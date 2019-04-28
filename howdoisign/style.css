@@ -32,9 +32,19 @@ p {
 	padding: 1.0em;
 	box-sizing: border-box;
 }
-#nav h2 {
-	margin-top: 0;
+#nav .tagline {
+	/*text-align: center;*/
 }
+	#nav img.logo {
+		width: 2em;
+		display: inline-block;
+		padding-right: 0.5em;
+	}
+	#nav h2 {
+		margin-top: 0;
+		display: inline-block;
+		vertical-align: middle;
+	}
 input#searchbar {
 	font-size: 2em;
 	width: 100%;
@@ -42,12 +52,16 @@ input#searchbar {
 	box-sizing: border-box;
 	border: 0px;
 	border-radius: 0.4em;
-	/*box-shadow: 5px 10px #888888;*/
 	box-shadow: 0 0.2em 0.4em 0 hsla(360, 0%, 0%, 0.33);
 
 	text-transform: uppercase;
 	font-weight: 600;
 	letter-spacing: 0.02em;
+
+	background-image: url('site-images/icon-search.png');
+	background-size: auto 50%;
+	background-repeat: no-repeat;
+	background-position: right 0.5em center;
 }
 input#searchbar::placeholder {
 	color: #A259FF;
@@ -83,11 +97,13 @@ hr.results-divider {
 /* ITEM CARD DIMENSIONS */
 #results .item {
 	/*width: 115px;*/
-	width: 200px;
+	/*width: 200px;*/
+	width: 170px;
 }
 .item .content {
 	/*height: 86.25px;*/
-	height: 150px;
+	/*height: 150px;*/
+	height: 127.5px;
 }
 
 .item .content {
