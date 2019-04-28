@@ -25,16 +25,15 @@
 
 <body>
 	<div id="nav">
-		<h2>How do I sign</h2>
-		<input id="searchbar" type="text" placeholder="Type any word">
+		<div class="container">
+			<h2>How do I sign</h2>
+			<input id="searchbar" type="text" placeholder="Type any word">
+		</div>
 	</div>
 	<div class="searchbar-container-spacing"></div>
 	<div id="page">
-		<p class="fingerspell">Font Test</p> 
-			<!-- /*Note: Fingerspelling font only displays on Safari. Can't be converted to woff. So removing FingerSpelling showcase for now.*/ -->
 		<pre id="STAT">Loading</pre>
 		<div id="results"></div>
-		<div id="results-message"></div>
 	</div>
 </body>
 
@@ -373,7 +372,6 @@
 		// Don't search if no searchValue
 		if (searchvalue.length == 0) {
 			$(resultsDomId).html("");
-			$("#results-message").html("");
 			return;
 		}
 
@@ -383,35 +381,35 @@
 			fields: ['titles'],
 			limit: resultsCap
 		});
-		console.log(results);
-		var resultsMessage = 'Showing the top '+resultsCap+' of '+results.total+' results for "'+searchvalue+ '.';
-		if (results.items.length < resultsCap) {
-			resultsMessage = 'Found ' +results.items.length+' entries for "'+searchvalue+'".';
-		}
-		if (results.items.length == 1) {
-			resultsMessage = 'Found 1 entry for "'+searchvalue+'".';
-		}
-		if (results.items.length == 0) {
-			resultsMessage = 'Sorry, 0 entries were found for "'+searchvalue+'".';	
-		}
+		// console.log(results);
 
-		// FILTER RESULTING ITEMS
-		// var remainingMatches = results.items.slice();
-		// var exactMatches = [];
-		// for (var i=0; i<remainingMatches.length; i++) {
-		// 	// Assumption: Results will have Exact Matches at the beggining of array. So we can end exact matches when there's a mismatch. (Otherwise would need to consider how things are incremented)
-		// 	var itemId = results.items[i].id;
-		// 	var item = sifter.items[itemId];
-		// 	var titles = item.titles;
-		// 	if (searchvalue.toUpperCase().trim() == titles.toUpperCase().trim()) {
-		// 		exactMatches = remainingMatches.splice(0);
-		// 	} else {
-		// 		break;
-		// 	}
-		// }
+		// NUMBER OF RESULTS
+		var numResults = results.items.length;
+		var numExactMatches = 0;
+		var numRelatedMatches = 0;
+		for (var i=0; i<results.items.length; i++) {
+			// Assumption: Results will have Exact Matches at the beggining of array.
+			var itemId = results.items[i].id;
+			var item = sifter.items[itemId];
+			var titles = item.titles;
+			var exactMatch = (searchvalue.toUpperCase().trim() == titles.toUpperCase().trim());
+			if (exactMatch) {
+				numExactMatches += 1;
+			} else {
+				numRelatedMatches = numResults - numExactMatches;
+				break;
+			}
+		}
+		if (results.total >= resultsCap) {
+			numRelatedMatches = "Showing 50 of "+results.total;
+		}
 
 		// SHOW RESULTING ITEMS
 		$(resultsDomId).html("")
+		if (numResults == 0) {
+			var divider = '<h2>No Results Found for "'+searchvalue.trim()+'"</h2>';
+			$(resultsDomId).append(divider);
+		}
 		var prvExactMatch = true;
 		for (var i=0; i<results.items.length; i++) {
 			var itemId = results.items[i].id;
@@ -428,7 +426,7 @@
 			// ADD DIVIDER - Listing Exact Matches
 			if (i==0) {
 				if (exactMatch) {
-					var divider = '<h2>X Results Matching "'+searchvalue.trim()+'"</h2>';
+					var divider = '<h2>'+numExactMatches+' Results Matching "'+searchvalue.trim()+'"</h2>';
 					$(resultsDomId).append(divider);
 				}
 			}
@@ -436,38 +434,39 @@
 			// Add HTML For EXACT Matches
 			if (exactMatch) {
 				// Generate HTML for Item
-				var html = generateHtmlForItem(item);
+				var html = generateHtmlForItem(item, exactMatch);
 				// Add HTML
 				$(resultsDomId).append(html);
 			}
 
 			// ADD DIVIDER - Listing Approximate Matches
 			if (!exactMatch && prvExactMatch) {
-				var divider = '<h2>X Results Containing "'+searchvalue.trim()+'"</h2>';
+				// Cases whereby there's an existing match before this one
+				if (i!=0) {
+					$(resultsDomId).append('<hr class="results-divider">');
+				}
+				// Every Case
+				var divider = '<h2>'+numRelatedMatches+' Results Containing "'+searchvalue.trim()+'"</h2>';
 				$(resultsDomId).append(divider);
 				prvExactMatch = false;
 			}
 
 			// Add HTML for APPROXIMATE Matches
 			if (!exactMatch) {
-				var html = generateHtmlForItem(item);
+				var html = generateHtmlForItem(item, exactMatch);
 				$(resultsDomId).append(html);
 			}
 
 		}
 
-		// Small Results-Message Tagline. (Number of Results Found)
-		$("#results-message").html(resultsMessage);
-		$("#results-message").append('<hr>')
-
 		_STAT("	↳ Conducted Search")
 	}
 
-	function generateHtmlForItem(item) {
+	function generateHtmlForItem(item, exactMatch) {
 		var titles = item.titles;
 		var url = item.url;
 
-		var html_label = '<a href="'+url+'">'+titles+'</a>';
+		var html_label = '<p>'+titles+'</p>';
 		var html_content = "";
 		var html_source = '';
 
@@ -479,12 +478,12 @@
 				html_source = ' <a class="link-content" href="'+url+'">'+'SpreadTheSign'+'</a>';
 				break;
 			case 'lifeprint':
-				html_content += '<p>No Preview</p>';
+				html_content += '<a class="link-content" href="'+url+'">'+'LifePrint'+'</a>';
 				html_source = ' <a class="link-content" href="'+url+'">'+'LifePrint'+'</a>';
 				break;
 			case 'handspeak':
-				html_content += '<p>No Preview</p>';
-				html_source = ' <a class="link-content" href="'+url+'">'+'Handspeak'+'</a>';
+				html_content += '<a class="link-content" href="'+url+'">'+'HandSpeak'+'</a>';
+				html_source = ' <a class="link-content" href="'+url+'">'+'HandSpeak'+'</a>';
 				break;
 			case 'signbank':
 				if (item.fsw) {
@@ -518,8 +517,8 @@
 			// A. Simple Youtube Embed w/- suggested videos
 				// var embedurl = 'https://www.youtube.com/embed/'+item.youtubeid+'?rel=0'
 			// B.i. Looping Embed - No Autoplay
-				var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
-			// B.ii. Looping Autoplaying Embed, Muted.
+				var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=0&loop=1&controls=0&loop=1&playlist="+item.youtubeid+"&showinfo=0"
+			// B.ii. Looping Embed - AUTOPLAY. Muted.
 				// var embedurl = "https://www.youtube.com/embed/"+item.youtubeid+"?autoplay=1&mute=1&loop=1&controls=0&loop=1&playlist="+item.youtubeid+";&amp;showinfo=0"
 			// Embed:
 			html_content += '<iframe width="267" height="200" src="'+embedurl+'"></iframe>';
@@ -544,7 +543,7 @@
 		}
 
 		// Compile HTML for Result
-		var html = '<div class="item">' + 
+		var html = '<div class="item '+'type-'+item.type+" " +(exactMatch?"exactMatch":"") + '">' + 
 					'<div class="content">'+html_content+'</div>' +
 					'<div class="label">'+html_label+'</div>' + 
 					'<div class="source">'+html_source+'</div>' + 

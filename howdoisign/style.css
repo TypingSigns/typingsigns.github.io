@@ -11,25 +11,12 @@ h2 {
 	color: #534800;
 	opacity: 0.55;
 }
-/*Note: Fingerspelling font only displays on Safari. Can't be converted to woff. So removing FingerSpelling showcase for now.*/
-@font-face {
-	font-family: 'Fingerspell';
-	/*src: url('fonts/ASL-FS-201812A-x100-Regular.ttf');*/
-	/*src: url('fonts/ASL-FS-201812A-x100-Regular.otf');*/
-	/*src: url('fonts/ASL-FS-201812A-x100-Regular_TTF.woff');*/
-	/*src: url('fonts/ASL-FS-201812A-x100-Regular_OTF.woff');*/
-	src: url('fonts/asl-fs-201812a-x100-regular-webfont.woff');
-	
-		/* woff - Pretty Modern Browsers */
-		/* ttf - Safari, Android, iOS */
-	font-weight: normal !important;
-	font-style: normal !important;
+a {
+	text-decoration: none;
+	color: #C190FF;
 }
-p.fingerspell {
-	font-family: 'Fingerspell', serif;
-	/*color: white;*/
-	font-size: 3em;
-	margin: 0.5em 0;
+p {
+	color: gray;
 }
 #STAT {
 	display: none;
@@ -37,11 +24,16 @@ p.fingerspell {
 /*NAV*/
 #nav {
 	background: #FFD965;
+	box-shadow: 0 0.1em 0.4em 0 hsla(360, 0%, 0%, 0.33);
+}
+#nav .container {
+	max-width: 800px;
+	margin: auto;
 	padding: 1.0em;
 	box-sizing: border-box;
-	/*max-width: 800px;
-	margin: auto;*/
-	box-shadow: 0 0.1em 0.4em 0 hsla(360, 0%, 0%, 0.25);
+}
+#nav h2 {
+	margin-top: 0;
 }
 input#searchbar {
 	font-size: 2em;
@@ -49,9 +41,9 @@ input#searchbar {
 	padding: 0.2em 0.3em;
 	box-sizing: border-box;
 	border: 0px;
-	border-radius: 0.5em;
+	border-radius: 0.4em;
 	/*box-shadow: 5px 10px #888888;*/
-	box-shadow: 0 0.2em 0.4em 0 hsla(360, 0%, 0%, 0.25);
+	box-shadow: 0 0.2em 0.4em 0 hsla(360, 0%, 0%, 0.33);
 
 	text-transform: uppercase;
 	font-weight: 600;
@@ -71,9 +63,95 @@ input#searchbar::placeholder {
 #page h2 {
 	margin-top: 3em;
 }
+#results {
+	margin: 1.7em;
+}
 #results .item {
-	background: darkgray;
+	background: #333;/*#272727;*/
 	display: inline-block;
-	margin: 10px;
-	border-radius: 0.5em;
+	margin-right: 1em;
+	margin-bottom: 1em;
+	border-radius: 0.3em;
+	overflow: hidden;
+	vertical-align: top;
+	box-shadow: 0 0.2em 0.4em 0 hsla(360, 0%, 0%, 0.33);
+	position: relative;
+}
+hr.results-divider {
+	margin-top: 3em;
+}
+/* ITEM CARD DIMENSIONS */
+#results .item {
+	/*width: 115px;*/
+	width: 200px;
+}
+.item .content {
+	/*height: 86.25px;*/
+	height: 150px;
+}
+
+.item .content {
+	background: black;
+	position: relative;
+	overflow: hidden;
+	margin-bottom: 0.5em;
+}
+	.item.type-signbank .content {
+		background: white;
+	}
+	.item.type-handspeak .content {
+		background-image: url("site-images/HandSpeak.png");
+		background-size: cover;
+	}
+	.item.type-lifeprint .content {
+		background-image: url("site-images/ASLU.png");
+		background-size: cover;
+	}
+.item .content > a {
+	/*For Links that don't have a preview image */
+	display: block;
+	height: 100%;
+	opacity: 0.1;
+}
+.item .content img {
+	position:absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateY(-50%) translateX(-50%);
+	max-width: 100%;
+	max-height: 100%;
+}
+.item .content iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+.item .label {
+	font-size: 1em;	
+	font-weight: 600;
+	text-transform: uppercase;
+	margin: 0 0.5em;
+	padding: 0em;
+}
+	.item.exactMatch .label {
+		display: none;
+	}
+.item .label p {
+	color: white;
+	overflow-wrap: break-word
+}
+.item .source {
+	margin: 0.5em 0.7em;
+	margin-top: 0;
+	padding: 0em;
+	font-size: 0.8em;
+}
+/*.item .source a:before {
+	content: "via ";
+	color: #999;
+}*/
+.item p,
+.item a {
+	margin: 0;
+	padding: 0;
 }
