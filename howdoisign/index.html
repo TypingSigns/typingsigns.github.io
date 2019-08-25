@@ -403,32 +403,60 @@
 	}
 
 	function processYale(callback) {
-			_STAT("Loading Yale directory ⏳ ...")
-			$.ajax({
-				url : "data/yale-id-title-url-imgid.tsv",
-				dataType: "text",
-				success : function (data_yale) {
-					_STAT("	↳ Loaded Yale Directory 😁")
-					_STAT("	↳ Processing Yale Directory ⏳ ...")
-					// Add Data
-					var lines = data_yale.split("\n")
-					for (var i=0; i<lines.length; i++) {
-						var columns = lines[i].split("\t");
-						var entry = {}
-						entry["type"] = "yale"
-						entry["id"] = columns[0];
-						entry["url"] = columns[2];
-						entry["titles"] = columns[1];
-						entry["mediaurl"] = columns[3];
-						myDirectory.push(entry)
-					}
-					_STAT("	↳ Processed Nab Directory 😁")
-
-					// NEXT:
-					callback()
+		_STAT("Loading Yale directory ⏳ ...")
+		$.ajax({
+			url : "data/yale-id-title-url-imgid.tsv",
+			dataType: "text",
+			success : function (data_yale) {
+				_STAT("	↳ Loaded Yale Directory 😁")
+				_STAT("	↳ Processing Yale Directory ⏳ ...")
+				// Add Data
+				var lines = data_yale.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "yale"
+					entry["id"] = columns[0];
+					entry["url"] = columns[2];
+					entry["titles"] = columns[1];
+					entry["mediaurl"] = columns[3];
+					myDirectory.push(entry)
 				}
-			});
-		}
+				_STAT("	↳ Processed Nab Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
+
+	function processBabySL(callback) {
+		_STAT("Loading BabySL directory ⏳ ...")
+		$.ajax({
+			url : "data/babysl-gifname-assumedtitle-assumedurl.tsv",
+			dataType: "text",
+			success : function (data_yale) {
+				_STAT("	↳ Loaded BabySL Directory 😁")
+				_STAT("	↳ Processing BabySL Directory ⏳ ...")
+				// Add Data
+				var lines = data_yale.split("\n")
+				for (var i=0; i<lines.length; i++) {
+					var columns = lines[i].split("\t");
+					var entry = {}
+					entry["type"] = "babysl"
+					entry["id"] = columns[0];
+					entry["titles"] = columns[1];
+					entry["url"] = columns[2];
+					entry["mediaurl"] = columns[0];
+					myDirectory.push(entry)
+				}
+				_STAT("	↳ Processed Nab Directory 😁")
+
+				// NEXT:
+				callback()
+			}
+		});
+	}
 
 </script>
 
@@ -591,6 +619,10 @@
 				html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/yale-images-800max/'+item.mediaurl+'.jpg">';
 				html_source = '<a class="link-content" href="'+url+'">'+'Yale ASL Signbank'+'</a>';
 				break;
+			case 'babysl':
+				html_content += '<img src="https://www.babysignlanguage.com/signs/'+item.mediaurl+'">';
+				html_source = '<a class="link-content" href="https://www.babysignlanguage.com/dictionary/'+url+'">'+'Baby Sign Language'+'</a>';
+				break;
 		}
 
 		// . Youtube Cases:
@@ -675,40 +707,40 @@
 		// 2019-08-25 TODO - REORDER, SO SEARCH SHOWS MORE USEFUL/SHINY RESULTS UP TOP!
 		processSpreadTheSign(function() {
 			processGiphySWR(function() {
-				processSignbank(function() {
-					processYale(function() {
-						processASLPRO(function() {
-							processASLLex(function() {
-								processNab(function() {
-									processMSHWords(function() {
-										processMSHAnim(function() {
-											processASLKids(function() {
-												processHandspeak(function() {
-													processLifeprint(function() {
-													
-														// LAST DATA PROCESSED!
+				processBabySL(function() {
+					processSignbank(function() {
+						processYale(function() {
+							processASLPRO(function() {
+								processASLLex(function() {
+									processNab(function() {
+										processMSHWords(function() {
+											processMSHAnim(function() {
+												processASLKids(function() {
+													processHandspeak(function() {
+														processLifeprint(function() {
+														
+															// LAST DATA PROCESSED!
 
-														// Create Sifter from Directory
-														_STAT("Created Directory 😁")
-														_STAT("Creating Sifter for Search ...")
-														sifter = new Sifter(myDirectory);
-														_STAT("	↳ Created Sifter for Search.")
+															// Create Sifter from Directory
+															_STAT("Created Directory 😁")
+															_STAT("Creating Sifter for Search ...")
+															sifter = new Sifter(myDirectory);
+															_STAT("	↳ Created Sifter for Search.")
 
-														// Listen to Search bar
-														_STAT("Initializing Search Bar.")
-														refreshResultsFromInput();
-														$('#searchbar').focus();
-														$('#searchbar').on('input', function(e) {
+															// Listen to Search bar
+															_STAT("Initializing Search Bar.")
 															refreshResultsFromInput();
+															$('#searchbar').focus();
+															$('#searchbar').on('input', function(e) {
+																refreshResultsFromInput();
+															});
+
+															// Tell Body, all data has loaded.
+															$('body').removeClass('loading');
+															$('body').addClass('data-loaded');
 														});
-
-														// Tell Body, all data has loaded.
-														$('body').removeClass('loading');
-														$('body').addClass('data-loaded');
 													});
-
 												})
-
 											})
 										})
 									})
