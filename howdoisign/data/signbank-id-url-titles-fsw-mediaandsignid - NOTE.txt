@@ -1,0 +1,9 @@
+_NOTE - signbank-id-url-titles-fsw-mediaandsignid.txt
+
+	URL cut down to save some loading-time e.g.
+
+	'http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid=11'
+	reomoves:
+	'http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid='
+	to become:
+	'11'

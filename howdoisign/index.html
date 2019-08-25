@@ -70,6 +70,7 @@
 				<a href="https://www.youtube.com/channel/UCLaV1_xTpy5Pi0Q6Hts2iSg">Youtube: nabboudATuofa</a>
 				<a href="https://www.youtube.com/channel/UC2a61_fpDR-lcZQX342ho2w">Youtube: My Smart Hands</a>
 				<a href="https://www.youtube.com/channel/UCUh28RKjZ31rN8UsZb4wPqg">Youtube: ASL Kids</a>
+				<a href="https://aslsignbank.haskins.yale.edu">Yale ASL Signbank</a>
 			</div>
 		</div>
 	</div>
@@ -94,7 +95,7 @@
 		_STAT("Loading SignBank directory ⏳ ...")
 		$.ajax({
 			// url : "https://raw.githubusercontent.com/TypingSigns/typingsigns.github.io/master/asl-word-search-experiment/data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
-			url : "data/signbank-id-url-titles-fsw-mediaandsignid.tsv",
+			url : "data/signbank-id-url-titles-fsw-mediaandsignid-compressed.tsv",
 			dataType: "text",
 			success : function (data_signbank) {
 				_STAT("	↳ Loaded SignBank Directory 😁")
@@ -566,6 +567,7 @@
 				} else {
 					html_content += ' { no fsw }';
 				}
+				url = 'http://www.signbank.org/signpuddle2.0/searchword.php?ui=1&sgn=4&sid='+url;
 				html_source = ' <a class="link-content" href="'+url+'">'+'SignWriting'+'</a>';
 				break;
 			case 'aslpro':
@@ -673,8 +675,8 @@
 		// 2019-08-25 TODO - REORDER, SO SEARCH SHOWS MORE USEFUL/SHINY RESULTS UP TOP!
 		processSpreadTheSign(function() {
 			processGiphySWR(function() {
-				processYale(function() {
-					processSignbank(function() {
+				processSignbank(function() {
+					processYale(function() {
 						processASLPRO(function() {
 							processASLLex(function() {
 								processNab(function() {
