@@ -400,6 +400,35 @@
 			}
 		});
 	}
+
+	function processYale(callback) {
+			_STAT("Loading Yale directory ⏳ ...")
+			$.ajax({
+				url : "data/yale-id-title-url-imgid.tsv",
+				dataType: "text",
+				success : function (data_yale) {
+					_STAT("	↳ Loaded Yale Directory 😁")
+					_STAT("	↳ Processing Yale Directory ⏳ ...")
+					// Add Data
+					var lines = data_yale.split("\n")
+					for (var i=0; i<lines.length; i++) {
+						var columns = lines[i].split("\t");
+						var entry = {}
+						entry["type"] = "yale"
+						entry["id"] = columns[0];
+						entry["url"] = columns[2];
+						entry["titles"] = columns[1];
+						entry["mediaurl"] = columns[3];
+						myDirectory.push(entry)
+					}
+					_STAT("	↳ Processed Nab Directory 😁")
+
+					// NEXT:
+					callback()
+				}
+			});
+		}
+
 </script>
 
 <!-- AFTER ALL DATA LOADED + SEARCH FUNCTION -->
@@ -521,11 +550,11 @@
 		switch (item.type) {
 			case 'sts':
 				html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/sts-gifs-6/'+item.videoid+'.gif">';
-				html_source = ' <a class="link-content" href="'+url+'">'+'SpreadTheSign'+'</a>';
+				html_source = '<a class="link-content" href="'+url+'">'+'SpreadTheSign'+'</a>';
 				break;
 			case 'lifeprint':
 				html_content += '<a class="link-content" href="'+url+'">'+'LifePrint'+'</a>';
-				html_source = ' <a class="link-content" href="'+url+'">'+'LifePrint'+'</a>';
+				html_source = '<a class="link-content" href="'+url+'">'+'LifePrint'+'</a>';
 				break;
 			case 'handspeak':
 				html_content += '<a class="link-content" href="'+url+'">'+'HandSpeak'+'</a>';
@@ -555,6 +584,10 @@
 			case 'aslkids':
 			case 'nab':
 				isYoutubeEmbed = true;
+				break;
+			case 'yale':
+				html_content += '<img src="https://s3.amazonaws.com/awss3-typingsigns-201710/yale-images-800max/'+item.mediaurl+'.jpg">';
+				html_source = '<a class="link-content" href="'+url+'">'+'Yale ASL Signbank'+'</a>';
 				break;
 		}
 
@@ -637,37 +670,40 @@
 		/////////////////////////////////////////////
 
 		_STAT("Creating Directory ⏳ ...");
-		processSignbank(function() {
-			processASLLex(function() {
-				processSpreadTheSign(function() {
-					processMSHWords(function() {
-						processMSHAnim(function() {
-							processASLKids(function() {
-								processHandspeak(function() {
-									processLifeprint(function() {
-										processGiphySWR(function() {
-											processNab(function() {
-												processASLPRO(function() {
+		// 2019-08-25 TODO - REORDER, SO SEARCH SHOWS MORE USEFUL/SHINY RESULTS UP TOP!
+		processSpreadTheSign(function() {
+			processGiphySWR(function() {
+				processYale(function() {
+					processSignbank(function() {
+						processASLPRO(function() {
+							processASLLex(function() {
+								processNab(function() {
+									processMSHWords(function() {
+										processMSHAnim(function() {
+											processASLKids(function() {
+												processHandspeak(function() {
+													processLifeprint(function() {
+													
+														// LAST DATA PROCESSED!
 
-													// LAST DATA PROCESSED!
+														// Create Sifter from Directory
+														_STAT("Created Directory 😁")
+														_STAT("Creating Sifter for Search ...")
+														sifter = new Sifter(myDirectory);
+														_STAT("	↳ Created Sifter for Search.")
 
-													// Create Sifter from Directory
-													_STAT("Created Directory 😁")
-													_STAT("Creating Sifter for Search ...")
-													sifter = new Sifter(myDirectory);
-													_STAT("	↳ Created Sifter for Search.")
-
-													// Listen to Search bar
-													_STAT("Initializing Search Bar.")
-													refreshResultsFromInput();
-													$('#searchbar').focus();
-													$('#searchbar').on('input', function(e) {
+														// Listen to Search bar
+														_STAT("Initializing Search Bar.")
 														refreshResultsFromInput();
-													});
+														$('#searchbar').focus();
+														$('#searchbar').on('input', function(e) {
+															refreshResultsFromInput();
+														});
 
-													// Tell Body, all data has loaded.
-													$('body').removeClass('loading');
-													$('body').addClass('data-loaded');
+														// Tell Body, all data has loaded.
+														$('body').removeClass('loading');
+														$('body').addClass('data-loaded');
+													});
 
 												})
 
